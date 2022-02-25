@@ -1,0 +1,259 @@
+{
+	"System":[
+	   {
+		  "name":"System uptime",
+		  "address":1,
+		  "number":2,
+		  "service": "system",
+		  "procedure": "info",
+		  "parse": "uptime"
+	   },
+	   {
+		  "name":"Mobile signal strength (RSSI in dBm)",
+		  "address":3,
+		  "number":2,
+		  "service": "vuci.network.mobile",
+		  "procedure": "mobile_status",
+		  "parse": "signal"
+	   },
+	   {
+		  "name":"System temperature (in 0.1 °C)",
+		  "address":5,
+		  "number":2
+	   },
+	   {
+		  "name":"System hostname",
+		  "address":7,
+		  "number":16
+	   },
+	   {
+		  "name":"Router serial number",
+		  "address":39,
+		  "number":16
+	   },
+	   {
+		  "name":"Router name",
+		  "address":71,
+		  "number":16
+	   },
+	   {
+		"name":"Digital non-isolated input (4 PIN connector)",
+		"address":324,
+		"number":1
+		},
+		{
+		"name":"Digital open collector output (4 PIN connector)",
+		"address":325,
+		"number":1
+		}
+	],
+	"Network":[
+	   {
+		  "name":"LAN MAC address",
+		  "address":55,
+		  "number":16
+	   },
+	   {
+		  "name":"Current WAN IP address",
+		  "address":139,
+		  "number":2
+	   }
+	],
+	"GPS":[
+	   {
+		  "name":"GPS latitude coordinate",
+		  "address":143,
+		  "number":2
+	   },
+	   {
+		  "name":"GPS longitude coordinate",
+		  "address":145,
+		  "number":2
+	   },
+	   {
+		  "name":"GPS fix time",
+		  "address":147,
+		  "number":16
+	   },
+	   {
+		  "name":"GPS date and time",
+		  "address":163,
+		  "number":16
+	   },
+	   {
+		  "name":"GPS speed",
+		  "address":179,
+		  "number":2
+	   },
+	   {
+		  "name":"GPS satellite count",
+		  "address":181,
+		  "number":2
+	   },
+	   {
+		  "name":"GPS accuracy",
+		  "address":183,
+		  "number":2
+	   }
+	],
+	"Mobile":[
+	   {
+		  	"SIM1":[
+			{
+				"name":"GSM operator name",
+				"address":23,
+				"number":16
+			},
+			{
+				"name":"Currently active SIM card slot",
+				"address":87,
+				"number":16
+			},
+			{
+				"name":"Network registration info",
+				"address":103,
+				"number":16
+			},
+			{
+				"name":"Network type",
+				"address":119,
+				"number":16
+			},
+			{
+				"name":"Mobile data received today (SIM1)",
+				"address":185,
+				"number":2
+			},
+			{
+				"name":"Mobile data sent today (SIM1)",
+				"address":187,
+				"number":2
+			},
+			{
+				"name":"Mobile data received this week (SIM1)",
+				"address":189,
+				"number":2
+			},
+			{
+				"name":"Mobile data sent this week (SIM1)",
+				"address":191,
+				"number":2
+			},
+			{
+				"name":"Mobile data received this month (SIM1)",
+				"address":193,
+				"number":2
+			},
+			{
+				"name":"Mobile data sent this month (SIM1)",
+				"address":195,
+				"number":2
+			},
+			{
+				"name":"Mobile data received last 24h (SIM1)",
+				"address":197,
+				"number":2
+			},
+			{
+				"name":"Mobile data sent last 24h (SIM1)",
+				"address":199,
+				"number":2
+			},
+			{
+				"name":"Active SIM card",
+				"address":205,
+				"number":1
+			},
+			{
+				"name":"Mobile data received last week (SIM1)",
+				"address":292,
+				"number":2
+			},
+			{
+				"name":"Mobile data sent last week (SIM1)",
+				"address":294,
+				"number":2
+			},
+			{
+				"name":"Mobile data received last month (SIM1)",
+				"address":296,
+				"number":2
+			},
+			{
+				"name":"Mobile data sent last month (SIM1)",
+				"address":298,
+				"number":2
+			},
+			{
+				"name":"IMSI",
+				"address":348,
+				"number":16
+			}
+		]
+	   },
+	   {
+		  "SIM2":[
+			{
+				"name":"Mobile data received today (SIM2)",
+				"address":300,
+				"number":2
+			},
+			{
+				"name":"Mobile data sent today (SIM2)",
+				"address":302,
+				"number":2
+			},
+			{
+				"name":"Mobile data received this week (SIM2)",
+				"address":304,
+				"number":2
+			},
+			{
+				"name":"Mobile data sent this week (SIM2)",
+				"address":306,
+				"number":2
+			},
+			{
+				"name":"Mobile data received this month (SIM2)",
+				"address":308,
+				"number":2
+			},
+			{
+				"name":"Mobile data sent this month (SIM2)",
+				"address":310,
+				"number":2
+			},
+			{
+				"name":"Mobile data received last 24h (SIM2)",
+				"address":312,
+				"number":2
+			},
+			{
+				"name":"Mobile data sent last 24h (SIM2)",
+				"address":314,
+				"number":2
+			},
+			{
+				"name":"Mobile data received last week (SIM2)",
+				"address":316,
+				"number":2
+			},
+			{
+				"name":"Mobile data sent last week (SIM2)",
+				"address":318,
+				"number":2
+			},
+			{
+				"name":"Mobile data received last month(SIM2)",
+				"address":320,
+				"number":2
+			},
+			{
+				"name":"Mobile data sent last month (SIM2)",
+				"address":322,
+				"number":2
+			}
+		]
+	   }
+	]
+ }
