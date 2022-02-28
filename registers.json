@@ -128,94 +128,127 @@
 	   {
 		  	"SIM1":[
 			{
+				"name":"IMSI",
+				"address":348,
+				"number":16,
+				"source":"ubus",
+				"service": "vuci.network.mobile",
+				"procedure": "mobile_info '{\"modem\":\"3-1\"}'",
+				"parse": "imsi"
+			},
+			{
 				"name":"GSM operator name",
 				"address":23,
-				"number":16
+				"number":16,
+				"source":"ubus",
+				"service": "vuci.network.mobile",
+				"procedure": "mobile_info '{\"modem\":\"3-1\"}'",
+				"parse": "operator"
 			},
 			{
 				"name":"Currently active SIM card slot",
 				"address":87,
-				"number":16
+				"number":16,
+				"source":"ubus",
+				"service": "vuci.network.mobile",
+				"procedure": "mobile_info '{\"modem\":\"3-1\"}'",
+				"parse": "slot"
 			},
 			{
 				"name":"Network registration info",
 				"address":103,
-				"number":16
+				"number":16,
+				"source":"ubus",
+				"service": "vuci.network.mobile",
+				"procedure": "mobile_info '{\"modem\":\"3-1\"}'",
+				"parse": "netstate"
 			},
 			{
 				"name":"Network type",
 				"address":119,
-				"number":16
+				"number":16,
+				"source":"ubus",
+				"service": "vuci.network.mobile",
+				"procedure": "mobile_info '{\"modem\":\"3-1\"}'",
+				"parse": "conntype"
 			},
 			{
 				"name":"Mobile data received today (SIM1)",
 				"address":185,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data sent today (SIM1)",
 				"address":187,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data received this week (SIM1)",
 				"address":189,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data sent this week (SIM1)",
 				"address":191,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data received this month (SIM1)",
 				"address":193,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data sent this month (SIM1)",
 				"address":195,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data received last 24h (SIM1)",
 				"address":197,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data sent last 24h (SIM1)",
 				"address":199,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Active SIM card",
 				"address":205,
-				"number":1
+				"number":1,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data received last week (SIM1)",
 				"address":292,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data sent last week (SIM1)",
 				"address":294,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data received last month (SIM1)",
 				"address":296,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data sent last month (SIM1)",
 				"address":298,
-				"number":2
-			},
-			{
-				"name":"IMSI",
-				"address":348,
-				"number":16
+				"number":2,
+				"source":"ubus"
 			}
 		]
 	   },
@@ -224,62 +257,74 @@
 			{
 				"name":"Mobile data received today (SIM2)",
 				"address":300,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data sent today (SIM2)",
 				"address":302,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data received this week (SIM2)",
 				"address":304,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data sent this week (SIM2)",
 				"address":306,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data received this month (SIM2)",
 				"address":308,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data sent this month (SIM2)",
 				"address":310,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data received last 24h (SIM2)",
 				"address":312,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data sent last 24h (SIM2)",
 				"address":314,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data received last week (SIM2)",
 				"address":316,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data sent last week (SIM2)",
 				"address":318,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data received last month(SIM2)",
 				"address":320,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			},
 			{
 				"name":"Mobile data sent last month (SIM2)",
 				"address":322,
-				"number":2
+				"number":2,
+				"source":"ubus"
 			}
 		]
 	   }

@@ -46,3 +46,6 @@ def remove_char(data, characters):
     remove_table = dict.fromkeys(map(ord, characters), None)
     data = data.translate(remove_table)
     return data
+
+def get_value_in_parenthesis(data):
+    return data[data.find("(")+1:data.find(")")]

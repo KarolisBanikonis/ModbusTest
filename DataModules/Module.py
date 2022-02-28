@@ -1,4 +1,6 @@
 import math
+import string
+import re
 
 class Module:
 
@@ -36,7 +38,9 @@ class Module:
 
     def convert_string_for_errors(self, data):
         if(type(data) == str):
-            data = data.casefold()
+            data = data.casefold()#.translate(str.maketrans('', '', string.whitespace))
+            pattern = re.compile(r'\s+')
+            data = re.sub(pattern, '', data)
             return data
 
     def check_if_strings_equal(self, data1, data2):
@@ -55,8 +59,8 @@ class Module:
     #Parsed data from ubus can have string and int as well
     def check_if_results_match(self, modbus_data, actual_data, test_number):
         if(type(modbus_data) == str):
-            self.convert_string_for_errors(modbus_data)
-            self.convert_string_for_errors(actual_data)
+            modbus_data = self.convert_string_for_errors(modbus_data)
+            actual_data = self.convert_string_for_errors(actual_data)
             is_data_equal = self.check_if_strings_equal(modbus_data, actual_data)
         elif(type(modbus_data) == int):
             if(actual_data != int):

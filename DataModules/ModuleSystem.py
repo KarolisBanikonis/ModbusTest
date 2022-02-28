@@ -50,9 +50,8 @@ class ModuleSystem(Module):
                     final_data = parsed_data['result'][1][current['parse']]
             elif(current['source'] == "gsmctl"): #only signal uses gsmctl
                 modbus_data = self.convert_reg_number(result)
-                actual_data = gsmctl_call(self.ssh, current['flag'])
-                final_data = int(actual_data)
-
+                final_data = gsmctl_call(self.ssh, current['flag'])
+                
             self.check_if_results_match(modbus_data, final_data, i + 1)
             print(self.format_data(current['name'], modbus_data))
         self.print_module_test_results()
