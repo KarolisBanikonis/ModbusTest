@@ -2,7 +2,7 @@
     "Settings":[
         {
             "SERVER_HOST": "192.168.1.1",
-            "SERVER_PORT": 5020,
+            "SERVER_PORT": 502,
             "USERNAME": "root",
             "PASSWORD": "Admin123",
             "MODULES" : [

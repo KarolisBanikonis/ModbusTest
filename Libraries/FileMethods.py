@@ -4,7 +4,7 @@ import os.path
 import importlib
 
 def file_exists(path_to_file):
-    if(not os.path.exists(path_to_file)):
+    if(os.path.exists(path_to_file) == False):
         print(f"File at path: {path_to_file} does not exist.")
         quit()
 
@@ -18,6 +18,7 @@ def program_quit(files, ssh, modbus):
     quit()
 
 def read_file(file_name):
+    file_exists(file_name)
     with open(file_name) as file:
         registers_data = json.load(file)
     return registers_data, file

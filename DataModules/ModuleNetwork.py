@@ -1,6 +1,7 @@
 from DataModules.Module import Module
 from Libraries.FileMethods import string_to_json
 from Libraries.FileMethods import remove_char
+from Libraries.SSHMethods import ubus_call
 
 class ModuleNetwork(Module):
 
@@ -32,7 +33,7 @@ class ModuleNetwork(Module):
             if(current['number'] == 16):
                 if(current['address'] == 55):
                     modbus_data = self.convert_reg_text(result)
-                    actual_data = self.ssh.ubus_call("network.device", "status '{\"name\":\"eth0\"}'")
+                    actual_data = ubus_call(self.ssh, "network.device", "status '{\"name\":\"eth0\"}'")
                     # actual_data = self.ssh.ssh_issue_command(f"ubus -v call network.device status '{{\"name\":\"eth0\"}}'")
                     parsed_data = string_to_json(actual_data)
                     final_data = remove_char(parsed_data['macaddr'], ':').upper()

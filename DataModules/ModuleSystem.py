@@ -1,5 +1,6 @@
 from DataModules.Module import Module
 from Libraries.FileMethods import string_to_json
+from Libraries.SSHMethods import ubus_call
 
 class ModuleSystem(Module):
 
@@ -29,7 +30,7 @@ class ModuleSystem(Module):
                     modbus_data = self.convert_reg_number(result)
                 else:
                     modbus_data = self.convert_reg_number(result)
-                    actual_data = self.ssh.ubus_call(current['service'], current['procedure'])
+                    actual_data = ubus_call(self.ssh, current['service'], current['procedure'])
                     # actual_data = self.ssh.ssh_issue_command("ubus -v call system info")
                     parsed_data = string_to_json(actual_data)
                     final_data = parsed_data[current['parse']]
