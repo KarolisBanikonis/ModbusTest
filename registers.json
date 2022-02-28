@@ -19,22 +19,36 @@
 	   {
 		  "name":"System temperature (in 0.1 °C)",
 		  "address":5,
-		  "number":2
+		  "number":2,
+		  "source":"gsmctl",
+		  "flag":"c"
 	   },
 	   {
 		  "name":"System hostname",
 		  "address":7,
-		  "number":16
+		  "number":16,
+		  "source":"ubus",
+		  "service": "system",
+		  "procedure": "board",
+		  "parse": "hostname"
 	   },
 	   {
 		  "name":"Router serial number",
 		  "address":39,
-		  "number":16
+		  "number":16,
+		  "source":"ubus",
+		  "service": "mnfinfo",
+		  "procedure": "get",
+		  "parse": "serial"
 	   },
 	   {
 		  "name":"Router name",
 		  "address":71,
-		  "number":16
+		  "number":16,
+		  "source":"ubus",
+		  "service": "vuci.system",
+		  "procedure": "get_routername",
+		  "parse": "routername"
 	   },
 	   {
 		"name":"Digital non-isolated input (4 PIN connector)",

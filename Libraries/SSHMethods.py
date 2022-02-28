@@ -12,3 +12,7 @@ def ssh_get_modules_status(ssh, modules):
 def ubus_call(ssh, service, procedure):
     output = ssh.ssh_issue_command(f"ubus -v call {service} {procedure}")
     return output
+
+def gsmctl_call(ssh, flag):
+    output = ssh.ssh_issue_command(f"gsmctl -{flag}")
+    return output

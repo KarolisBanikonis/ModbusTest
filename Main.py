@@ -50,21 +50,20 @@ def main():
 
     while True:
         modbus_connected = modbus.check_connection()
-        print(modbus_connected)
         if(modbus_connected == False):
             program_quit(opened_files, ssh_client, modbus)
         else:
             pass
             # ---- System Module ----
             module_system.read_all_data()
-            # ---- Network Module ----
-            module_network.read_all_data()
-            # ---- Mobile Module ----
-            if(modules_enabled[0] == "1"):
-                module_mobile.read_all_data()
-            # ---- GPS Module ----
-            if(modules_enabled[2] == "1"):
-                module_gps.read_all_data()
+            # # ---- Network Module ----
+            # module_network.read_all_data()
+            # # ---- Mobile Module ----
+            # if(modules_enabled[0] == "1"):
+            #     module_mobile.read_all_data()
+            # # ---- GPS Module ----
+            # if(modules_enabled[2] == "1"):
+            #     module_gps.read_all_data()
         
         time.sleep(50)
 

@@ -45,6 +45,8 @@ class Module:
         else:
             return True
 
+    #Parsed data from registers.json can have string and int values
+    #Parsed data from ubus can have string and int as well
     def check_if_results_match(self, modbus_data, actual_data, test_number):
         #cia su paklaidom dar paziuret reiks
         self.convert_string_for_errors(modbus_data)
