@@ -12,7 +12,7 @@ class Modbus:
         # uncomment this line to see debug message
         # client.debug(True)
 
-    # setterius gal padaryt?
+    # Might need to make setters
 
     #sitas neveikia
     def read_registers(self, data):
@@ -33,4 +33,6 @@ class Modbus:
         if not self.client.is_open():
                 if not self.client.open():
                     print(f"Not able to connect to {self.host}:{self.port}")
-                    quit()
+                    return False
+                else:
+                    return True

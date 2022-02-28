@@ -8,10 +8,19 @@ def file_exists(path_to_file):
         print(f"File at path: {path_to_file} does not exist.")
         quit()
 
+# Able to close everything in one loop, but maybe then readability is worse?
+def program_quit(files, ssh, modbus):
+    for file in files:
+        file.close()
+    ssh.ssh.close()
+    modbus.client.close()
+    print("Program is terminated!")
+    quit()
+
 def read_file(file_name):
     with open(file_name) as file:
         registers_data = json.load(file)
-    return registers_data
+    return registers_data, file
 
 def extract_status(input):
     for symbol in input:

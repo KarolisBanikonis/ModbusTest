@@ -10,6 +10,7 @@ import time
 from Libraries.FileMethods import file_exists
 from Libraries.FileMethods import read_file
 from Libraries.FileMethods import load_module
+from Libraries.FileMethods import program_quit
 from Clients.SSHClient import SSHClient
 from Clients.Modbus import Modbus
 from DataModules.ModuleSystem import ModuleSystem
@@ -22,11 +23,15 @@ MODULES_DIRECTORY = "DataModules."
 def main():
     file_exists(CONFIGURATION_FILE)
     file_exists(PARAMETERS_FILE)
-    configuration = read_file(CONFIGURATION_FILE)
+    configuration, file1 = read_file(CONFIGURATION_FILE)
+    data, file2 = read_file(PARAMETERS_FILE)
     ssh_client = SSHClient(configuration['Settings'][0])
     modbus = Modbus(configuration['Settings'][0]['SERVER_HOST'], configuration['Settings'][0]['SERVER_PORT'])
+    opened_files = [file1, file2]
+    ssh_connected = ssh_client.ssh_connect()
+    if(ssh_connected == False):
+        program_quit(opened_files, ssh_client, modbus)
     modules_enabled = ssh_client.ssh_get_modules_status()
-    data = read_file(PARAMETERS_FILE)
     # ---- System Module ----
     module_system = ModuleSystem(modbus, data['System'], ssh_client)
     # ---- Network Module ----
@@ -46,10 +51,11 @@ def main():
         module_gps = gps.ModuleGPS(modbus, data['GPS'], ssh_client)
 
     while True:
-        modbus.check_connection()
-
-        # if open() is ok, read register
-        if modbus.client.is_open():
+        modbus_connected = modbus.check_connection()
+        print(modbus_connected)
+        if(modbus_connected == False):
+            program_quit(opened_files, ssh_client, modbus)
+        else:
             # ---- System Module ----
             module_system.read_all_data()
             # ---- Network Module ----
