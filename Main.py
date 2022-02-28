@@ -56,8 +56,8 @@ def main():
             pass
             # ---- System Module ----
             module_system.read_all_data()
-            # # ---- Network Module ----
-            # module_network.read_all_data()
+            # ---- Network Module ----
+            module_network.read_all_data()
             # # ---- Mobile Module ----
             # if(modules_enabled[0] == "1"):
             #     module_mobile.read_all_data()

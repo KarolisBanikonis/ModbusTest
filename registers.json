@@ -4,6 +4,7 @@
 		  "name":"System uptime",
 		  "address":1,
 		  "number":2,
+		  "source":"ubus",
 		  "service": "system",
 		  "procedure": "info",
 		  "parse": "uptime"
@@ -12,6 +13,7 @@
 		  "name":"Mobile signal strength (RSSI in dBm)",
 		  "address":3,
 		  "number":2,
+		  "source":"ubus",
 		  "service": "vuci.network.mobile",
 		  "procedure": "mobile_status",
 		  "parse": "signal"
@@ -53,19 +55,31 @@
 	   {
 		"name":"Digital non-isolated input (4 PIN connector)",
 		"address":324,
-		"number":1
+		"number":1,
+		"source":"ubus",
+		"service": "vuci.services.io",
+		"procedure": "collect_ioman_info",
+		"parse": "value"
 		},
 		{
 		"name":"Digital open collector output (4 PIN connector)",
 		"address":325,
-		"number":1
+		"number":1,
+		"source":"ubus",
+		"service": "vuci.services.io",
+		"procedure": "collect_ioman_info",
+		"parse": "value"
 		}
 	],
 	"Network":[
 	   {
 		  "name":"LAN MAC address",
 		  "address":55,
-		  "number":16
+		  "number":16,
+		  "source":"ubus",
+		  "service": "network.device",
+		  "procedure": "status '{\"name\":\"eth0\"}'",
+		  "parse": "macaddr"
 	   },
 	   {
 		  "name":"Current WAN IP address",

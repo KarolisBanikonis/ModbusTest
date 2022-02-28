@@ -39,6 +39,12 @@ class Module:
             data = data.casefold()
             return data
 
+    def check_if_strings_equal(self, data1, data2):
+        if(data1 == data2):
+            return True
+        else:
+            return False
+
     def check_error_value(self, data1, data2):
         if(math.fabs(data1 - data2) > self.MID_ERROR):
             return False
@@ -48,10 +54,15 @@ class Module:
     #Parsed data from registers.json can have string and int values
     #Parsed data from ubus can have string and int as well
     def check_if_results_match(self, modbus_data, actual_data, test_number):
-        #cia su paklaidom dar paziuret reiks
-        self.convert_string_for_errors(modbus_data)
-        self.convert_string_for_errors(actual_data)
-        if(modbus_data == actual_data):
+        if(type(modbus_data) == str):
+            self.convert_string_for_errors(modbus_data)
+            self.convert_string_for_errors(actual_data)
+            is_data_equal = self.check_if_strings_equal(modbus_data, actual_data)
+        elif(type(modbus_data) == int):
+            if(actual_data != int):
+                actual_data = int(actual_data)
+            is_data_equal = self.check_error_value(modbus_data, actual_data)
+        if(is_data_equal == True):
             self.correct_number += 1
             print(f"Test Nr. {test_number} out of {self.total_number} is successful!")
         else:

@@ -20,7 +20,7 @@ class ModuleSystem(Module):
             # result = self.modbus.read_registers(current)
             result = self.modbus.client.read_holding_registers(current['address'], current['number'])
             # CHECK BY SOURCE FIRST
-            if(current['number'] == 16):
+            if(current['source'] == "ubus" and current['number'] == 16):
                 modbus_data = self.convert_reg_text(result)
                 actual_data = ubus_call(self.ssh, current['service'], current['procedure'])
                 parsed_data = string_to_json(actual_data)
@@ -28,29 +28,31 @@ class ModuleSystem(Module):
                     final_data = parsed_data['mnfinfo'][current['parse']]
                 else:
                     final_data = parsed_data[current['parse']]
-                # print(f"UBUS = {final_data} {type(final_data)}")
-                self.check_if_results_match(modbus_data, final_data, i + 1)
-            elif(current['number'] == 2):
-                #Signal strength
+            elif(current['source'] == "ubus" and current['number'] == 2):
                 if(current['address'] == 3):
                     modbus_data = self.convert_ref_signal(result[1])
-                    actual_data = ubus_call(self.ssh, current['service'], current['procedure'])
-                    parsed_data = string_to_json(actual_data)
-                    final_data_string = parsed_data['mobile'][0][current['parse']]
-                    final_data = int(final_data_string)
-                    self.check_if_results_match(modbus_data, final_data, i + 1)
-                elif(current['address'] == 5): #temperature check with gsmctl -c
-                    modbus_data = self.convert_reg_number(result)
-                    actual_data = gsmctl_call(self.ssh, current['flag'])
-                    final_data = int(actual_data)
-                    self.check_if_results_match(modbus_data, final_data, i + 1)
                 else:
                     modbus_data = self.convert_reg_number(result)
-                    actual_data = ubus_call(self.ssh, current['service'], current['procedure'])
-                    parsed_data = string_to_json(actual_data)
+                actual_data = ubus_call(self.ssh, current['service'], current['procedure'])
+                parsed_data = string_to_json(actual_data)
+                if(current['address'] == 3):
+                    final_data = parsed_data['mobile'][0][current['parse']]
+                else:
                     final_data = parsed_data[current['parse']]
-                    print(f"{final_data} typeof {type(final_data)}")
-                    self.check_if_results_match(modbus_data, final_data, i + 1)
-            elif(current['number'] == 1):
+                print(f"{final_data} typeof {type(final_data)}")
+            elif(current['source'] == "ubus" and current['number'] == 1):
                 modbus_data = result[0]
+                actual_data = ubus_call(self.ssh, current['service'], current['procedure'])
+                parsed_data = string_to_json(actual_data)
+                if(current['address'] == 324):
+                    final_data = parsed_data['result'][0][current['parse']]
+                elif(current['address'] == 325):
+                    final_data = parsed_data['result'][1][current['parse']]
+            elif(current['source'] == "gsmctl"): #only signal uses gsmctl
+                modbus_data = self.convert_reg_number(result)
+                actual_data = gsmctl_call(self.ssh, current['flag'])
+                final_data = int(actual_data)
+
+            self.check_if_results_match(modbus_data, final_data, i + 1)
             print(self.format_data(current['name'], modbus_data))
+        self.print_module_test_results()
