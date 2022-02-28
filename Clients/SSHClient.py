@@ -2,7 +2,7 @@
 import paramiko
 
 # Local imports
-from FileMethods import extract_status
+from Libraries.FileMethods import extract_status
 
 class SSHClient:
 

@@ -1,6 +1,7 @@
 # Standard library imports
 import json
 import os.path
+import importlib
 
 def file_exists(path_to_file):
     if(not os.path.exists(path_to_file)):
@@ -20,7 +21,8 @@ def extract_status(input):
 def load_module(module_name):
         module = None
         try:
-            module = __import__(module_name)
+            module = importlib.import_module(module_name)
+            # module = __import__(module_name)
             return module
         except ModuleNotFoundError:
             print(f"Module {module_name} was not imported!")

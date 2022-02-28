@@ -1,4 +1,4 @@
-from Module import Module
+from DataModules.Module import Module
 
 class ModuleMobile(Module):
 

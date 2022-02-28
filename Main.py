@@ -1,23 +1,23 @@
 #!/usr/bin/env python
 
 # Standard library imports
-from importlib import import_module
 import time
 
 # Third party imports
 
 
 # Local imports
-from FileMethods import file_exists
-from FileMethods import read_file
-from FileMethods import load_module
-from SSHClient import SSHClient
-from Modbus import Modbus
-from ModuleSystem import ModuleSystem
-from ModuleNetwork import ModuleNetwork
+from Libraries.FileMethods import file_exists
+from Libraries.FileMethods import read_file
+from Libraries.FileMethods import load_module
+from Clients.SSHClient import SSHClient
+from Clients.Modbus import Modbus
+from DataModules.ModuleSystem import ModuleSystem
+from DataModules.ModuleNetwork import ModuleNetwork
 
 CONFIGURATION_FILE = "config.json"
 PARAMETERS_FILE = "registers.json"
+MODULES_DIRECTORY = "DataModules."
 
 def main():
     file_exists(CONFIGURATION_FILE)
@@ -33,7 +33,7 @@ def main():
     module_network = ModuleNetwork(modbus, data['Network'], ssh_client)
     # ---- Mobile Module ----
     if(modules_enabled[0] == "1"):
-        mobile = load_module('ModuleMobile')
+        mobile = load_module(MODULES_DIRECTORY + 'ModuleMobile')
         module_mobile = mobile.ModuleMobile(modbus, data['Mobile'], ssh_client, modules_enabled[1]) #pass if dual_sim is enabled
     # ---- GPS Module ----
     if(modules_enabled[2] == "1"):
@@ -42,7 +42,7 @@ def main():
         if(gps_enabled == "0"):
             ssh_client.ssh_issue_command("uci set gps.gpsd.enabled='1'")
             ssh_client.ssh_issue_command("uci commit gps.gpsd")
-        gps = load_module('ModuleGPS')
+        gps = load_module(MODULES_DIRECTORY + 'ModuleGPS')
         module_gps = gps.ModuleGPS(modbus, data['GPS'], ssh_client)
 
     while True:

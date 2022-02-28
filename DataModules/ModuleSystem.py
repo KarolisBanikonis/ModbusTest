@@ -1,5 +1,5 @@
-from Module import Module
-from FileMethods import string_to_json
+from DataModules.Module import Module
+from Libraries.FileMethods import string_to_json
 
 class ModuleSystem(Module):
 
