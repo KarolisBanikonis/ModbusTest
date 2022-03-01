@@ -1,7 +1,5 @@
 from DataModules.Module import Module
-from Libraries.FileMethods import string_to_json
 from Libraries.FileMethods import remove_char
-from Libraries.SSHMethods import ubus_call
 
 class ModuleNetwork(Module):
 
@@ -32,8 +30,7 @@ class ModuleNetwork(Module):
             result = self.modbus.client.read_holding_registers(current['address'], current['number'])
             if(current['address'] == 55):
                 modbus_data = self.convert_reg_text(result)
-                actual_data = ubus_call(self.ssh, current['service'], current['procedure'])
-                parsed_data = string_to_json(actual_data)
+                parsed_data = self.get_parsed_ubus_data(current)
                 final_data = remove_char(parsed_data['macaddr'], ':') # returns lower case
             #WAN IP       neeed to add check if it is Null
             if(current['address'] == 139):

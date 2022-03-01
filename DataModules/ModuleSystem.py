@@ -1,6 +1,6 @@
+# Local imports
 from DataModules.Module import Module
-from Libraries.FileMethods import string_to_json
-from Libraries.SSHMethods import gsmctl_call, ubus_call
+from Libraries.SSHMethods import gsmctl_call
 
 class ModuleSystem(Module):
 
@@ -22,8 +22,7 @@ class ModuleSystem(Module):
             # CHECK BY SOURCE FIRST
             if(current['source'] == "ubus" and current['number'] == 16):
                 modbus_data = self.convert_reg_text(result)
-                actual_data = ubus_call(self.ssh, current['service'], current['procedure'])
-                parsed_data = string_to_json(actual_data)
+                parsed_data = self.get_parsed_ubus_data(current)
                 if(current['address'] == 39): #different parse
                     final_data = parsed_data['mnfinfo'][current['parse']]
                 else:
@@ -33,17 +32,14 @@ class ModuleSystem(Module):
                     modbus_data = self.convert_ref_signal(result[1])
                 else:
                     modbus_data = self.convert_reg_number(result)
-                actual_data = ubus_call(self.ssh, current['service'], current['procedure'])
-                parsed_data = string_to_json(actual_data)
+                parsed_data = self.get_parsed_ubus_data(current)
                 if(current['address'] == 3):
                     final_data = parsed_data['mobile'][0][current['parse']]
                 else:
                     final_data = parsed_data[current['parse']]
-                print(f"{final_data}")
             elif(current['source'] == "ubus" and current['number'] == 1):
                 modbus_data = result[0]
-                actual_data = ubus_call(self.ssh, current['service'], current['procedure'])
-                parsed_data = string_to_json(actual_data)
+                parsed_data = self.get_parsed_ubus_data(current)
                 if(current['address'] == 324):
                     final_data = parsed_data['result'][0][current['parse']]
                 elif(current['address'] == 325):

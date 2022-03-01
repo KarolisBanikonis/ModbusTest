@@ -1,10 +1,16 @@
+# Standard library imports
 import math
 import string
 import re
 
+# Local imports
+from Libraries.SSHMethods import ubus_call
+from Libraries.FileMethods import string_to_json
+
 class Module:
 
-    MID_ERROR = 10 #might need to add more values
+    MID_ERROR = 10      #might need to add more values
+    MOBILE_ERROR = 10000
 
     def __init__(self, modbus, data, ssh):
         self.modbus = modbus
@@ -29,6 +35,11 @@ class Module:
             else:
                 break
         return text
+
+    def get_parsed_ubus_data(self, current_data):
+        actual_data = ubus_call(self.ssh, current_data['service'], current_data['procedure'])
+        parsed_data = string_to_json(actual_data)
+        return parsed_data
 
     def binaryToDecimal(self, n):
         return int(n, 2)
