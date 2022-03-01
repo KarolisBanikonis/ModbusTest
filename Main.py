@@ -55,9 +55,9 @@ def main():
         else:
             pass
             # ---- System Module ----
-            module_system.read_all_data()
+            # module_system.read_all_data()
             # ---- Network Module ----
-            module_network.read_all_data()
+            # module_network.read_all_data()
             # ---- Mobile Module ----
             # Reikia isbandyti su dviem sim!!!
             if(modules_enabled[0] == "1"):
