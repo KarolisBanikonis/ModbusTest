@@ -39,7 +39,7 @@ class ModuleSystem(Module):
                     final_data = parsed_data['mobile'][0][current['parse']]
                 else:
                     final_data = parsed_data[current['parse']]
-                print(f"{final_data} typeof {type(final_data)}")
+                print(f"{final_data}")
             elif(current['source'] == "ubus" and current['number'] == 1):
                 modbus_data = result[0]
                 actual_data = ubus_call(self.ssh, current['service'], current['procedure'])

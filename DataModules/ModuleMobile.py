@@ -11,10 +11,10 @@ class ModuleMobile(Module):
     def read_all_data(self): #data_area = SIM1, SIM2
         self.total_number = len(self.data[0]['SIM1'])
         self.read_data(self.data[0]['SIM1'])
-        if(self.dual_sim == "1"):
-            print("---- DUAL SIM ----")
-            self.total_number = len(self.data[1]['SIM2'])
-            self.read_data(self.data[1]['SIM2'])
+        # if(self.dual_sim == "1"):
+        #     print("---- DUAL SIM ----")
+        #     self.total_number = len(self.data[1]['SIM2'])
+        #     self.read_data(self.data[1]['SIM2'])
 
 
     def read_data(self, data_area):

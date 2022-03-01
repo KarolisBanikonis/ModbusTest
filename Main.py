@@ -9,7 +9,7 @@ import time
 # Local imports
 from Libraries.FileMethods import read_file
 from Libraries.FileMethods import load_module
-from Libraries.FileMethods import program_quit
+from Libraries.FileMethods import close_all_instances
 from Libraries.SSHMethods import ssh_get_modules_status
 from Clients.SSHClient import SSHClient
 from Clients.Modbus import Modbus
@@ -28,7 +28,7 @@ def main():
     opened_files = [file1, file2]
     ssh_connected = ssh_client.ssh_connect()
     if(ssh_connected == False):
-        program_quit(opened_files, ssh_client, modbus)
+        close_all_instances(opened_files, ssh_client, modbus)
     modules_enabled = ssh_get_modules_status(ssh_client, configuration['Settings'][0]['MODULES'])
     # ---- System Module ----
     module_system = ModuleSystem(modbus, data['System'], ssh_client)
@@ -51,7 +51,7 @@ def main():
     while True:
         modbus_connected = modbus.check_connection()
         if(modbus_connected == False):
-            program_quit(opened_files, ssh_client, modbus)
+            close_all_instances(opened_files, ssh_client, modbus)
         else:
             pass
             # ---- System Module ----
