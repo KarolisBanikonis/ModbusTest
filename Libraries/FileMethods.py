@@ -3,27 +3,34 @@ import json
 import os.path
 import importlib
 
-def file_exists(path_to_file, file_to_close=None):
+def file_exists(path_to_file):
     if(os.path.exists(path_to_file) == False):
         print(f"File at path: {path_to_file} does not exist.")
-        if(file_to_close != None):
-            file_to_close.close()
         terminate_program()
 
+def delete_file_content(path_to_file):
+    try:
+        open(path_to_file, 'w').close()
+        return True
+    except OSError:
+        print(f"Could not open the file at {path_to_file}")
+        return False
+
 # Able to close everything in one loop, but maybe then readability is worse?
-def close_all_instances(files, ssh, modbus):
-    for file in files:
-        file.close()
-    ssh.ssh.close()
-    modbus.client.close()
+def close_all_instances(instances):
+    for instance in instances:
+        instance.close()
+    # for file in files:
+    #     file.close()
+    # # ssh.ssh.close()
+    # # modbus.client.close()
     terminate_program()
 
 def terminate_program():
     print("Program is terminated!")
     quit()
 
-def read_file(file_name, file_to_close=None):
-    file_exists(file_name, file_to_close)
+def read_file(file_name):
     with open(file_name) as file:
         registers_data = json.load(file)
     return registers_data, file

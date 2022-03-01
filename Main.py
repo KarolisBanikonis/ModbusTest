@@ -7,9 +7,7 @@ import time
 
 
 # Local imports
-from Libraries.FileMethods import read_file
-from Libraries.FileMethods import load_module
-from Libraries.FileMethods import close_all_instances
+from Libraries.FileMethods import read_file, load_module, close_all_instances, delete_file_content
 from Libraries.SSHMethods import ssh_get_modules_status
 from Clients.SSHClient import SSHClient
 from Clients.Modbus import Modbus
@@ -18,6 +16,7 @@ from DataModules.ModuleNetwork import ModuleNetwork
 
 CONFIGURATION_FILE = "config.json"
 PARAMETERS_FILE = "registers.json"
+CSV_REPORT_FILE = "Reports/modbus_test_report.csv"
 MODULES_DIRECTORY = "DataModules."
 
 def main():
@@ -25,19 +24,19 @@ def main():
     data, file2 = read_file(PARAMETERS_FILE)
     ssh_client = SSHClient(configuration['Settings'][0])
     modbus = Modbus(configuration['Settings'][0])
-    opened_files = [file1, file2]
+    instances = [file1, file2, ssh_client.ssh, modbus.client]
     ssh_connected = ssh_client.ssh_connect()
     if(ssh_connected == False):
-        close_all_instances(opened_files, ssh_client, modbus)
+        close_all_instances(instances)
     modules_enabled = ssh_get_modules_status(ssh_client, configuration['Settings'][0]['MODULES'])
     # ---- System Module ----
-    module_system = ModuleSystem(modbus, data['System'], ssh_client)
+    module_system = ModuleSystem(CSV_REPORT_FILE, modbus, data['System'], ssh_client)
     # ---- Network Module ----
-    module_network = ModuleNetwork(modbus, data['Network'], ssh_client)
+    module_network = ModuleNetwork(CSV_REPORT_FILE, modbus, data['Network'], ssh_client)
     # ---- Mobile Module ----
     if(modules_enabled[0] == "1"):
         mobile = load_module(MODULES_DIRECTORY + 'ModuleMobile')
-        module_mobile = mobile.ModuleMobile(modbus, data['Mobile'], ssh_client, modules_enabled[1]) #pass if dual_sim is enabled
+        module_mobile = mobile.ModuleMobile(CSV_REPORT_FILE, modbus, data['Mobile'], ssh_client, modules_enabled[1]) #pass if dual_sim is enabled
     # ---- GPS Module ----
     if(modules_enabled[2] == "1"):
     # check if it is turned and accordingly turn it on
@@ -46,14 +45,17 @@ def main():
             ssh_client.ssh_issue_command("uci set gps.gpsd.enabled='1'")
             ssh_client.ssh_issue_command("uci commit gps.gpsd")
         gps = load_module(MODULES_DIRECTORY + 'ModuleGPS')
-        module_gps = gps.ModuleGPS(modbus, data['GPS'], ssh_client)
+        module_gps = gps.ModuleGPS(CSV_REPORT_FILE, modbus, data['GPS'], ssh_client)
 
     while True:
         modbus_connected = modbus.check_connection()
         if(modbus_connected == False):
-            close_all_instances(opened_files, ssh_client, modbus)
+            close_all_instances(instances)
         else:
-            pass
+            # Remove CSV report if it exists
+            can_open = delete_file_content(CSV_REPORT_FILE)
+            if(can_open == False):
+                close_all_instances(instances)
             # ---- System Module ----
             module_system.read_all_data()
             # ---- Network Module ----
@@ -63,8 +65,8 @@ def main():
             if(modules_enabled[0] == "1"):
                 module_mobile.read_all_data()
             # # ---- GPS Module ----
-            # if(modules_enabled[2] == "1"):
-            #     module_gps.read_all_data()
+            if(modules_enabled[2] == "1"):
+                module_gps.read_all_data()
         
         time.sleep(50)
 

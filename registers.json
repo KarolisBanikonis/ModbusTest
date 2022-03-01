@@ -91,37 +91,58 @@
 	   {
 		  "name":"GPS latitude coordinate",
 		  "address":143,
-		  "number":2
+		  "number":2,
+		  "service": "gpsd",
+		  "procedure": "position",
+		  "parse": "latitude"
 	   },
 	   {
 		  "name":"GPS longitude coordinate",
 		  "address":145,
-		  "number":2
+		  "number":2,
+		  "service": "gpsd",
+		  "procedure": "position",
+		  "parse": "longitude"
 	   },
 	   {
 		  "name":"GPS fix time",
 		  "address":147,
-		  "number":16
+		  "number":16,
+		  "service": "vuci.services.gps",
+		  "procedure": "get_coordinates",
+		  "parse": "fix_time"
 	   },
 	   {
 		  "name":"GPS date and time",
 		  "address":163,
-		  "number":16
+		  "number":16,
+		  "service": "gpsd",
+		  "procedure": "position",
+		  "parse": "timestamp"
 	   },
 	   {
 		  "name":"GPS speed",
 		  "address":179,
-		  "number":2
+		  "number":2,
+		  "service": "gpsd",
+		  "procedure": "position",
+		  "parse": "speed"
 	   },
 	   {
 		  "name":"GPS satellite count",
 		  "address":181,
-		  "number":2
+		  "number":2,
+		  "service": "gpsd",
+		  "procedure": "position",
+		  "parse": "satellites"
 	   },
 	   {
 		  "name":"GPS accuracy",
 		  "address":183,
-		  "number":2
+		  "number":2,
+		  "service": "gpsd",
+		  "procedure": "position",
+		  "parse": "accuracy"
 	   }
 	],
 	"Mobile":[
@@ -297,73 +318,109 @@
 				"name":"Mobile data received today (SIM2)",
 				"address":300,
 				"number":2,
-				"source":"ubus"
+				"source":"ubus",
+				"service": "mdcollect",
+				"procedure": "get '{\"period\":\"day\",\"sim\":2,\"modem\":\"3-1\",\"current\":true}'",
+				"parse": "rx"
 			},
 			{
 				"name":"Mobile data sent today (SIM2)",
 				"address":302,
 				"number":2,
-				"source":"ubus"
+				"source":"ubus",
+				"service": "mdcollect",
+				"procedure": "get '{\"period\":\"day\",\"sim\":2,\"modem\":\"3-1\",\"current\":true}'",
+				"parse": "tx"
 			},
 			{
 				"name":"Mobile data received this week (SIM2)",
 				"address":304,
 				"number":2,
-				"source":"ubus"
+				"source":"ubus",
+				"service": "mdcollect",
+				"procedure": "get '{\"period\":\"week\",\"sim\":2,\"modem\":\"3-1\",\"current\":true}'",
+				"parse": "rx"
 			},
 			{
 				"name":"Mobile data sent this week (SIM2)",
 				"address":306,
 				"number":2,
-				"source":"ubus"
+				"source":"ubus",
+				"service": "mdcollect",
+				"procedure": "get '{\"period\":\"week\",\"sim\":2,\"modem\":\"3-1\",\"current\":true}'",
+				"parse": "tx"
 			},
 			{
 				"name":"Mobile data received this month (SIM2)",
 				"address":308,
 				"number":2,
-				"source":"ubus"
+				"source":"ubus",
+				"service": "mdcollect",
+				"procedure": "get '{\"period\":\"month\",\"sim\":2,\"modem\":\"3-1\",\"current\":true}'",
+				"parse": "rx"
 			},
 			{
 				"name":"Mobile data sent this month (SIM2)",
 				"address":310,
 				"number":2,
-				"source":"ubus"
+				"source":"ubus",
+				"service": "mdcollect",
+				"procedure": "get '{\"period\":\"month\",\"sim\":2,\"modem\":\"3-1\",\"current\":true}'",
+				"parse": "tx"
 			},
 			{
 				"name":"Mobile data received last 24h (SIM2)",
 				"address":312,
 				"number":2,
-				"source":"ubus"
+				"source":"ubus",
+				"service": "mdcollect",
+				"procedure": "get '{\"period\":\"day\",\"sim\":2,\"modem\":\"3-1\",\"current\":false}'",
+				"parse": "rx"
 			},
 			{
 				"name":"Mobile data sent last 24h (SIM2)",
 				"address":314,
 				"number":2,
-				"source":"ubus"
+				"source":"ubus",
+				"service": "mdcollect",
+				"procedure": "get '{\"period\":\"day\",\"sim\":2,\"modem\":\"3-1\",\"current\":false}'",
+				"parse": "tx"
 			},
 			{
 				"name":"Mobile data received last week (SIM2)",
 				"address":316,
 				"number":2,
-				"source":"ubus"
+				"source":"ubus",
+				"service": "mdcollect",
+				"procedure": "get '{\"period\":\"week\",\"sim\":2,\"modem\":\"3-1\",\"current\":false}'",
+				"parse": "rx"
 			},
 			{
 				"name":"Mobile data sent last week (SIM2)",
 				"address":318,
 				"number":2,
-				"source":"ubus"
+				"source":"ubus",
+				"service": "mdcollect",
+				"procedure": "get '{\"period\":\"week\",\"sim\":2,\"modem\":\"3-1\",\"current\":false}'",
+				"parse": "tx"
 			},
 			{
 				"name":"Mobile data received last month(SIM2)",
 				"address":320,
 				"number":2,
-				"source":"ubus"
+				"source":"ubus",
+				"service": "mdcollect",
+				"procedure": "get '{\"period\":\"month\",\"sim\":2,\"modem\":\"3-1\",\"current\":false}'",
+				"parse": "rx"
 			},
 			{
 				"name":"Mobile data sent last month (SIM2)",
 				"address":322,
 				"number":2,
-				"source":"ubus"
+				"source":"ubus",
+				"service": "mdcollect",
+				"procedure": "get '{\"period\":\"month\",\"sim\":2,\"modem\":\"3-1\",\"current\":false}'",
+				"parse": "tx"
 			}
 		]
 	   }

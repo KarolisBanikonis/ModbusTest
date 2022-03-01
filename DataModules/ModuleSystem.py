@@ -4,8 +4,9 @@ from Libraries.SSHMethods import gsmctl_call
 
 class ModuleSystem(Module):
 
-    def __init__(self, modbus, data, ssh):
-        super().__init__(modbus, data, ssh)
+    def __init__(self, csv_file_name, modbus, data, ssh):
+        super().__init__(csv_file_name, modbus, data, ssh)
+        self.module_name = __class__.__name__
 
     def convert_ref_signal(self, read_data):
         # a = ~ read_data
@@ -14,8 +15,12 @@ class ModuleSystem(Module):
         return read_data - 65536
 
     def read_all_data(self):
+        self.csv_report.open_report()
+        self.csv_report.set_writer()
         print("---- System Module ----")
+        self.csv_report.write_header_1(self.module_name)
         for i in range(len(self.data)):
+            self.test_number = i + 1
             current = self.data[i]
             # result = self.modbus.read_registers(current)
             result = self.modbus.client.read_holding_registers(current['address'], current['number'])
@@ -47,7 +52,11 @@ class ModuleSystem(Module):
             elif(current['source'] == "gsmctl"): #only signal uses gsmctl
                 modbus_data = self.convert_reg_number(result)
                 final_data = gsmctl_call(self.ssh, current['flag'])
-                
-            self.check_if_results_match(modbus_data, final_data, i + 1)
+            results = self.check_if_results_match(modbus_data, final_data)
+            self.print_current_test_result(results)
+            results.insert(0, self.test_number)
+            results.insert(1, current['name'])
+            self.csv_report.write_data(results)
             print(self.format_data(current['name'], modbus_data))
-        self.print_module_test_results()
+        self.print_total_module_test_results()
+        self.write_csv_module_end_results()
