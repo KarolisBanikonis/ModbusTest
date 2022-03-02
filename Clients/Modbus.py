@@ -36,11 +36,3 @@ class Modbus:
                 return True
         else:
             return True
-
-    # def check_connection(self):
-    #     if not self.client.is_open():
-    #             if not self.client.open():
-    #                 print(f"Modbus not able to connect to {self.host}:{self.port}")
-    #                 return False
-    #             else:
-    #                 return True

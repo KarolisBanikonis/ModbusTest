@@ -15,7 +15,6 @@ from DataModules.ModuleLoader import ModuleLoader
 CONFIGURATION_FILE = "config.json"
 PARAMETERS_FILE = "registers.json"
 CSV_REPORT_FILE = "Reports/modbus_test_report.csv"
-MODULES_DIRECTORY = "DataModules."
 
 def main():
     configuration, file1 = read_file(CONFIGURATION_FILE)
