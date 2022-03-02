@@ -1,9 +1,9 @@
 # Standard library imports
-from datetime import datetime
 
 # Local imports
 from DataModules.Module import Module
 from Libraries.FileMethods import remove_char
+from Libraries.ConversionMethods import convert_timestamp_to_date, convert_string_to_date
 
 class ModuleGPS(Module):
 
@@ -29,15 +29,15 @@ class ModuleGPS(Module):
                 if(current['address'] == 147):
                     #modbus = timestamp x 1000
                     #ubus = datetime in string
-                    modbus_data = datetime.utcfromtimestamp(int(modbus_data))
+                    modbus_data = convert_timestamp_to_date(int(modbus_data)) # MIGHT NEED TO /= 1000?
                     # print(f"MODBUS = {modbus_data} typeof {type(modbus_data)}")
                     final_data_string = parsed_data['coordinates'][current['parse']]
-                    final_data = datetime.strptime(final_data_string, '%Y-%m-%d %H:%M:%S')
+                    final_data = convert_string_to_date(final_data_string)
                     # print(f"UBUS = {final_data} typeof {type(final_data)}")
                 elif(current['address'] == 163):
-                    modbus_data = datetime.strptime(modbus_data, '%Y-%m-%d %H:%M:%S')
+                    modbus_data = convert_string_to_date(modbus_data)
                     timestamp = [parsed_data[current['parse']]]
-                    final_data = datetime.utcfromtimestamp(timestamp[0])
+                    final_data = convert_timestamp_to_date(timestamp[0])
             elif(current['number'] == 2):
                 modbus_data = self.convert_reg_number(result)
                 parsed_data = self.get_parsed_ubus_data(current)
