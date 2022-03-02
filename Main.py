@@ -10,8 +10,6 @@ import time
 from Libraries.FileMethods import read_file, close_all_instances, delete_file_content
 from Clients.SSHClient import SSHClient
 from Clients.Modbus import Modbus
-from DataModules.ModuleSystem import ModuleSystem
-from DataModules.ModuleNetwork import ModuleNetwork
 from DataModules.ModuleLoader import ModuleLoader
 
 CONFIGURATION_FILE = "config.json"

@@ -20,10 +20,6 @@
                 {
                     "name": "ModuleGPS",
                     "parse": "gps"
-                },
-                {
-                    "name": "ModuleNone",
-                    "parse": "gps"
                 }
             ]
         }

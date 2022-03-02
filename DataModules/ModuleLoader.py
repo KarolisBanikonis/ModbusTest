@@ -2,7 +2,7 @@
 import importlib
  
 # Local imports
-from Libraries.SSHMethods import ssh_get_uci_hwinfo, try_enable_gps
+from Libraries.SSHMethods import ssh_get_uci_hwinfo
 from Clients.SSHClient import SSHClient
 
 class ModuleLoader:
@@ -34,7 +34,7 @@ class ModuleLoader:
                     instance = class_(csv_file_name, modbus, data[module_name], self.connection)
                     instantiated_modules.append(instance)
                 except AttributeError as err:
-                    print(f"Such module does not exist, check config file: {err}")
+                    print(f"Such attribute does not exist: {err}")
         return instantiated_modules
 
     def __load_module(self, module_name):

@@ -11,9 +11,9 @@ class ModuleGPS(Module):
     def __init__(self, csv_file_name, modbus, data, ssh):
         super().__init__(csv_file_name, modbus, data, ssh)
         self.module_name = __class__.__name__
-        try_enable_gps(self.ssh)
 
     def read_all_data(self):
+        try_enable_gps(self.ssh)
         self.reset_correct_number()
         self.csv_report.open_report()
         self.csv_report.set_writer()
