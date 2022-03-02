@@ -1,13 +1,10 @@
 # Local imports
+from Clients.SSHClient import SSHClient
 from Libraries.FileMethods import extract_status
 
-def ssh_get_modules_status(ssh, modules):
-    status_list = []
-    for i in range(len(modules)):
-        _stdin, _stdout,_stderr = ssh.ssh.exec_command(f"uci get hwinfo.hwinfo.{modules[i]['name']}")
-        output = _stdout.read().decode()
-        status_list.append(extract_status(output))
-    return status_list
+def ssh_get_uci_hwinfo(ssh, module):
+    output = ssh.ssh_issue_command(f"uci get hwinfo.hwinfo.{module}")
+    return extract_status(output)
 
 def ubus_call(ssh, service, procedure):
     output = ssh.ssh_issue_command(f"ubus -v call {service} {procedure}")
@@ -16,3 +13,10 @@ def ubus_call(ssh, service, procedure):
 def gsmctl_call(ssh, flag):
     output = ssh.ssh_issue_command(f"gsmctl -{flag}")
     return output
+
+def try_enable_gps(ssh):
+    gps_enabled = ssh.ssh_issue_command("uci get gps.gpsd.enabled")
+    if(extract_status(gps_enabled) == "0"):
+        ssh.ssh_issue_command("uci set gps.gpsd.enabled='1'")
+        ssh.ssh_issue_command("uci commit gps.gpsd")
+        ssh.ssh_issue_command("/etc/init.d/gpsd start")

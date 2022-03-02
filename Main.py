@@ -8,11 +8,12 @@ import time
 
 # Local imports
 from Libraries.FileMethods import read_file, load_module, close_all_instances, delete_file_content
-from Libraries.SSHMethods import ssh_get_modules_status
+from Libraries.SSHMethods import try_enable_gps, ssh_get_uci_hwinfo
 from Clients.SSHClient import SSHClient
 from Clients.Modbus import Modbus
 from DataModules.ModuleSystem import ModuleSystem
 from DataModules.ModuleNetwork import ModuleNetwork
+from DataModules.ModuleLoader import ModuleLoader
 
 CONFIGURATION_FILE = "config.json"
 PARAMETERS_FILE = "registers.json"
@@ -31,27 +32,12 @@ def main():
     ssh_connected = ssh_client.ssh_connect()
     if(ssh_connected == False):
         close_all_instances(instances)
-    modules_enabled = ssh_get_modules_status(ssh_client, configuration['Settings'][0]['MODULES'])
-    # ---- System Module ----
-    module_system = ModuleSystem(CSV_REPORT_FILE, modbus, data['System'], ssh_client)
-    # ---- Network Module ----
-    module_network = ModuleNetwork(CSV_REPORT_FILE, modbus, data['Network'], ssh_client)
-    # ---- Mobile Module ----
-    if(modules_enabled[0] == "1"):
-        mobile = load_module(MODULES_DIRECTORY + 'ModuleMobile')
-        module_mobile = mobile.ModuleMobile(CSV_REPORT_FILE, modbus, data['Mobile'], ssh_client, modules_enabled[1]) #pass if dual_sim is enabled
-    # ---- GPS Module ----
-    if(modules_enabled[2] == "1"):
-    # check if it is turned and accordingly turn it on
-        gps_enabled = ssh_client.ssh_issue_command("uci get gps.gpsd.enabled")
-        if(gps_enabled == "0"):
-            ssh_client.ssh_issue_command("uci set gps.gpsd.enabled='1'")
-            ssh_client.ssh_issue_command("uci commit gps.gpsd")
-        gps = load_module(MODULES_DIRECTORY + 'ModuleGPS')
-        module_gps = gps.ModuleGPS(CSV_REPORT_FILE, modbus, data['GPS'], ssh_client)
+    dual_sim_status = ssh_get_uci_hwinfo(ssh_client, "dual_sim")
+    module_loader = ModuleLoader(ssh_client, configuration['Settings'][0]['MODULES'], dual_sim_status)
+    module_instances = module_loader.init_modules(CSV_REPORT_FILE, modbus, data)
 
     while True:
-        modbus_connected = modbus.check_connection()
+        modbus_connected = modbus.try_connect()
         if(modbus_connected == False):
             close_all_instances(instances)
         else:
@@ -59,17 +45,9 @@ def main():
             can_open = delete_file_content(CSV_REPORT_FILE)
             if(can_open == False):
                 close_all_instances(instances)
-            # ---- System Module ----
-            module_system.read_all_data()
-            # ---- Network Module ----
-            module_network.read_all_data()
-            # ---- Mobile Module ----
-            # Reikia isbandyti su dviem sim!!!
-            if(modules_enabled[0] == "1"):
-                module_mobile.read_all_data()
-            # # ---- GPS Module ----
-            if(modules_enabled[2] == "1"):
-                module_gps.read_all_data()
+            # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS
+            for module in module_instances:
+                module.read_all_data()
         
         time.sleep(10)
 

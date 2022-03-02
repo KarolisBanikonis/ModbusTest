@@ -7,13 +7,19 @@
             "PASSWORD": "Admin123",
             "MODULES" : [
                 {
-                    "name": "mobile"
+                    "name": "ModuleSystem"
                 },
                 {
-                    "name": "dual_sim"
+                    "name": "ModuleNetwork",
+                    "parse": "ethernet"
                 },
                 {
-                    "name": "gps"
+                    "name": "ModuleMobile",
+                    "parse": "mobile"
+                },
+                {
+                    "name": "ModuleGPS",
+                    "parse": "gps"
                 }
             ]
         }

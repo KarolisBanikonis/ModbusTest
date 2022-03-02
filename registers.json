@@ -1,5 +1,5 @@
 {
-	"System":[
+	"ModuleSystem":[
 	   {
 		  "name":"System uptime",
 		  "address":1,
@@ -71,7 +71,7 @@
 		"parse": "value"
 		}
 	],
-	"Network":[
+	"ModuleNetwork":[
 	   {
 		  "name":"LAN MAC address",
 		  "address":55,
@@ -87,7 +87,7 @@
 		  "number":2
 	   }
 	],
-	"GPS":[
+	"ModuleGPS":[
 	   {
 		  "name":"GPS latitude coordinate",
 		  "address":143,
@@ -145,7 +145,7 @@
 		  "parse": "accuracy"
 	   }
 	],
-	"Mobile":[
+	"ModuleMobile":[
 	   {
 		  	"SIM1":[
 			{

@@ -27,8 +27,7 @@ class Modbus:
         registers_data = self.client.read_holding_registers(data['address'], data['number'])
         return registers_data
 
-    #sitas neveikia
-    def connect_to_server(self):
+    def try_connect(self):
         if self.client.is_open() == False:
             if self.client.open() == False:
                 print(f"Modbus not able to connect to {self.host}:{self.port}")
@@ -38,10 +37,10 @@ class Modbus:
         else:
             return True
 
-    def check_connection(self):
-        if not self.client.is_open():
-                if not self.client.open():
-                    print(f"Modbus not able to connect to {self.host}:{self.port}")
-                    return False
-                else:
-                    return True
+    # def check_connection(self):
+    #     if not self.client.is_open():
+    #             if not self.client.open():
+    #                 print(f"Modbus not able to connect to {self.host}:{self.port}")
+    #                 return False
+    #             else:
+    #                 return True
