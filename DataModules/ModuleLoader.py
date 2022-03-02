@@ -21,8 +21,6 @@ class ModuleLoader:
                 module_enabled = "1"
             else:
                 module_enabled = ssh_get_uci_hwinfo(self.connection, module_info['parse'])
-                if(module_info['name'] == "ModuleGPS" and module_enabled == "1"):
-                    try_enable_gps(self.connection)
             if(module_enabled == "1"):
                 self.modules_to_load.append(module_info['name'])
         
@@ -31,9 +29,12 @@ class ModuleLoader:
         for module_name in self.modules_to_load:
             module = self.__load_module(module_name)
             if(module != None):
-                class_ = getattr(module, module_name)
-                instance = class_(csv_file_name, modbus, data[module_name], self.connection)
-                instantiated_modules.append(instance)
+                try:
+                    class_ = getattr(module, module_name)
+                    instance = class_(csv_file_name, modbus, data[module_name], self.connection)
+                    instantiated_modules.append(instance)
+                except AttributeError as err:
+                    print(f"Such module does not exist, check config file: {err}")
         return instantiated_modules
 
     def __load_module(self, module_name):

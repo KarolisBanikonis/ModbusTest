@@ -40,9 +40,7 @@ def main():
             close_all_instances(instances)
         else:
             # Remove CSV report's contents if it exists, otherwise create it
-            can_open = delete_file_content(CSV_REPORT_FILE)
-            if(can_open == False):
-                close_all_instances(instances)
+            delete_file_content(CSV_REPORT_FILE)
             # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS
             for module in module_instances:
                 module.read_all_data()
