@@ -1,4 +1,5 @@
 # Standard library imports
+from datetime import datetime
 import math
 import string
 import re
@@ -12,6 +13,7 @@ class Module:
 
     MID_ERROR = 10      #might need to add more values
     MOBILE_ERROR = 10000
+    DATATIME_ERROR = 60
 
     def __init__(self, csv_file_name, modbus, data, ssh):
         self.modbus = modbus
@@ -21,6 +23,9 @@ class Module:
         self.correct_number = 0
         self.csv_report = ModuleCSV(csv_file_name, [modbus.client, ssh.ssh])
         self.module_name = ""
+        
+    def reset_correct_number(self):
+        self.correct_number = 0
 
     def convert_reg_number(self, read_data):
         bin_temp1 = format(read_data[0], '08b')
@@ -69,6 +74,14 @@ class Module:
         else:
             return True
 
+    def check_datetime_error_value(self, data1, data2):
+        difference = data1 - data2
+        # print(f"DIFFERENCE = {difference.seconds}")
+        if(math.fabs(difference.seconds) > self.DATATIME_ERROR):
+            return False
+        else:
+            return True
+
     #Parsed data from registers.json can have string and int values
     #Parsed data from ubus can have string and int as well
     def check_if_results_match(self, modbus_data, actual_data):
@@ -80,6 +93,8 @@ class Module:
             if(actual_data != int):
                 actual_data = int(actual_data)
             is_data_equal = self.check_error_value(modbus_data, actual_data)
+        elif(type(modbus_data) == datetime):
+            is_data_equal = self.check_datetime_error_value(modbus_data, actual_data)
         return [modbus_data, actual_data, is_data_equal] # I could create class with these
     
     #results: modbus_data, actual_data, is_data_equal

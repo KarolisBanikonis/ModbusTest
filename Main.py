@@ -52,23 +52,23 @@ def main():
         if(modbus_connected == False):
             close_all_instances(instances)
         else:
-            # Remove CSV report if it exists
+            # Remove CSV report's contents if it exists, otherwise create it
             can_open = delete_file_content(CSV_REPORT_FILE)
             if(can_open == False):
                 close_all_instances(instances)
             # ---- System Module ----
-            module_system.read_all_data()
+            # module_system.read_all_data()
             # ---- Network Module ----
-            module_network.read_all_data()
+            # module_network.read_all_data()
             # ---- Mobile Module ----
             # Reikia isbandyti su dviem sim!!!
-            if(modules_enabled[0] == "1"):
-                module_mobile.read_all_data()
+            # if(modules_enabled[0] == "1"):
+                # module_mobile.read_all_data()
             # # ---- GPS Module ----
             if(modules_enabled[2] == "1"):
                 module_gps.read_all_data()
         
-        time.sleep(50)
+        time.sleep(10)
 
 if __name__ == "__main__":
     main()

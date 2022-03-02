@@ -16,11 +16,11 @@ class ModuleMobile(Module):
         if(self.dual_sim == "1"):
             self.sim = 2
             self.total_number = len(self.data[1]['SIM2'])
-            self.correct_number = 0
-            self.total_number = len(self.data[1]['SIM2'])
+            # self.correct_number = 0
             self.read_data(self.data[1]['SIM2'])
 
     def read_data(self, data_area):
+        self.reset_correct_number()
         self.csv_report.open_report()
         self.csv_report.set_writer()
         print(f"---- Mobile Module SIM{self.sim}----")

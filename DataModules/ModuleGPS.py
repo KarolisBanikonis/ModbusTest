@@ -3,6 +3,7 @@ from datetime import datetime
 
 # Local imports
 from DataModules.Module import Module
+from Libraries.FileMethods import remove_char
 
 class ModuleGPS(Module):
 
@@ -11,6 +12,7 @@ class ModuleGPS(Module):
         self.module_name = __class__.__name__
 
     def read_all_data(self):
+        self.reset_correct_number()
         self.csv_report.open_report()
         self.csv_report.set_writer()
         print("---- GPS Module ----")
@@ -20,18 +22,22 @@ class ModuleGPS(Module):
             current = self.data[i]
             # result = self.modbus.read_registers(current)
             result = self.modbus.client.read_holding_registers(current['address'], current['number'])
-            # if(result == None):
-                # modbus_data = None
             if(current['number'] == 16):
-                # CONVERSIONS DO NOT WORK YET FOR 147, 163
                 modbus_data = self.convert_reg_text(result)
+                modbus_data = remove_char(modbus_data, "\x00")
                 parsed_data = self.get_parsed_ubus_data(current)
                 if(current['address'] == 147):
-                    final_data = parsed_data['coordinates'][current['parse']]
+                    #modbus = timestamp x 1000
+                    #ubus = datetime in string
+                    modbus_data = datetime.utcfromtimestamp(int(modbus_data))
+                    # print(f"MODBUS = {modbus_data} typeof {type(modbus_data)}")
+                    final_data_string = parsed_data['coordinates'][current['parse']]
+                    final_data = datetime.strptime(final_data_string, '%Y-%m-%d %H:%M:%S')
+                    # print(f"UBUS = {final_data} typeof {type(final_data)}")
                 elif(current['address'] == 163):
+                    modbus_data = datetime.strptime(modbus_data, '%Y-%m-%d %H:%M:%S')
                     timestamp = [parsed_data[current['parse']]]
-                    final_data = datetime.utcfromtimestamp(timestamp[0]).strftime('%Y-%m-%d %H:%M:%S')
-                    print(final_data)
+                    final_data = datetime.utcfromtimestamp(timestamp[0])
             elif(current['number'] == 2):
                 modbus_data = self.convert_reg_number(result)
                 parsed_data = self.get_parsed_ubus_data(current)

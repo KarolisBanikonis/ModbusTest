@@ -26,6 +26,7 @@ class ModuleNetwork(Module):
         return ip
 
     def read_all_data(self):
+        self.reset_correct_number()
         self.csv_report.open_report()
         self.csv_report.set_writer()
         print("---- Network Module ----")
