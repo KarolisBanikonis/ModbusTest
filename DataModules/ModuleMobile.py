@@ -28,7 +28,7 @@ class ModuleMobile(Module):
         for i in range(len(data_area)):
             self.test_number = i + 1
             current = data_area[i]
-            result = self.modbus.client.read_holding_registers(current['address'], current['number'])
+            result = self.modbus.read_registers(current)
             if(current['number'] == 16):
                 modbus_data = self.convert_reg_text(result)
                 if(current['address'] == 348 or current['address'] == 103 or current['address'] == 119): # maybe dont need if?

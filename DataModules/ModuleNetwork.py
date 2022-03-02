@@ -34,7 +34,7 @@ class ModuleNetwork(Module):
         for i in range(len(self.data)):
             self.test_number = i + 1
             current = self.data[i]
-            result = self.modbus.client.read_holding_registers(current['address'], current['number'])
+            result = self.modbus.read_registers(current)
             if(current['address'] == 55):
                 modbus_data = self.convert_reg_text(result)
                 parsed_data = self.get_parsed_ubus_data(current)

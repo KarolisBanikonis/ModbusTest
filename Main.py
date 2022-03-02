@@ -25,6 +25,9 @@ def main():
     ssh_client = SSHClient(configuration['Settings'][0])
     modbus = Modbus(configuration['Settings'][0])
     instances = [file1, file2, ssh_client.ssh, modbus.client]
+    modbus_is_setup_valid = modbus.setup_modbus()
+    if(modbus_is_setup_valid == False):
+        close_all_instances(instances)
     ssh_connected = ssh_client.ssh_connect()
     if(ssh_connected == False):
         close_all_instances(instances)
@@ -57,13 +60,13 @@ def main():
             if(can_open == False):
                 close_all_instances(instances)
             # ---- System Module ----
-            # module_system.read_all_data()
+            module_system.read_all_data()
             # ---- Network Module ----
-            # module_network.read_all_data()
+            module_network.read_all_data()
             # ---- Mobile Module ----
             # Reikia isbandyti su dviem sim!!!
-            # if(modules_enabled[0] == "1"):
-                # module_mobile.read_all_data()
+            if(modules_enabled[0] == "1"):
+                module_mobile.read_all_data()
             # # ---- GPS Module ----
             if(modules_enabled[2] == "1"):
                 module_gps.read_all_data()

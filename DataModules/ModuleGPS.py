@@ -20,8 +20,7 @@ class ModuleGPS(Module):
         for i in range(len(self.data)):
             self.test_number = i + 1
             current = self.data[i]
-            # result = self.modbus.read_registers(current)
-            result = self.modbus.client.read_holding_registers(current['address'], current['number'])
+            result = self.modbus.read_registers(current)
             if(current['number'] == 16):
                 modbus_data = self.convert_reg_text(result)
                 modbus_data = remove_char(modbus_data, "\x00")

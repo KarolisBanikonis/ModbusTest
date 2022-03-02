@@ -1,3 +1,67 @@
+ModuleSystem
+
+TEST NUMBER,NAME,MODBUS DATA,SYSTEM DATA,IS CORRECT
+1,System uptime,8767,8767,True
+2,Mobile signal strength (RSSI in dBm),-61,-61,True
+3,System temperature (in 0.1 °C),350,350,True
+4,System hostname,teltonika-rutx09.com,teltonika-rutx09.com,True
+5,Router serial number,1107883912,1107883912,True
+6,Router name,rutx09,rutx09,True
+7,Digital non-isolated input (4 PIN connector),0,0,True
+8,Digital open collector output (4 PIN connector),0,0,True
+Successful test count,Not successful test count,Total test count
+8,0,8
+
+ModuleNetwork
+
+TEST NUMBER,NAME,MODBUS DATA,SYSTEM DATA,IS CORRECT
+1,LAN MAC address,001e4232c81d,001e4232c81d,True
+2,Current WAN IP address,84.15.161.183,84.15.161.183,True
+Successful test count,Not successful test count,Total test count
+2,0,2
+
+ModuleMobile SIM1
+
+TEST NUMBER,NAME,MODBUS DATA,SYSTEM DATA,IS CORRECT
+1,IMSI,246020102861314,246020102861314,True
+2,GSM operator name,bite,bite,True
+3,Currently active SIM card slot,sim1,sim1,True
+4,Network registration info,registered(home),registered(home),True
+5,Network type,lte,lte-a,False
+6,Mobile data received today (SIM1),2489793,4947393,False
+7,Mobile data sent today (SIM1),703997,703997,True
+8,Mobile data received this week (SIM1),17507171,70001507,False
+9,Mobile data sent this week (SIM1),11439086,11439086,True
+10,Mobile data received this month (SIM1),39813146,39813146,True
+11,Mobile data sent this month (SIM1),2476947,4934547,False
+12,Mobile data received last 24h (SIM1),2489793,4947393,False
+13,Mobile data sent last 24h (SIM1),703997,703997,True
+14,Active SIM card,1,1,True
+15,Mobile data received last week (SIM1),41773904,83520336,False
+16,Mobile data sent last week (SIM1),20832630,20832630,True
+17,Mobile data received last month (SIM1),41773904,83520336,False
+18,Mobile data sent last month (SIM1),20832630,20832630,True
+Successful test count,Not successful test count,Total test count
+11,7,18
+
+ModuleMobile SIM2
+
+TEST NUMBER,NAME,MODBUS DATA,SYSTEM DATA,IS CORRECT
+1,Mobile data received today (SIM2),0,0,True
+2,Mobile data sent today (SIM2),0,0,True
+3,Mobile data received this week (SIM2),0,0,True
+4,Mobile data sent this week (SIM2),0,0,True
+5,Mobile data received this month (SIM2),0,0,True
+6,Mobile data sent this month (SIM2),0,0,True
+7,Mobile data received last 24h (SIM2),0,0,True
+8,Mobile data sent last 24h (SIM2),0,0,True
+9,Mobile data received last week (SIM2),0,0,True
+10,Mobile data sent last week (SIM2),0,0,True
+11,Mobile data received last month(SIM2),0,0,True
+12,Mobile data sent last month (SIM2),0,0,True
+Successful test count,Not successful test count,Total test count
+12,0,12
+
 ModuleGPS
 
 TEST NUMBER,NAME,MODBUS DATA,SYSTEM DATA,IS CORRECT

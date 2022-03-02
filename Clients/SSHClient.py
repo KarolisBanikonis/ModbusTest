@@ -1,4 +1,5 @@
 # Third party imports
+from socket import socket
 import paramiko
 
 # Local imports
@@ -19,10 +20,16 @@ class SSHClient:
             self.ssh.connect(self.host, username=self.username, password=self.password)
             return True
         except paramiko.AuthenticationException:
-            print("Authentication failed, check your credentials!")
+            print("SSH Authentication failed, check your credentials!")
             return False
-        except paramiko.SSHException as con:
-            print(f"Not able to make SSH connection: {con}")
+        # except paramiko.SSHException as con:
+        #     print(f"Not able to make SSH connection: {con}")
+        #     return False
+        except paramiko.ssh_exception.NoValidConnectionsError as err:
+            print(f"Not valid SSH connection: {err}")
+            return False
+        except OSError as err:
+            print(f"SSH connection failed, check host value: {err}")
             return False
 
     def ssh_issue_command(self, command):
