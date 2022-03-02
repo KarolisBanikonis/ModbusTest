@@ -7,8 +7,7 @@ import time
 
 
 # Local imports
-from Libraries.FileMethods import read_file, load_module, close_all_instances, delete_file_content
-from Libraries.SSHMethods import try_enable_gps, ssh_get_uci_hwinfo
+from Libraries.FileMethods import read_file, close_all_instances, delete_file_content
 from Clients.SSHClient import SSHClient
 from Clients.Modbus import Modbus
 from DataModules.ModuleSystem import ModuleSystem
@@ -32,8 +31,7 @@ def main():
     ssh_connected = ssh_client.ssh_connect()
     if(ssh_connected == False):
         close_all_instances(instances)
-    dual_sim_status = ssh_get_uci_hwinfo(ssh_client, "dual_sim")
-    module_loader = ModuleLoader(ssh_client, configuration['Settings'][0]['MODULES'], dual_sim_status)
+    module_loader = ModuleLoader(ssh_client, configuration['Settings'][0]['MODULES'])
     module_instances = module_loader.init_modules(CSV_REPORT_FILE, modbus, data)
 
     while True:

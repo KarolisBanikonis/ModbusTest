@@ -1,22 +1,22 @@
 # Local imports
 from DataModules.Module import Module
 from Libraries.FileMethods import remove_char, get_value_in_parenthesis
+from Libraries.SSHMethods import ssh_get_uci_hwinfo
 
 class ModuleMobile(Module):
 
-    def __init__(self, csv_file_name, modbus, data, ssh, dual_sim):
+    def __init__(self, csv_file_name, modbus, data, ssh):
         super().__init__(csv_file_name, modbus, data, ssh)
         self.module_name = __class__.__name__
         self.sim = 1
-        self.dual_sim = dual_sim
+        self.dual_sim_status = ssh_get_uci_hwinfo(self.ssh, "dual_sim")
 
     def read_all_data(self):
         self.total_number = len(self.data[0]['SIM1'])
         self.read_data(self.data[0]['SIM1'])
-        if(self.dual_sim == "1"):
+        if(self.dual_sim_status == "1"):
             self.sim = 2
             self.total_number = len(self.data[1]['SIM2'])
-            # self.correct_number = 0
             self.read_data(self.data[1]['SIM2'])
 
     def read_data(self, data_area):

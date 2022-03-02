@@ -9,10 +9,9 @@ class ModuleLoader:
 
     MODULES_DIRECTORY = "DataModules."
 
-    def __init__(self, connection: SSHClient, modules_info, dual_sim_status):
+    def __init__(self, connection: SSHClient, modules_info):
         self.connection = connection
         self.modules_info = modules_info
-        self.dual_sim_status = dual_sim_status
         self.modules_to_load = []
         self.check_hw_info()
         
@@ -31,12 +30,10 @@ class ModuleLoader:
         instantiated_modules = []
         for module_name in self.modules_to_load:
             module = self.__load_module(module_name)
-            class_ = getattr(module, module_name)
-            if(module_name == "ModuleMobile"):
-                instance = class_(csv_file_name, modbus, data[module_name], self.connection, self.dual_sim_status)
-            else:
+            if(module != None):
+                class_ = getattr(module, module_name)
                 instance = class_(csv_file_name, modbus, data[module_name], self.connection)
-            instantiated_modules.append(instance)
+                instantiated_modules.append(instance)
         return instantiated_modules
 
     def __load_module(self, module_name):
@@ -47,5 +44,4 @@ class ModuleLoader:
         except ModuleNotFoundError:
             print(f"Module {module_name} was not imported!")
             return None
-            quit()
             # close_all_instances() ssh, modbus
