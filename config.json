@@ -21,7 +21,14 @@
                     "name": "ModuleGPS",
                     "parse": "gps"
                 }
-            ]
+            ],
+            "MODEL":
+            {
+                "name":"Model",
+                "service":"mnfinfo",
+                "procedure":"get",
+                "parse":"name"
+            }
         }
     ]
 }

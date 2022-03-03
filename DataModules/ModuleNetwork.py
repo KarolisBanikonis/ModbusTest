@@ -1,9 +1,7 @@
-# Third party imports
-from colorama import Fore, Style
-
 # Local imports
 from DataModules.Module import Module
 from Libraries.FileMethods import remove_char
+from Libraries.SSHMethods import get_parsed_ubus_data
 
 class ModuleNetwork(Module):
 
@@ -31,17 +29,13 @@ class ModuleNetwork(Module):
     def read_all_data(self, output_list, test_count):
         self.total_number = test_count[0]
         self.correct_number = test_count[1]
-        # self.reset_correct_number()
         self.csv_report.open_report()
-        self.csv_report.set_writer()
-        self.csv_report.write_header_1(self.module_name)
         for i in range(len(self.data)):
-            self.test_number = i + 1
             current = self.data[i]
             result = self.modbus.read_registers(current)
             if(current['address'] == 55):
                 modbus_data = self.convert_reg_text(result)
-                parsed_data = self.get_parsed_ubus_data(current)
+                parsed_data = get_parsed_ubus_data(self.ssh, current)
                 final_data = remove_char(parsed_data['macaddr'], ':') # returns lower case
             #WAN IP       neeed to add check if it is Null
             if(current['address'] == 139):
@@ -49,17 +43,9 @@ class ModuleNetwork(Module):
                 final_data = self.ssh.ssh_issue_command("curl ifconfig.me") # !!! checking only public id
             results = self.check_if_results_match(modbus_data, final_data)
             self.change_test_count(results)
-            results.insert(0, self.test_number)
-            results.insert(1, current['name'])
-            self.csv_report.write_data(results)
-            output_list[0] = f"Tests were done - {self.total_number}."
-            output_list[1] = f"{Fore.GREEN}Tests passed - {self.correct_number}.{Style.RESET_ALL}{Fore.RED} Tests failed - {self.total_number - self.correct_number}.{Style.RESET_ALL}"
-            output_list[2] = f"Module being tested - {self.module_name}."
-            output_list[3] = f"Testing - {current['name']}. Address - {current['address']}."
-            output_list[4] = f"Value from Modbus - {modbus_data}. Value from router - {final_data}."
-            # print(self.format_data(current['name'], modbus_data))
-        # self.print_total_module_test_results()
-        self.write_csv_module_end_results()
+            self.csv_report.writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2]])
+            self.print_test_results(output_list, current, results[0], results[1])
+        self.csv_report.close_report()
         return [self.total_number, self.correct_number]
         
                 

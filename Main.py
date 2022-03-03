@@ -7,14 +7,16 @@ import time
 from reprint import output
 
 # Local imports
-from Libraries.FileMethods import read_file, close_all_instances, delete_file_content
+from Libraries.FileMethods import read_file, close_all_instances, generate_file_name
 from Clients.SSHClient import SSHClient
 from Clients.Modbus import Modbus
 from DataModules.ModuleLoader import ModuleLoader
+from Libraries.SSHMethods import get_router_model
 
 CONFIGURATION_FILE = "config.json"
 PARAMETERS_FILE = "registers.json"
-CSV_REPORT_FILE = "Reports/modbus_test_report.csv"
+name = "Report"
+CSV_REPORT_FILE = f"Reports/{generate_file_name(name)}.csv"
 
 def main():
     configuration, file1 = read_file(CONFIGURATION_FILE)
@@ -28,6 +30,8 @@ def main():
     ssh_connected = ssh_client.ssh_connect()
     if(ssh_connected == False):
         close_all_instances(instances)
+    model = get_router_model(ssh_client, configuration['Settings'][0]['MODEL'])
+    CSV_REPORT_FILE = f"Reports/{generate_file_name(model)}.csv"
     module_loader = ModuleLoader(ssh_client, configuration['Settings'][0]['MODULES'])
     module_instances = module_loader.init_modules(CSV_REPORT_FILE, modbus, data)
     test_count = [0, 0] # test_number, correct_number
@@ -39,12 +43,10 @@ def main():
                 close_all_instances(instances)
             else:
                 # Remove CSV report's contents if it exists, otherwise create it
-                delete_file_content(CSV_REPORT_FILE)
+                # delete_file_content(CSV_REPORT_FILE)
                 # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS
                 for module in module_instances:
                     test_count = module.read_all_data(output_list, test_count)
-                # test_count = module_instances[0].read_all_data(output_list, test_count)
-                # test_count = module_instances[1].read_all_data(output_list, test_count)
             
             time.sleep(10)
 

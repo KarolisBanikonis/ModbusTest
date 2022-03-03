@@ -2,9 +2,10 @@
 from datetime import datetime
 import math
 import re
-from asciimatics.screen import ManagedScreen
-from time import sleep
 import os
+
+# Third party imports
+from colorama import Fore, Style
 
 # Local imports
 from Libraries.SSHMethods import ubus_call
@@ -16,6 +17,8 @@ class Module:
     MID_ERROR = 10      #might need to add more values
     MOBILE_ERROR = 10000
     DATATIME_ERROR = 60
+    RESULT_PASSED = "Passed"
+    RESULT_FAILED = "Failed"
 
     def __init__(self, csv_file_name, modbus, data, ssh):
         self.modbus = modbus
@@ -26,8 +29,12 @@ class Module:
         self.csv_report = ModuleCSV(csv_file_name, [modbus.client, ssh.ssh])
         self.module_name = ""
         
-    def reset_correct_number(self):
-        self.correct_number = 0
+    def print_test_results(self, output_list, current_json, modbus_data, final_data):
+        output_list[0] = f"Tests were done - {self.total_number}."
+        output_list[1] = f"{Fore.GREEN}Tests passed - {self.correct_number}.{Style.RESET_ALL}{Fore.RED} Tests failed - {self.total_number - self.correct_number}.{Style.RESET_ALL}"
+        output_list[2] = f"Module being tested - {self.module_name}."
+        output_list[3] = f"Testing - {current_json['name']}. Address - {current_json['address']}."
+        output_list[4] = f"Value from Modbus - {modbus_data}. Value from router - {final_data}."
 
     def convert_reg_number(self, read_data):
         bin_temp1 = format(read_data[0], '08b')
@@ -46,11 +53,6 @@ class Module:
                 break
         return text
 
-    def get_parsed_ubus_data(self, current_data):
-        actual_data = ubus_call(self.ssh, current_data['service'], current_data['procedure'])
-        parsed_data = string_to_json(actual_data)
-        return parsed_data
-
     def binaryToDecimal(self, n):
         return int(n, 2)
 
@@ -66,23 +68,23 @@ class Module:
 
     def check_if_strings_equal(self, data1, data2):
         if(data1 == data2):
-            return True
+            return self.RESULT_PASSED
         else:
-            return False
+            return self.RESULT_FAILED
 
     def check_error_value(self, data1, data2):
         if(math.fabs(data1 - data2) > self.MID_ERROR):
-            return False
+            return self.RESULT_FAILED
         else:
-            return True
+            return self.RESULT_PASSED
 
     def check_datetime_error_value(self, data1, data2):
         difference = data1 - data2
         # print(f"DIFFERENCE = {difference.seconds}")
         if(math.fabs(difference.seconds) > self.DATATIME_ERROR):
-            return False
+            return self.RESULT_FAILED
         else:
-            return True
+            return self.RESULT_PASSED
 
     #Parsed data from registers.json can have string and int values
     #Parsed data from ubus can have string and int as well
@@ -122,9 +124,3 @@ class Module:
 
     def print_total_module_test_results(self):
         print(f"Successful: {self.correct_number}, Not successful: {self.total_number - self.correct_number}, Total: {self.total_number}.")
-
-    def write_csv_module_end_results(self):
-        self.csv_report.write_header_2()
-        self.csv_report.write_data([self.correct_number, self.total_number - self.correct_number, self.total_number])
-        self.csv_report.write_data("")
-        self.csv_report.close_report()
