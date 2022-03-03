@@ -1,7 +1,7 @@
 ModuleSystem
 
 TEST NUMBER,NAME,MODBUS DATA,SYSTEM DATA,IS CORRECT
-1,System uptime,18160,18160,True
+1,System uptime,19816,19816,True
 2,Mobile signal strength (RSSI in dBm),-61,-61,True
 3,System temperature (in 0.1 °C),410,410,True
 4,System hostname,teltonika-rutx09.com,teltonika-rutx09.com,True
@@ -10,7 +10,7 @@ TEST NUMBER,NAME,MODBUS DATA,SYSTEM DATA,IS CORRECT
 7,Digital non-isolated input (4 PIN connector),0,0,True
 8,Digital open collector output (4 PIN connector),0,0,True
 Successful test count,Not successful test count,Total test count
-18,0,18
+8,0,8
 
 ModuleNetwork
 
@@ -18,5 +18,5 @@ TEST NUMBER,NAME,MODBUS DATA,SYSTEM DATA,IS CORRECT
 1,LAN MAC address,001e4232c81d,001e4232c81d,True
 2,Current WAN IP address,84.15.161.183,84.15.161.183,True
 Successful test count,Not successful test count,Total test count
-20,0,20
+10,0,10
 
