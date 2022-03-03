@@ -1,7 +1,9 @@
+# Third party imports
+from colorama import Fore, Style
+
 # Local imports
 from DataModules.Module import Module
 from Libraries.SSHMethods import gsmctl_call
-from colorama import Fore, Style
 
 class ModuleSystem(Module):
 
@@ -13,7 +15,7 @@ class ModuleSystem(Module):
     def print_router_model(self):
         parsed_data = self.get_parsed_ubus_data(self.data[0])
         self.modem_model = parsed_data['mnfinfo'][self.data[0]['parse']]
-        print(self.modem_model)
+        print(f"Model - {self.modem_model}")
 
     def convert_ref_signal(self, read_data):
         # a = ~ read_data

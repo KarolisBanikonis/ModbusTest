@@ -41,10 +41,10 @@ def main():
                 # Remove CSV report's contents if it exists, otherwise create it
                 delete_file_content(CSV_REPORT_FILE)
                 # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS
-                # for module in module_instances:
-                    # module.read_all_data()
-                test_count = module_instances[0].read_all_data(output_list, test_count)
-                test_count = module_instances[1].read_all_data(output_list, test_count)
+                for module in module_instances:
+                    test_count = module.read_all_data(output_list, test_count)
+                # test_count = module_instances[0].read_all_data(output_list, test_count)
+                # test_count = module_instances[1].read_all_data(output_list, test_count)
             
             time.sleep(10)
 

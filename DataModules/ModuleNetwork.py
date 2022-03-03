@@ -1,7 +1,9 @@
+# Third party imports
+from colorama import Fore, Style
+
 # Local imports
 from DataModules.Module import Module
 from Libraries.FileMethods import remove_char
-from colorama import Fore, Style
 
 class ModuleNetwork(Module):
 
