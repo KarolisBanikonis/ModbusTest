@@ -44,7 +44,7 @@ class ModuleGPS(Module):
                 parsed_data = self.get_parsed_ubus_data(current)
                 final_data = parsed_data[current['parse']]
             results = self.check_if_results_match(modbus_data, final_data)
-            self.print_current_test_result(results)
+            self.change_test_count(results)
             results.insert(0, self.test_number)
             results.insert(1, current['name'])
             self.csv_report.write_data(results)

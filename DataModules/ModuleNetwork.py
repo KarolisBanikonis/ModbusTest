@@ -1,6 +1,7 @@
 # Local imports
 from DataModules.Module import Module
 from Libraries.FileMethods import remove_char
+from colorama import Fore, Style
 
 class ModuleNetwork(Module):
 
@@ -25,11 +26,12 @@ class ModuleNetwork(Module):
         ip = self.format_ip(numbers)
         return ip
 
-    def read_all_data(self):
-        self.reset_correct_number()
+    def read_all_data(self, output_list, test_count):
+        self.total_number = test_count[0]
+        self.correct_number = test_count[1]
+        # self.reset_correct_number()
         self.csv_report.open_report()
         self.csv_report.set_writer()
-        print("---- Network Module ----")
         self.csv_report.write_header_1(self.module_name)
         for i in range(len(self.data)):
             self.test_number = i + 1
@@ -44,12 +46,18 @@ class ModuleNetwork(Module):
                 modbus_data = self.convert_reg_ip(result)
                 final_data = self.ssh.ssh_issue_command("curl ifconfig.me") # !!! checking only public id
             results = self.check_if_results_match(modbus_data, final_data)
-            self.print_current_test_result(results)
+            self.change_test_count(results)
             results.insert(0, self.test_number)
             results.insert(1, current['name'])
             self.csv_report.write_data(results)
-            print(self.format_data(current['name'], modbus_data))
-        self.print_total_module_test_results()
+            output_list[0] = f"Tests were done - {self.total_number}."
+            output_list[1] = f"{Fore.GREEN}Tests passed - {self.correct_number}.{Style.RESET_ALL}{Fore.RED} Tests failed - {self.total_number - self.correct_number}.{Style.RESET_ALL}"
+            output_list[2] = f"Module being tested - {self.module_name}."
+            output_list[3] = f"Testing - {current['name']}. Address - {current['address']}."
+            output_list[4] = f"Value from Modbus - {modbus_data}. Value from router - {final_data}."
+            # print(self.format_data(current['name'], modbus_data))
+        # self.print_total_module_test_results()
         self.write_csv_module_end_results()
+        return [self.total_number, self.correct_number]
         
                 

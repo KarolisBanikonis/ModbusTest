@@ -1,6 +1,13 @@
 {
 	"ModuleSystem":[
 	   {
+		  "name":"Model",
+		  "source":"ubus",
+		  "service":"mnfinfo",
+		  "procedure":"get",
+		  "parse":"name"
+	   },
+	   {
 		  "name":"System uptime",
 		  "address":1,
 		  "number":2,
