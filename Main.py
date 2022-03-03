@@ -12,6 +12,7 @@ from Clients.SSHClient import SSHClient
 from Clients.Modbus import Modbus
 from DataModules.ModuleLoader import ModuleLoader
 from Libraries.SSHMethods import get_router_model
+from Libraries.CSVMethods import write_router_name_and_header
 
 CONFIGURATION_FILE = "config.json"
 PARAMETERS_FILE = "registers.json"
@@ -32,6 +33,7 @@ def main():
         close_all_instances(instances)
     model = get_router_model(ssh_client, configuration['Settings'][0]['MODEL'])
     CSV_REPORT_FILE = f"Reports/{generate_file_name(model)}.csv"
+    write_router_name_and_header(CSV_REPORT_FILE, model)
     module_loader = ModuleLoader(ssh_client, configuration['Settings'][0]['MODULES'])
     module_instances = module_loader.init_modules(CSV_REPORT_FILE, modbus, data)
     test_count = [0, 0] # test_number, correct_number

@@ -55,10 +55,6 @@ def load_module(module_name):
             print(f"Module {module_name} was not imported!")
             close_all_instances()
 
-def string_to_json(data):
-    json_data = json.loads(data)
-    return json_data
-
 def remove_char(data, characters):
     remove_table = dict.fromkeys(map(ord, characters), None)
     data = data.translate(remove_table)

@@ -2,6 +2,7 @@
 from DataModules.Module import Module
 from Libraries.FileMethods import remove_char
 from Libraries.SSHMethods import get_parsed_ubus_data
+from Libraries.CSVMethods import open_report
 
 class ModuleNetwork(Module):
 
@@ -29,7 +30,7 @@ class ModuleNetwork(Module):
     def read_all_data(self, output_list, test_count):
         self.total_number = test_count[0]
         self.correct_number = test_count[1]
-        self.csv_report.open_report()
+        report, writer = open_report(self.report_path)
         for i in range(len(self.data)):
             current = self.data[i]
             result = self.modbus.read_registers(current)
@@ -43,9 +44,9 @@ class ModuleNetwork(Module):
                 final_data = self.ssh.ssh_issue_command("curl ifconfig.me") # !!! checking only public id
             results = self.check_if_results_match(modbus_data, final_data)
             self.change_test_count(results)
-            self.csv_report.writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2]])
+            writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2]])
             self.print_test_results(output_list, current, results[0], results[1])
-        self.csv_report.close_report()
+        report.close()
         return [self.total_number, self.correct_number]
         
                 

@@ -3,7 +3,6 @@ import json
 
 # Local imports
 from Libraries.FileMethods import extract_status
-from DataModules import ModuleCSV
 
 def ssh_get_uci_hwinfo(ssh, module):
     output = ssh.ssh_issue_command(f"uci get hwinfo.hwinfo.{module}")

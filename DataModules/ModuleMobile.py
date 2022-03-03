@@ -2,6 +2,7 @@
 from DataModules.Module import Module
 from Libraries.FileMethods import remove_char, get_value_in_parenthesis
 from Libraries.SSHMethods import ssh_get_uci_hwinfo, get_parsed_ubus_data
+from Libraries.CSVMethods import open_report
 
 class ModuleMobile(Module):
 
@@ -12,17 +13,17 @@ class ModuleMobile(Module):
         self.dual_sim_status = ssh_get_uci_hwinfo(self.ssh, "dual_sim")
 
     def read_all_data(self, output_list, test_count):
+        report, writer = open_report(self.report_path)
         self.total_number = test_count[0]
         self.correct_number = test_count[1]
-        self.read_data(self.data[0]['SIM1'], output_list)
+        self.read_data(self.data[0]['SIM1'], output_list, writer)
         if(self.dual_sim_status == "1"):
             self.sim = 2
-            self.read_data(self.data[1]['SIM2'], output_list)
-        self.csv_report.close_report()
+            self.read_data(self.data[1]['SIM2'], output_list, writer)
+        report.close()
         return [self.total_number, self.correct_number]
 
-    def read_data(self, data_area, output_list):
-        self.csv_report.open_report()
+    def read_data(self, data_area, output_list, writer):
         for i in range(len(data_area)):
             current = data_area[i]
             result = self.modbus.read_registers(current)
@@ -45,5 +46,5 @@ class ModuleMobile(Module):
                 final_data = parsed_data[current['parse']]
             results = self.check_if_results_match(modbus_data, final_data)
             self.change_test_count(results)
-            self.csv_report.writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2]])
+            writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2]])
             self.print_test_results(output_list, current, results[0], results[1])

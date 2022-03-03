@@ -7,11 +7,6 @@ import os
 # Third party imports
 from colorama import Fore, Style
 
-# Local imports
-from Libraries.SSHMethods import ubus_call
-from Libraries.FileMethods import string_to_json
-from DataModules.ModuleCSV import ModuleCSV
-
 class Module:
 
     MID_ERROR = 10      #might need to add more values
@@ -20,13 +15,13 @@ class Module:
     RESULT_PASSED = "Passed"
     RESULT_FAILED = "Failed"
 
-    def __init__(self, csv_file_name, modbus, data, ssh):
+    def __init__(self, report_path, modbus, data, ssh):
         self.modbus = modbus
         self.data = data
         self.ssh = ssh
         self.total_number = 0
         self.correct_number = 0
-        self.csv_report = ModuleCSV(csv_file_name, [modbus.client, ssh.ssh])
+        self.report_path = report_path
         self.module_name = ""
         
     def print_test_results(self, output_list, current_json, modbus_data, final_data):
@@ -109,18 +104,6 @@ class Module:
         self.total_number += 1
         if(results[2] == True):
             self.correct_number += 1
-        # print(f"Tests were done - {self.total_number}", end='\r', flush=True)
-        # print(f"Tests passed - {self.correct_number}", end='\r', flush=True)
-        # with ManagedScreen() as screen:
-        #     screen._print_at(f"Tests were done - {self.total_number}\n", 0, 0, 0)
-        #     screen._print_at(f"Tests passed - {self.correct_number}", 0, 0, 0)
-        #     screen.refresh()
-        #     sleep(0.05)
-            # print(f"Test Nr. {self.test_number} out of {self.total_number} is successful!", end='\r', flush=True)
-        # self.stdscr.addstr(0, 0, f"Tests were done - {self.total_number}")
-        # self.stdscr.addstr(1, 0, f"Tests passed - {self.correct_number}")
-            # print(f"Test Nr. {self.test_number} out of {self.total_number} is not successful!", end='\r', flush=True)
-            # print(f"{results[0]} not equals {results[1]}")
 
     def print_total_module_test_results(self):
         print(f"Successful: {self.correct_number}, Not successful: {self.total_number - self.correct_number}, Total: {self.total_number}.")
