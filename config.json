@@ -28,6 +28,20 @@
                 "service":"mnfinfo",
                 "procedure":"get",
                 "parse":"name"
+            },
+            "LOAD":
+            {
+                "name":"Model",
+                "service":"system",
+                "procedure":"info",
+                "parse":"load"
+            },
+            "MEMORY":
+            {
+                "name":"Model",
+                "service":"system",
+                "procedure":"info",
+                "parse":"memory"
             }
         }
     ]

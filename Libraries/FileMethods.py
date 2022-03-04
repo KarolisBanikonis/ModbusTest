@@ -37,8 +37,8 @@ def terminate_program():
 
 def read_file(file_name):
     with open(file_name) as file:
-        registers_data = json.load(file)
-    return registers_data, file
+        data = json.load(file)
+    return data
 
 def extract_status(input):
     for symbol in input:
@@ -62,3 +62,17 @@ def remove_char(data, characters):
 
 def get_value_in_parenthesis(data):
     return data[data.find("(")+1:data.find(")")]
+
+def get_used_memory_from_string(string_value):
+    count_first_spaces = 0
+    first_space = True
+    used_memory = ""
+    for symbol in string_value:
+        if(count_first_spaces == 2 and symbol != ' '):
+            used_memory += symbol
+        if(symbol == ' ' and first_space):
+            count_first_spaces += 1
+            first_space = False
+        elif(symbol.isdigit()):
+            first_space = True
+    return used_memory

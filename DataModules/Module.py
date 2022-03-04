@@ -2,7 +2,6 @@
 from datetime import datetime
 import math
 import re
-import os
 
 # Third party imports
 from colorama import Fore, Style
@@ -95,14 +94,11 @@ class Module:
         elif(type(modbus_data) == datetime):
             is_data_equal = self.check_datetime_error_value(modbus_data, actual_data)
         return [modbus_data, actual_data, is_data_equal] # I could create class with these
-    
-    def clear_screen(self):
-        os.system('cls' if os.name == 'nt' else 'clear')
 
     #results: modbus_data, actual_data, is_data_equal
     def change_test_count(self, results):
         self.total_number += 1
-        if(results[2] == True):
+        if(results[2] == self.RESULT_PASSED):
             self.correct_number += 1
 
     def print_total_module_test_results(self):

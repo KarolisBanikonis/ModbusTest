@@ -8,34 +8,35 @@ from reprint import output
 
 # Local imports
 from Libraries.FileMethods import read_file, close_all_instances, generate_file_name
-from Clients.SSHClient import SSHClient
 from Clients.Modbus import Modbus
 from DataModules.ModuleLoader import ModuleLoader
-from Libraries.SSHMethods import get_router_model
 from Libraries.CSVMethods import write_router_name_and_header
+from DataModules.ConfigurationModule import ConfigurationModule
 
 CONFIGURATION_FILE = "config.json"
 PARAMETERS_FILE = "registers.json"
-name = "Report"
-CSV_REPORT_FILE = f"Reports/{generate_file_name(name)}.csv"
 
 def main():
-    configuration, file1 = read_file(CONFIGURATION_FILE)
-    data, file2 = read_file(PARAMETERS_FILE)
-    ssh_client = SSHClient(configuration['Settings'][0])
-    modbus = Modbus(configuration['Settings'][0])
-    instances = [file1, file2, ssh_client.ssh, modbus.client]
+    conf = ConfigurationModule(CONFIGURATION_FILE)
+    # configuration = read_file(CONFIGURATION_FILE)
+    data = read_file(PARAMETERS_FILE)
+    # ssh_client = SSHClient(configuration_module.get_all_data())
+    modbus = Modbus(conf.get_all_data())
+    instances = [conf.ssh_client.ssh, modbus.client]
     modbus_is_setup_valid = modbus.setup_modbus()
     if(modbus_is_setup_valid == False):
         close_all_instances(instances)
-    ssh_connected = ssh_client.ssh_connect()
-    if(ssh_connected == False):
-        close_all_instances(instances)
-    model = get_router_model(ssh_client, configuration['Settings'][0]['MODEL'])
-    CSV_REPORT_FILE = f"Reports/{generate_file_name(model)}.csv"
-    write_router_name_and_header(CSV_REPORT_FILE, model)
-    module_loader = ModuleLoader(ssh_client, configuration['Settings'][0]['MODULES'])
-    module_instances = module_loader.init_modules(CSV_REPORT_FILE, modbus, data)
+    # ssh_connected = ssh_client.ssh_connect()
+    # if(ssh_connected == False):
+    #     close_all_instances(instances)
+    # configuration_module.get_tmp_used_memory(ssh_client)
+    # model = configuration_module.conf_get_router_model(ssh_client)
+    # configuration_module.conf_get_cpu_count(ssh_client)
+    # model = get_router_model(ssh_client, configuration_module.get_data('MODEL'))
+    # CSV_REPORT_FILE = f"Reports/{generate_file_name(conf.router_model)}.csv"
+    # write_router_name_and_header(CSV_REPORT_FILE, conf.router_model)
+    module_loader = ModuleLoader(conf.ssh_client, conf.get_data('MODULES'))
+    module_instances = module_loader.init_modules(conf.report_file, modbus, data) # gal paduot cia config moduli?
     test_count = [0, 0] # test_number, correct_number
 
     with output(output_type="list", initial_len=5, interval=0) as output_list:

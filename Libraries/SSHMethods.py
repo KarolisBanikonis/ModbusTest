@@ -2,7 +2,8 @@
 import json
 
 # Local imports
-from Libraries.FileMethods import extract_status
+from Libraries.FileMethods import extract_status, get_used_memory_from_string
+from Libraries.ConversionMethods import convert_string_to_bytes
 
 def ssh_get_uci_hwinfo(ssh, module):
     output = ssh.ssh_issue_command(f"uci get hwinfo.hwinfo.{module}")
@@ -32,3 +33,13 @@ def get_router_model(ssh, data):
     parsed_data = get_parsed_ubus_data(ssh, data)
     modem_model = parsed_data['mnfinfo'][data['parse']]
     return modem_model
+
+def get_df_used_memory(ssh, mounted_on):
+    data = ssh.ssh_issue_command(f"df -h | grep {mounted_on}")
+    string_data = get_used_memory_from_string(data)
+    bytes = convert_string_to_bytes(string_data)
+    return bytes
+
+def get_cpu_count(ssh):
+    output = ssh.ssh_issue_command("grep 'model name' /proc/cpuinfo | wc -l")
+    return output
