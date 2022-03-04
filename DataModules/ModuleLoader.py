@@ -9,11 +9,9 @@ class ModuleLoader:
 
     MODULES_DIRECTORY = "DataModules."
 
-    def __init__(self, conf_module): #neliko required : SSHClient
-        self.connection = conf_module.ssh_client
+    def __init__(self, conf_module, conn : SSHClient):
+        self.conn = conn
         self.modules_info = conf_module.get_data('MODULES')
-        # self.report_file = conf_module.report_file
-        # self.modbus = conf_module.modbus
         self.modules_to_load = []
         self.check_hw_info()
         
@@ -22,18 +20,18 @@ class ModuleLoader:
             if(module_info['name'] == "ModuleSystem"):
                 module_enabled = "1"
             else:
-                module_enabled = ssh_get_uci_hwinfo(self.connection, module_info['parse'])
+                module_enabled = ssh_get_uci_hwinfo(self.conn, module_info['parse'])
             if(module_enabled == "1"):
                 self.modules_to_load.append(module_info['name'])
         
-    def init_modules(self, conf_module, data):
+    def init_modules(self, data, modbus, info):
         instantiated_modules = []
         for module_name in self.modules_to_load:
             module = self.__load_module(module_name)
             if(module != None):
                 try:
                     class_ = getattr(module, module_name)
-                    instance = class_(conf_module, data[module_name])
+                    instance = class_(data[module_name], self.conn, modbus, info)
                     instantiated_modules.append(instance)
                 except AttributeError as err:
                     print(f"Such attribute does not exist: {err}")

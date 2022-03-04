@@ -18,4 +18,4 @@ def write_router_name_and_header(file_path, name):
     report.close()
 
 def write_header(writer):
-    writer.writerow(['Iteration nr.', 'Module name','Register name', 'Register number', 'Modbus value', 'Router value', 'Result'])
+    writer.writerow(['Iteration nr.', 'Module name','Register name', 'Register number', 'Modbus value', 'Router value', 'Result','','CPU usage','Used RAM','Used RAM difference'])

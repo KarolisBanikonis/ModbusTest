@@ -18,6 +18,11 @@ def get_parsed_ubus_data(ssh, current_data):
         parsed_data = json.loads(actual_data)
         return parsed_data
 
+def get_concrete_ubus_data(ssh, current_data):
+    parsed_data = get_parsed_ubus_data(ssh, current_data)
+    concrete_data = parsed_data[current_data['parse']]
+    return concrete_data
+
 def gsmctl_call(ssh, flag):
     output = ssh.ssh_issue_command(f"gsmctl -{flag}")
     return output
@@ -32,7 +37,7 @@ def try_enable_gps(ssh):
 def get_router_model(ssh, data):
     parsed_data = get_parsed_ubus_data(ssh, data)
     modem_model = parsed_data['mnfinfo'][data['parse']]
-    return modem_model
+    return modem_model[0:6]
 
 def get_df_used_memory(ssh, mounted_on):
     data = ssh.ssh_issue_command(f"df -h | grep {mounted_on}")
@@ -42,4 +47,4 @@ def get_df_used_memory(ssh, mounted_on):
 
 def get_cpu_count(ssh):
     output = ssh.ssh_issue_command("grep 'model name' /proc/cpuinfo | wc -l")
-    return output
+    return int(extract_status(output))
