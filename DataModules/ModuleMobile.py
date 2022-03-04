@@ -6,8 +6,8 @@ from Libraries.CSVMethods import open_report
 
 class ModuleMobile(Module):
 
-    def __init__(self, csv_file_name, modbus, data, ssh):
-        super().__init__(csv_file_name, modbus, data, ssh)
+    def __init__(self, conf_module, data):
+        super().__init__(conf_module, data)
         self.module_name = __class__.__name__
         self.sim = 1
         self.dual_sim_status = ssh_get_uci_hwinfo(self.ssh, "dual_sim")

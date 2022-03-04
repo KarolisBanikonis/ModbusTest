@@ -9,9 +9,11 @@ class ModuleLoader:
 
     MODULES_DIRECTORY = "DataModules."
 
-    def __init__(self, connection: SSHClient, modules_info):
-        self.connection = connection
-        self.modules_info = modules_info
+    def __init__(self, conf_module): #neliko required : SSHClient
+        self.connection = conf_module.ssh_client
+        self.modules_info = conf_module.get_data('MODULES')
+        # self.report_file = conf_module.report_file
+        # self.modbus = conf_module.modbus
         self.modules_to_load = []
         self.check_hw_info()
         
@@ -24,14 +26,14 @@ class ModuleLoader:
             if(module_enabled == "1"):
                 self.modules_to_load.append(module_info['name'])
         
-    def init_modules(self, csv_file_name, modbus, data):
+    def init_modules(self, conf_module, data):
         instantiated_modules = []
         for module_name in self.modules_to_load:
             module = self.__load_module(module_name)
             if(module != None):
                 try:
                     class_ = getattr(module, module_name)
-                    instance = class_(csv_file_name, modbus, data[module_name], self.connection)
+                    instance = class_(conf_module, data[module_name])
                     instantiated_modules.append(instance)
                 except AttributeError as err:
                     print(f"Such attribute does not exist: {err}")

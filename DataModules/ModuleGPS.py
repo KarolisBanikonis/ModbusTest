@@ -7,8 +7,8 @@ from Libraries.CSVMethods import open_report
 
 class ModuleGPS(Module):
 
-    def __init__(self, csv_file_name, modbus, data, ssh):
-        super().__init__(csv_file_name, modbus, data, ssh)
+    def __init__(self, conf_module, data):
+        super().__init__(conf_module, data)
         self.module_name = __class__.__name__
 
     def read_all_data(self, output_list, test_count):

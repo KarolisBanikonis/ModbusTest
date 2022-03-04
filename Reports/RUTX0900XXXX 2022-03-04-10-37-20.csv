@@ -1,9 +1,9 @@
 Model,RUTX0900XXXX
 
 Iteration nr.,Module name,Register name,Register number,Modbus value,Router value,Result
-1,ModuleSystem,System uptime,1,1950,1950,Passed
-2,ModuleSystem,Mobile signal strength (RSSI in dBm),3,-73,-73,Passed
-3,ModuleSystem,System temperature (in 0.1 °C),5,370,370,Passed
+1,ModuleSystem,System uptime,1,9541,9541,Passed
+2,ModuleSystem,Mobile signal strength (RSSI in dBm),3,-81,-81,Passed
+3,ModuleSystem,System temperature (in 0.1 °C),5,420,420,Passed
 4,ModuleSystem,System hostname,7,teltonika-rutx09.com,teltonika-rutx09.com,Passed
 5,ModuleSystem,Router serial number,39,1107883912,1107883912,Passed
 6,ModuleSystem,Router name,71,rutx09,rutx09,Passed
@@ -16,19 +16,19 @@ Iteration nr.,Module name,Register name,Register number,Modbus value,Router valu
 13,ModuleMobile,Currently active SIM card slot,87,sim1,sim1,Passed
 14,ModuleMobile,Network registration info,103,registered(home),registered(home),Passed
 15,ModuleMobile,Network type,119,lte,lte-a,Failed
-16,ModuleMobile,Mobile data received today (SIM1),185,124489593,124489593,Passed
-17,ModuleMobile,Mobile data sent today (SIM1),187,4703234,4703234,Passed
-18,ModuleMobile,Mobile data received this week (SIM1),189,271985371,1087908571,Failed
-19,ModuleMobile,Mobile data sent this week (SIM1),191,35635409,71254225,Failed
-20,ModuleMobile,Mobile data received this month (SIM1),193,1057720210,1057720210,Passed
-21,ModuleMobile,Mobile data sent this month (SIM1),195,253046,64749686,Failed
-22,ModuleMobile,Mobile data received last 24h (SIM1),197,23432836,749799044,Failed
-23,ModuleMobile,Mobile data sent last 24h (SIM1),199,44625266,44625266,Passed
+16,ModuleMobile,Mobile data received today (SIM1),185,42723168,170862432,Failed
+17,ModuleMobile,Mobile data sent today (SIM1),187,6021030,12017574,Failed
+18,ModuleMobile,Mobile data received this week (SIM1),189,1134281410,1134281410,Passed
+19,ModuleMobile,Mobile data sent this week (SIM1),191,78568565,78568565,Passed
+20,ModuleMobile,Mobile data received this month (SIM1),193,138018681,1104093049,Failed
+21,ModuleMobile,Mobile data sent this month (SIM1),195,72064026,72064026,Passed
+22,ModuleMobile,Mobile data received last 24h (SIM1),197,759216578,759216578,Passed
+23,ModuleMobile,Mobile data sent last 24h (SIM1),199,11496818,45952370,Failed
 24,ModuleMobile,Active SIM card,205,1,1,Passed
-25,ModuleMobile,Mobile data received last week (SIM1),292,549307434,1098597418,Failed
-26,ModuleMobile,Mobile data sent last week (SIM1),294,39251697,78474993,Failed
-27,ModuleMobile,Mobile data received last month (SIM1),296,550728392,1101427400,Failed
-28,ModuleMobile,Mobile data sent last month (SIM1),298,80647769,80647769,Passed
+25,ModuleMobile,Mobile data received last week (SIM1),292,1144970257,1144970257,Passed
+26,ModuleMobile,Mobile data sent last week (SIM1),294,5364373,85789333,Failed
+27,ModuleMobile,Mobile data received last month (SIM1),296,71740079,1147800239,Failed
+28,ModuleMobile,Mobile data sent last month (SIM1),298,22000125,87962109,Failed
 29,ModuleMobile,Mobile data received today (SIM2),300,0,0,Passed
 30,ModuleMobile,Mobile data sent today (SIM2),302,0,0,Passed
 31,ModuleMobile,Mobile data received this week (SIM2),304,0,0,Passed

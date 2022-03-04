@@ -1,7 +1,8 @@
 # Local imports
-from Libraries.FileMethods import read_file, generate_file_name
+from Libraries.FileMethods import read_file, generate_file_name, close_all_instances
 from Libraries.SSHMethods import get_df_used_memory, get_router_model, get_cpu_count, get_parsed_ubus_data
 from Clients.SSHClient import SSHClient
+from Clients.Modbus import Modbus
 from Libraries.CSVMethods import write_router_name_and_header
 
 class ConfigurationModule:
@@ -12,6 +13,8 @@ class ConfigurationModule:
         self.data = read_file(file_path)
         self.ssh_client = SSHClient(self.get_all_data())
         self.connect_ssh()
+        self.modbus = Modbus(self.get_all_data())
+        self.connect_modbus()
         self.tmp_used_memory = get_df_used_memory(self.ssh_client, "/tmp")
         print(f"{self.tmp_used_memory}")
         self.router_model = get_router_model(self.ssh_client, self.get_data('MODEL'))
@@ -28,7 +31,12 @@ class ConfigurationModule:
     def connect_ssh(self):
         ssh_connected = self.ssh_client.ssh_connect()
         if(ssh_connected == False):
-            print("SSH FAILED!") # Exception
+            close_all_instances([self.ssh_client])
+
+    def connect_modbus(self):
+        modbus_is_setup_valid = self.modbus.setup_modbus()
+        if(modbus_is_setup_valid == False):
+            close_all_instances([self.ssh_client.ssh, self.modbus.client])
 
     # def get_all_info(self, data):
     #     parsed_data = get_parsed_ubus_data(self.ssh_client, data)
