@@ -4,8 +4,8 @@ import os.path
 import importlib
 from datetime import datetime
 
-def file_exists(path_to_file):
-    if(os.path.exists(path_to_file) == False):
+def check_file_exists(path_to_file):
+    if(os.path.exists(path_to_file) == False or os.path.isfile(path_to_file) == False):
         print(f"File at path: {path_to_file} does not exist.")
         terminate_program()
 
@@ -36,6 +36,7 @@ def terminate_program():
     quit()
 
 def read_file(file_name):
+    check_file_exists(file_name)
     with open(file_name) as file:
         data = json.load(file)
     return data

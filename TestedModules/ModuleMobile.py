@@ -1,5 +1,5 @@
 # Local imports
-from DataModules.Module import Module
+from MainModules.Module import Module
 from Libraries.FileMethods import remove_char, get_value_in_parenthesis
 from Libraries.SSHMethods import ssh_get_uci_hwinfo, get_parsed_ubus_data
 from Libraries.CSVMethods import open_report
@@ -48,7 +48,7 @@ class ModuleMobile(Module):
             results = self.check_if_results_match(modbus_data, final_data)
             self.change_test_count(results)
             past_memory = self.memory
-            self.memory = self.info.get_memory()
+            self.memory = self.info.get_used_memory()
             cpu_usage = self.info.get_cpu_usage()
             memory_difference = self.memory - past_memory
             writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2], '', cpu_usage, self.memory, memory_difference])

@@ -7,7 +7,7 @@ from Clients.SSHClient import SSHClient
 
 class ModuleLoader:
 
-    MODULES_DIRECTORY = "DataModules."
+    MODULES_DIRECTORY = "TestedModules."
 
     def __init__(self, conf_module, conn : SSHClient):
         self.conn = conn

@@ -16,7 +16,7 @@ class InformationModule:
         self.report_file = f"{self.REPORTS_DIRECTORY}{generate_file_name(self.router_model)}.csv"
         write_router_name_and_header(self.report_file, self.router_model)
 
-    def get_memory(self):
+    def get_used_memory(self):
         all_memories = get_concrete_ubus_data(self.conn ,self.conf.get_data('MEMORY'))
         total = all_memories['total'] - self.tmp_used_memory
         free = all_memories['free']
@@ -29,13 +29,11 @@ class InformationModule:
     #     return f"{cpu_usage}%"
 
     def get_cpu_usage(self):
-        last_idle = last_total = 0
-        string_times = self.conn.ssh_issue_command("cat /proc/stat | grep 'cpu '")
-        int_times = [int(s) for s in string_times.split() if s.isdigit()]
-        idle, total = int_times[3], sum(int_times)
-        idle_delta, total_delta = idle - last_idle, total - last_total
-        last_idle, last_total = idle, total
-        cpu_usage = 100.0 * (1.0 - idle_delta / total_delta)
+        output = self.conn.ssh_issue_command("cat /proc/stat | grep 'cpu '")
+        all_state_times = [int(s) for s in output.split() if s.isdigit()]
+        idle_time = all_state_times[3]
+        total_time = sum(all_state_times)
+        cpu_usage = 100.0 * (1.0 - idle_time / total_time)
         return f"{cpu_usage}%"
 
     # def get_cpu_usage(self):

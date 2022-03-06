@@ -5,13 +5,12 @@ import time
 
 # Third party imports
 from reprint import output
-from colorama import Fore, Style
 
 # Local imports
 from Libraries.FileMethods import read_file, close_all_instances
-from DataModules.ModuleLoader import ModuleLoader
-from DataModules.ConfigurationModule import ConfigurationModule
-from DataModules.InformationModule import InformationModule
+from MainModules.ModuleLoader import ModuleLoader
+from MainModules.ConfigurationModule import ConfigurationModule
+from MainModules.InformationModule import InformationModule
 from Clients.SSHClient import SSHClient
 from Clients.Modbus import Modbus
 
@@ -32,7 +31,7 @@ def main():
         close_all_instances([ssh_client.ssh, modbus.client])
     module_loader = ModuleLoader(conf, ssh_client)
     module_instances = module_loader.init_modules(data, modbus, info)
-    test_count = [0, 0, info.get_memory()] # test_number, correct_number, used_ram
+    test_count = [0, 0, info.get_used_memory()] # test_number, correct_number, used_ram
 
     with output(output_type="list", initial_len=6, interval=0) as output_list:
         while True:
