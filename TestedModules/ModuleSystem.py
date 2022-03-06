@@ -1,12 +1,11 @@
 # Local imports
 from MainModules.Module import Module
 from Libraries.SSHMethods import gsmctl_call, get_parsed_ubus_data
-from Libraries.CSVMethods import open_report
 
 class ModuleSystem(Module):
 
-    def __init__(self, data, ssh, modbus, info):
-        super().__init__(data, ssh, modbus, info)
+    def __init__(self, data, ssh, modbus, info, report):
+        super().__init__(data, ssh, modbus, info, report)
         self.module_name = __class__.__name__
 
     def convert_ref_signal(self, read_data):
@@ -18,7 +17,7 @@ class ModuleSystem(Module):
     def read_all_data(self, output_list, test_count):
         self.total_number = test_count[0]
         self.correct_number = test_count[1]
-        report, writer = open_report(self.report_path)
+        self.report.open_report()
         memory = test_count[2]
         for i in range(len(self.data)):
             current = self.data[i]
@@ -59,7 +58,7 @@ class ModuleSystem(Module):
             memory = self.info.get_used_memory()
             cpu_usage = self.info.get_cpu_usage()
             memory_difference = memory - past_memory
-            writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2], '', cpu_usage, memory, memory_difference])
+            self.report.writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2], '', cpu_usage, memory, memory_difference])
             self.print_test_results(output_list, current, results[0], results[1])
-        report.close()
+        self.report.close()
         return [self.total_number, self.correct_number, memory]

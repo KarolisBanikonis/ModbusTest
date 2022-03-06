@@ -2,16 +2,11 @@
 import json
 import os.path
 import importlib
-from datetime import datetime
 
 def check_file_exists(path_to_file):
     if(os.path.exists(path_to_file) == False or os.path.isfile(path_to_file) == False):
         print(f"File at path: {path_to_file} does not exist.")
         terminate_program()
-
-def generate_file_name(name):
-    date = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-    return f"{name} {date}"
 
 def delete_file_content(path_to_file):
     try:

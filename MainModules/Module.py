@@ -14,14 +14,14 @@ class Module:
     RESULT_PASSED = "Passed"
     RESULT_FAILED = "Failed"
 
-    def __init__(self, data, ssh, modbus, info):
+    def __init__(self, data, ssh, modbus, info, report):
         self.data = data
         self.ssh = ssh
         self.modbus = modbus
         self.info = info
+        self.report = report
         self.total_number = 0
         self.correct_number = 0
-        self.report_path = info.report_file
         self.module_name = ""
         
     def print_test_results(self, output_list, current_json, modbus_data, final_data):

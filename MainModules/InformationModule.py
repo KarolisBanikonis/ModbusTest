@@ -1,11 +1,9 @@
 from Libraries.SSHMethods import get_df_used_memory, get_router_model, get_cpu_count, get_concrete_ubus_data
-from Libraries.FileMethods import generate_file_name
-from Libraries.CSVMethods import write_router_name_and_header
 from Clients.SSHClient import SSHClient
 
 class InformationModule:
 
-    REPORTS_DIRECTORY = "Reports/"
+    # REPORTS_DIRECTORY = "Reports/"
 
     def __init__(self, conn : SSHClient, conf):
         self.conf = conf
@@ -13,8 +11,8 @@ class InformationModule:
         self.tmp_used_memory = get_df_used_memory(self.conn, "/tmp")
         self.router_model = get_router_model(self.conn, self.conf.get_data('MODEL'))
         self.cpu_count = get_cpu_count(self.conn)
-        self.report_file = f"{self.REPORTS_DIRECTORY}{generate_file_name(self.router_model)}.csv"
-        write_router_name_and_header(self.report_file, self.router_model)
+        # self.report_file = f"{self.REPORTS_DIRECTORY}{generate_file_name(self.router_model)}.csv"
+        # write_router_name_and_header(self.report_file, self.router_model)
 
     def get_used_memory(self):
         all_memories = get_concrete_ubus_data(self.conn ,self.conf.get_data('MEMORY'))

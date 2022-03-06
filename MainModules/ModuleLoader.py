@@ -24,14 +24,14 @@ class ModuleLoader:
             if(module_enabled == "1"):
                 self.modules_to_load.append(module_info['name'])
         
-    def init_modules(self, data, modbus, info):
+    def init_modules(self, data, modbus, info, report):
         instantiated_modules = []
         for module_name in self.modules_to_load:
             module = self.__load_module(module_name)
             if(module != None):
                 try:
                     class_ = getattr(module, module_name)
-                    instance = class_(data[module_name], self.conn, modbus, info)
+                    instance = class_(data[module_name], self.conn, modbus, info, report)
                     instantiated_modules.append(instance)
                 except AttributeError as err:
                     print(f"Such attribute does not exist: {err}")
