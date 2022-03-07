@@ -2,7 +2,7 @@
     "Settings":[
         {
             "SERVER_HOST": "192.168.1.1",
-            "MODBUS_PORT": 505,
+            "MODBUS_PORT": 506,
             "USERNAME": "root",
             "PASSWORD": "Admin123",
             "MODULES" : [

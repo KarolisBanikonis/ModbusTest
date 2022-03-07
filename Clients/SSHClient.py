@@ -1,10 +1,11 @@
+# Standard library imports
+import time
+
 # Third party imports
 import paramiko
 
 # Local imports
 from MainModules.ConnectionFailedError import ConnectionFailedError
-
-import time
 
 class SSHClient:
 
@@ -54,17 +55,21 @@ class SSHClient:
 
     def ssh_issue_command(self, command):
         connected = self.try_ssh_connect()
+        # try:
         _stdin, _stdout,_stderr = self.ssh.exec_command(command)
         output = _stdout.read().decode()
-        # while(output == ""):
-        #     time.sleep(self.SLEEP_TIME)
-        #     self.try_ssh_connect()
-        #     _stdin, _stdout,_stderr = self.ssh.exec_command(command)
-        #     output = _stdout.read().decode()
-        #     # self.ssh_issue_command(command)
-        if(output == ""):
+        try_connect_nr = 0
+        if(output == "" or output == None):
+            # while(try_connect_nr < self.CONNECT_ATTEMPTS):
+            #     try_connect_nr += 1
+            #     time.sleep(self.SLEEP_TIME)
+            #     self.try_ssh_connect()
+            #     self.ssh_issue_command(command)
             # raise ConnectionFailedError("Connection failed - In SSH command exec.")
             time.sleep(self.SLEEP_TIME)
             self.try_ssh_connect()
-            self.ssh_issue_command(command)
+            output = self.ssh_issue_command(command)
+        # except ConnectionResetError as err:
+        #     time.sleep(self.SLEEP_TIME)
+        #     self.ssh_issue_command(command)
         return output

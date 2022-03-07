@@ -1,0 +1,50 @@
+Model,RUTX09
+
+Iteration nr.,Module name,Register name,Register number,Modbus value,Router value,Result,,CPU usage,Used RAM,Used RAM difference
+1,ModuleSystem,System uptime,1,1599,1599,Passed,,3.215%,83701760,110592
+2,ModuleSystem,Mobile signal strength (RSSI in dBm),3,-67,-67,Passed,,3.217%,83722240,20480
+3,ModuleSystem,System temperature (in 0.1 °C),5,340,340,Passed,,3.218%,83841024,118784
+4,ModuleSystem,System hostname,7,teltonika-rutx09.com,teltonika-rutx09.com,Passed,,3.218%,83726336,-114688
+5,ModuleSystem,Router serial number,39,1107883912,1107883912,Passed,,3.219%,83730432,4096
+6,ModuleSystem,Router name,71,rutx09,rutx09,Passed,,3.22%,83812352,81920
+7,ModuleSystem,Digital non-isolated input (4 PIN connector),324,0,0,Passed,,3.221%,83857408,45056
+8,ModuleSystem,Digital open collector output (4 PIN connector),325,0,0,Passed,,3.222%,83804160,-53248
+9,ModuleNetwork,LAN MAC address,55,001e4232c81d,001e4232c81d,Passed,,3.223%,83836928,32768
+10,ModuleNetwork,Current WAN IP address,139,84.15.161.183,84.15.161.183,Passed,,3.231%,83779584,-57344
+11,ModuleMobile,IMSI,348,246020102861314,246020102861314,Passed,,3.232%,83709952,-69632
+12,ModuleMobile,GSM operator name,23,bite,bite,Passed,,3.233%,83980288,270336
+13,ModuleMobile,Currently active SIM card slot,87,sim1,sim1,Passed,,3.237%,83841024,-139264
+14,ModuleMobile,Network registration info,103,registered(home),registered(home),Passed,,3.238%,83902464,61440
+15,ModuleMobile,Network type,119,lte,lte-a,Failed,,3.24%,83992576,90112
+16,ModuleMobile,Mobile data received today (SIM1),185,28416694,227285686,Failed,,3.242%,84025344,32768
+17,ModuleMobile,Mobile data sent today (SIM1),187,11093777,22169361,Failed,,3.245%,84058112,32768
+18,ModuleMobile,Mobile data received this week (SIM1),189,28416694,227285686,Failed,,3.246%,84074496,16384
+19,ModuleMobile,Mobile data sent this week (SIM1),191,11093777,22169361,Failed,,3.249%,84013056,-61440
+20,ModuleMobile,Mobile data received this month (SIM1),193,852518389,1705010677,Failed,,3.251%,84119552,106496
+21,ModuleMobile,Mobile data sent this month (SIM1),195,4310480,137889232,Failed,,3.252%,84029440,-90112
+22,ModuleMobile,Mobile data received last 24h (SIM1),197,28416694,227285686,Failed,,3.253%,84094976,65536
+23,ModuleMobile,Mobile data sent last 24h (SIM1),199,11093777,22169361,Failed,,3.254%,84131840,36864
+24,ModuleMobile,Active SIM card,205,1,1,Passed,,3.255%,84086784,-45056
+25,ModuleMobile,Mobile data received last week (SIM1),292,108452158,1735199038,Failed,,3.255%,84000768,-86016
+26,ModuleMobile,Mobile data sent last week (SIM1),294,72205867,144393771,Failed,,3.256%,84144128,143360
+27,ModuleMobile,Mobile data received last month (SIM1),296,874369323,1748717867,Failed,,3.26%,84205568,61440
+28,ModuleMobile,Mobile data sent last month (SIM1),298,153787315,153787315,Passed,,3.262%,84119552,-86016
+29,ModuleMobile,Mobile data received today (SIM2),300,0,0,Passed,,3.263%,84058112,-61440
+30,ModuleMobile,Mobile data sent today (SIM2),302,0,0,Passed,,3.264%,84127744,69632
+31,ModuleMobile,Mobile data received this week (SIM2),304,0,0,Passed,,3.267%,84156416,28672
+32,ModuleMobile,Mobile data sent this week (SIM2),306,0,0,Passed,,3.268%,84086784,-69632
+33,ModuleMobile,Mobile data received this month (SIM2),308,0,0,Passed,,3.268%,84267008,180224
+34,ModuleMobile,Mobile data sent this month (SIM2),310,0,0,Passed,,3.268%,84246528,-20480
+35,ModuleMobile,Mobile data received last 24h (SIM2),312,0,0,Passed,,3.27%,84332544,86016
+36,ModuleMobile,Mobile data sent last 24h (SIM2),314,0,0,Passed,,3.272%,84344832,12288
+37,ModuleMobile,Mobile data received last week (SIM2),316,0,0,Passed,,3.273%,84324352,-20480
+38,ModuleMobile,Mobile data sent last week (SIM2),318,0,0,Passed,,3.274%,84459520,135168
+39,ModuleMobile,Mobile data received last month(SIM2),320,0,0,Passed,,3.274%,84426752,-32768
+40,ModuleMobile,Mobile data sent last month (SIM2),322,0,0,Passed,,3.276%,84623360,196608
+41,ModuleGPS,GPS latitude coordinate,143,0,0,Passed,,3.277%,84471808,-151552
+42,ModuleGPS,GPS longitude coordinate,145,0,0,Passed,,3.277%,84451328,-20480
+43,ModuleGPS,GPS fix time,147,1970-01-01 00:00:00,1970-01-01 00:00:00,Passed,,3.278%,84545536,94208
+44,ModuleGPS,GPS date and time,163,1970-01-01 00:00:00,1970-01-01 00:00:00,Passed,,3.279%,84594688,49152
+45,ModuleGPS,GPS speed,179,0,0,Passed,,3.28%,84545536,-49152
+46,ModuleGPS,GPS satellite count,181,0,0,Passed,,3.281%,84623360,77824
+47,ModuleGPS,GPS accuracy,183,0,0,Passed,,3.281%,84717568,94208

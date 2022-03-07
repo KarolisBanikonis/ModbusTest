@@ -1,3 +1,6 @@
+# Standard library imports
+import time
+
 # Third party imports
 from pyModbusTCP.client import ModbusClient
 
@@ -7,6 +10,7 @@ from MainModules.ConnectionFailedError import ConnectionFailedError
 class Modbus:
 
     CONNECT_ATTEMPTS = 7
+    SLEEP_TIME = 0.2
 
     def __init__(self, configuration):
         self.host = configuration['SERVER_HOST']
@@ -31,10 +35,13 @@ class Modbus:
     def read_registers(self, data):
         connected = self.try_new()
         registers_data = self.client.read_holding_registers(data['address'], data['number'])
-        if(registers_data == ""):
+        if(registers_data == "" or registers_data == None):
             # self.try_new()
             # self.read_registers(data)
-            raise ConnectionFailedError("Connection failed - In Modbus read reg.")
+            # raise ConnectionFailedError("Connection failed - In Modbus read reg.")
+            time.sleep(self.SLEEP_TIME)
+            connected = self.try_new()
+            registers_data = self.read_registers(data)
         return registers_data
 
     def try_connect(self):
