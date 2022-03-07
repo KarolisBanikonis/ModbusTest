@@ -1,0 +1,16 @@
+Model,RUTX09
+
+Iteration nr.,Module name,Register name,Register number,Modbus value,Router value,Result,,CPU usage,Used RAM,Used RAM difference
+1,ModuleSystem,System uptime,1,2952,2952,Passed,,2.588%,86601728,0
+2,ModuleSystem,Mobile signal strength (RSSI in dBm),3,-61,-61,Passed,,2.589%,86528000,-73728
+3,ModuleSystem,System temperature (in 0.1 °C),5,370,370,Passed,,2.589%,86650880,122880
+4,ModuleSystem,System hostname,7,teltonika-rutx09.com,teltonika-rutx09.com,Passed,,2.589%,86839296,188416
+5,ModuleSystem,Router serial number,39,1107883912,1107883912,Passed,,2.589%,86745088,-94208
+6,ModuleSystem,Router name,71,rutx09,rutx09,Passed,,2.59%,86777856,32768
+7,ModuleSystem,Digital non-isolated input (4 PIN connector),324,0,0,Passed,,2.59%,86765568,-12288
+8,ModuleSystem,Digital open collector output (4 PIN connector),325,0,0,Passed,,2.592%,86978560,212992
+9,ModuleNetwork,LAN MAC address,55,001e4232c81d,001e4232c81d,Passed,,2.593%,87015424,36864
+10,ModuleNetwork,Current WAN IP address,139,84.15.161.183,84.15.161.183,Passed,,2.596%,87302144,286720
+11,ModuleMobile,IMSI,348,246020102861314,246020102861314,Passed,,2.596%,87097344,-204800
+12,ModuleMobile,GSM operator name,23,bite,bite,Passed,,2.597%,87007232,-90112
+13,ModuleMobile,Currently active SIM card slot,87,sim1,sim1,Passed,,2.598%,86974464,-32768

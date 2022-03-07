@@ -62,7 +62,15 @@ class Modbus:
             try_connect_nr = 0
             while(try_connect_nr < self.CONNECT_ATTEMPTS):
                 try_connect_nr += 1
-                connected = self.client.open()
+                time.sleep(self.SLEEP_TIME)
+                state = self.client.is_open()
+                if(state):
+                    return True
+                else:
+                    connected = self.client.open()
                 if(connected):
                     return True
+                # connected = self.client.open()
+                # if(connected):
+                #     return True
             raise ConnectionFailedError("Connection failed - Modbus.")

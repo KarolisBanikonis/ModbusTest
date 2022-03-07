@@ -50,19 +50,19 @@ def main():
                 # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS
                 for module in module_instances:
                     # test_count = module.read_all_data(output_list, test_count)
-                    # try:
-                    test_count = module.read_all_data(output_list, test_count)
-                    # except ConnectionResetError as err:
-                    #     output_list[7] = f"Connection stopped: {err}"
-                    #     close_all_instances([ssh_client.ssh, modbus.client])
-                    # except socket.error as err:
+                    try:
+                        test_count = module.read_all_data(output_list, test_count)
+                    except ConnectionFailedError as err:
+                        output_list[7] = f"Connection stopped: {err}"
+                        close_all_instances([ssh_client.ssh, modbus.client])
+                    # except socket.er ror as err:
                     #     output_list[7] = f"Socket error: {err}"
                     #     close_all_instances([ssh_client.ssh, modbus.client])
                     # except paramiko.SSHException as err:
                     #     output_list[7] = f"SSH connection stopped: {err}"
                     #     close_all_instances([ssh_client.ssh, modbus.client])
 
-                time.sleep(1)
+                time.sleep(1) # Jei istrauki laida cia baigias programos vykdymas
             
             # time.sleep(10)
 
