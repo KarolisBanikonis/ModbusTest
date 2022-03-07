@@ -3,19 +3,18 @@ from Clients.SSHClient import SSHClient
 
 class InformationModule:
 
-    # REPORTS_DIRECTORY = "Reports/"
-
-    def __init__(self, conn : SSHClient, conf):
-        self.conf = conf
+    def __init__(self, conn : SSHClient, data):
+        self.data = data
         self.conn = conn
         self.tmp_used_memory = get_df_used_memory(self.conn, "/tmp")
-        self.router_model = get_router_model(self.conn, self.conf.get_data('MODEL'))
+        self.router_model = get_router_model(self.conn, self.data['Model'])
         self.cpu_count = get_cpu_count(self.conn)
-        # self.report_file = f"{self.REPORTS_DIRECTORY}{generate_file_name(self.router_model)}.csv"
-        # write_router_name_and_header(self.report_file, self.router_model)
 
-    def get_used_memory(self):
-        all_memories = get_concrete_ubus_data(self.conn ,self.conf.get_data('MEMORY'))
+    def get_used_memory(self, printExp):
+        all_memories = get_concrete_ubus_data(self.conn, self.data['Memory'])
+        if(all_memories == None):
+            printExp = "SSH connection stopped!"
+            quit()
         total = all_memories['total'] - self.tmp_used_memory
         free = all_memories['free']
         used = total - free
@@ -32,11 +31,5 @@ class InformationModule:
         idle_time = all_state_times[3]
         total_time = sum(all_state_times)
         cpu_usage = 100.0 * (1.0 - idle_time / total_time)
+        cpu_usage = round(cpu_usage, 3)
         return f"{cpu_usage}%"
-
-    # def get_cpu_usage(self):
-    #     all_loads = self.get_all_info(self.get_data('LOAD'))
-    #     min1_load = all_loads[0] * 100 / self.cpu_count
-    #     if(min1_load > 100):
-    #         min1_load = 100
-    #     return f"{min1_load}%"

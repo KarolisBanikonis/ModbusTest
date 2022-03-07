@@ -42,10 +42,10 @@ class ModuleGPS(Module):
             results = self.check_if_results_match(modbus_data, final_data)
             self.change_test_count(results)
             past_memory = memory
-            memory = self.info.get_used_memory()
+            memory = self.info.get_used_memory(output_list[7])
             cpu_usage = self.info.get_cpu_usage()
             memory_difference = memory - past_memory
             self.report.writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2], '', cpu_usage, memory, memory_difference])
-            self.print_test_results(output_list, current, results[0], results[1])
+            self.print_test_results(output_list, current, results[0], results[1], cpu_usage, memory_difference)
         self.report.close()
         return [self.total_number, self.correct_number, memory]

@@ -5,9 +5,11 @@ import time
 
 # Third party imports
 from reprint import output
+import paramiko
+import socket
 
 # Local imports
-from Libraries.FileMethods import read_file, close_all_instances
+from Libraries.FileMethods import read_file, close_all_instances, terminate_program
 from MainModules.ModuleLoader import ModuleLoader
 from MainModules.ConfigurationModule import ConfigurationModule
 from MainModules.InformationModule import InformationModule
@@ -24,8 +26,8 @@ def main():
     ssh_client = SSHClient(conf.get_all_data())
     ssh_connected = ssh_client.ssh_connect()
     if(ssh_connected == False):
-        close_all_instances([ssh_client])
-    info = InformationModule(ssh_client, conf)
+        terminate_program()
+    info = InformationModule(ssh_client, data['InformationModule'][0])
     report = ReportModule(info)
     modbus = Modbus(conf.get_all_data())
     modbus_is_setup_valid = modbus.setup_modbus()
@@ -33,9 +35,9 @@ def main():
         close_all_instances([ssh_client.ssh, modbus.client])
     module_loader = ModuleLoader(conf, ssh_client)
     module_instances = module_loader.init_modules(data, modbus, info, report)
-    test_count = [0, 0, info.get_used_memory()] # test_number, correct_number, used_ram
+    test_count = [0, 0, info.get_used_memory("")] # test_number, correct_number, used_ram
 
-    with output(output_type="list", initial_len=6, interval=0) as output_list:
+    with output(output_type="list", initial_len=8, interval=0) as output_list:
         while True:
             modbus_connected = modbus.try_connect()
             if(modbus_connected == False):
@@ -43,9 +45,22 @@ def main():
             else:
                 # Remove CSV report's contents if it exists, otherwise create it
                 # delete_file_content(CSV_REPORT_FILE)
+                output_list[0] = f"Model - {info.router_model}"
                 # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS
                 for module in module_instances:
                     test_count = module.read_all_data(output_list, test_count)
+                    # try:
+                    #     test_count = module.read_all_data(output_list, test_count)
+                    # except socket.error as err:
+                    #     output_list[7] = f"Socket error: {err}"
+                    #     close_all_instances([ssh_client.ssh, modbus.client])
+                    # except paramiko.SSHException as err:
+                    #     output_list[7] = f"SSH connection stopped: {err}"
+                    #     close_all_instances([ssh_client.ssh, modbus.client])
+                    # except ConnectionResetError as err:
+                    #     output_list[7] = f"SSH connection reset: {err}"
+                    #     close_all_instances([ssh_client.ssh, modbus.client])
+
                 time.sleep(1)
             
             # time.sleep(10)

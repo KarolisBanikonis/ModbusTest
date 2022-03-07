@@ -14,9 +14,9 @@ def ubus_call(ssh, service, procedure):
     return output
 
 def get_parsed_ubus_data(ssh, current_data):
-        actual_data = ubus_call(ssh, current_data['service'], current_data['procedure'])
-        parsed_data = json.loads(actual_data)
-        return parsed_data
+    actual_data = ubus_call(ssh, current_data['service'], current_data['procedure'])
+    parsed_data = json.loads(actual_data)
+    return parsed_data
 
 def get_concrete_ubus_data(ssh, current_data):
     parsed_data = get_parsed_ubus_data(ssh, current_data)

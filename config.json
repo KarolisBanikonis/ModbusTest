@@ -2,7 +2,7 @@
     "Settings":[
         {
             "SERVER_HOST": "192.168.1.1",
-            "SERVER_PORT": 502,
+            "MODBUS_PORT": 503,
             "USERNAME": "root",
             "PASSWORD": "Admin123",
             "MODULES" : [
@@ -11,38 +11,17 @@
                 },
                 {
                     "name": "ModuleNetwork",
-                    "parse": "ethernet"
+                    "hw_info": "ethernet"
                 },
                 {
                     "name": "ModuleMobile",
-                    "parse": "mobile"
+                    "hw_info": "mobile"
                 },
                 {
                     "name": "ModuleGPS",
-                    "parse": "gps"
+                    "hw_info": "gps"
                 }
-            ],
-            "MODEL":
-            {
-                "name":"Model",
-                "service":"mnfinfo",
-                "procedure":"get",
-                "parse":"name"
-            },
-            "LOAD":
-            {
-                "name":"Model",
-                "service":"system",
-                "procedure":"info",
-                "parse":"load"
-            },
-            "MEMORY":
-            {
-                "name":"Model",
-                "service":"system",
-                "procedure":"info",
-                "parse":"memory"
-            }
+            ]
         }
     ]
 }

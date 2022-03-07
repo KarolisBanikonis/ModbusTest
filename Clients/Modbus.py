@@ -5,7 +5,7 @@ class Modbus:
 
     def __init__(self, configuration):
         self.host = configuration['SERVER_HOST']
-        self.port = configuration['SERVER_PORT']
+        self.port = configuration['MODBUS_PORT']
         self.client = ModbusClient(auto_open=True, auto_close=True)
         # uncomment this line to see debug message
         # client.debug(True)

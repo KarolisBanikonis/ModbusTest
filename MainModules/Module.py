@@ -24,12 +24,13 @@ class Module:
         self.correct_number = 0
         self.module_name = ""
         
-    def print_test_results(self, output_list, current_json, modbus_data, final_data):
-        output_list[0] = f"Tests were done - {self.total_number}."
-        output_list[1] = f"{Fore.GREEN}Tests passed - {self.correct_number}.{Style.RESET_ALL}{Fore.RED} Tests failed - {self.total_number - self.correct_number}.{Style.RESET_ALL}"
-        output_list[2] = f"Module being tested - {self.module_name}."
-        output_list[3] = f"Testing - {current_json['name']}. Address - {current_json['address']}."
-        output_list[4] = f"Value from Modbus - {modbus_data}. Value from router - {final_data}."
+    def print_test_results(self, output_list, current_json, modbus_data, final_data, cpu, ram):
+        output_list[1] = f"Tests were done - {self.total_number}."
+        output_list[2] = f"{Fore.GREEN}Tests passed - {self.correct_number}.{Style.RESET_ALL}{Fore.RED} Tests failed - {self.total_number - self.correct_number}.{Style.RESET_ALL}"
+        output_list[3] = f"CPU usage - {cpu}. RAM usage: {ram}."
+        output_list[4] = f"Module being tested - {self.module_name}."
+        output_list[5] = f"Testing - {current_json['name']}. Address - {current_json['address']}."
+        output_list[6] = f"Value from Modbus - {modbus_data}. Value from router - {final_data}."
 
     def convert_reg_number(self, read_data):
         bin_temp1 = format(read_data[0], '08b')

@@ -27,7 +27,7 @@ def close_all_instances(instances):
     terminate_program()
 
 def terminate_program():
-    print("Program is terminated!")
+    # print("Program is terminated!")
     quit()
 
 def read_file(file_name):
