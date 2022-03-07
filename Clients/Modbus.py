@@ -6,7 +6,7 @@ from MainModules.ConnectionFailedError import ConnectionFailedError
 
 class Modbus:
 
-    CONNECT_ATTEMPTS = 5
+    CONNECT_ATTEMPTS = 7
 
     def __init__(self, configuration):
         self.host = configuration['SERVER_HOST']
@@ -31,7 +31,9 @@ class Modbus:
     def read_registers(self, data):
         connected = self.try_new()
         registers_data = self.client.read_holding_registers(data['address'], data['number'])
-        if(registers_data == None or registers_data == ""):
+        if(registers_data == ""):
+            # self.try_new()
+            # self.read_registers(data)
             raise ConnectionFailedError("Connection failed - In Modbus read reg.")
         return registers_data
 

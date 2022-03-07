@@ -54,10 +54,11 @@ def main():
                         test_count = module.read_all_data(output_list, test_count)
                     except socket.error as err:
                         output_list[7] = f"Socket error: {err}"
+                        # ssh_c
                         close_all_instances([ssh_client.ssh, modbus.client])
-                    except paramiko.SSHException as err:
-                        output_list[7] = f"SSH connection stopped: {err}"
-                        close_all_instances([ssh_client.ssh, modbus.client])
+                    # except paramiko.SSHException as err:
+                    #     output_list[7] = f"SSH connection stopped: {err}"
+                    #     close_all_instances([ssh_client.ssh, modbus.client])
                     except ConnectionFailedError as err:
                         output_list[7] = f"Connection stopped: {err}"
                         close_all_instances([ssh_client.ssh, modbus.client])

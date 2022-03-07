@@ -4,9 +4,12 @@ import paramiko
 # Local imports
 from MainModules.ConnectionFailedError import ConnectionFailedError
 
+import time
+
 class SSHClient:
 
-    CONNECT_ATTEMPTS = 2
+    CONNECT_ATTEMPTS = 7
+    SLEEP_TIME = 0.2
 
     def __init__(self, configuration):
         self.ssh = paramiko.client.SSHClient()
@@ -53,6 +56,15 @@ class SSHClient:
         connected = self.try_ssh_connect()
         _stdin, _stdout,_stderr = self.ssh.exec_command(command)
         output = _stdout.read().decode()
-        if(output == None or output == ""):
-            raise ConnectionFailedError("Connection failed - In SSH command exec.")
+        # while(output == ""):
+        #     time.sleep(self.SLEEP_TIME)
+        #     self.try_ssh_connect()
+        #     _stdin, _stdout,_stderr = self.ssh.exec_command(command)
+        #     output = _stdout.read().decode()
+        #     # self.ssh_issue_command(command)
+        if(output == ""):
+            # raise ConnectionFailedError("Connection failed - In SSH command exec.")
+            time.sleep(self.SLEEP_TIME)
+            self.try_ssh_connect()
+            self.ssh_issue_command(command)
         return output

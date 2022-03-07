@@ -16,8 +16,8 @@ def ubus_call(ssh, service, procedure):
 
 def get_parsed_ubus_data(ssh, current_data):
     actual_data = ubus_call(ssh, current_data['service'], current_data['procedure'])
-    if(actual_data == None or actual_data == ""):
-        raise ConnectionFailedError("Connection failed from get_parsed_ubus_data.")
+    # if(actual_data == None or actual_data == ""):
+        # raise ConnectionFailedError("Connection failed from get_parsed_ubus_data.")
     parsed_data = json.loads(actual_data) # CIA NULUZTA
     return parsed_data
 

@@ -41,7 +41,7 @@ class ModuleSystem(Module):
                 else:
                     final_data = parsed_data[current['parse']]
             elif(current['source'] == "ubus" and current['number'] == 1):
-                modbus_data = result[0]
+                modbus_data = result[0] # CIA NULUZTA
                 parsed_data = get_parsed_ubus_data(self.ssh, current)
                 if(current['address'] == 324):
                     final_data = parsed_data['result'][0][current['parse']]

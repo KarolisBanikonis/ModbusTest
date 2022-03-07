@@ -1,0 +1,25 @@
+Model,RUTX09
+
+Iteration nr.,Module name,Register name,Register number,Modbus value,Router value,Result,,CPU usage,Used RAM,Used RAM difference
+1,ModuleSystem,System uptime,1,32846,32846,Passed,,0.688%,84762624,57344
+2,ModuleSystem,Mobile signal strength (RSSI in dBm),3,-79,-79,Passed,,0.688%,84926464,163840
+3,ModuleSystem,System temperature (in 0.1 °C),5,420,420,Passed,,0.688%,84897792,-28672
+4,ModuleSystem,System hostname,7,teltonika-rutx09.com,teltonika-rutx09.com,Passed,,0.688%,84942848,45056
+5,ModuleSystem,Router serial number,39,1107883912,1107883912,Passed,,0.689%,84815872,-126976
+6,ModuleSystem,Router name,71,rutx09,rutx09,Passed,,0.689%,84852736,36864
+7,ModuleSystem,Digital non-isolated input (4 PIN connector),324,0,0,Passed,,0.689%,84877312,24576
+8,ModuleSystem,Digital open collector output (4 PIN connector),325,0,0,Passed,,0.689%,84910080,32768
+9,ModuleNetwork,LAN MAC address,55,001e4232c81d,001e4232c81d,Passed,,0.689%,84840448,-69632
+10,ModuleNetwork,Current WAN IP address,139,84.15.161.183,84.15.161.183,Passed,,0.689%,85032960,192512
+11,ModuleMobile,IMSI,348,246020102861314,246020102861314,Passed,,0.689%,85065728,32768
+12,ModuleMobile,GSM operator name,23,bite,bite,Passed,,0.689%,85086208,20480
+13,ModuleMobile,Currently active SIM card slot,87,sim1,sim1,Passed,,0.69%,85127168,40960
+14,ModuleMobile,Network registration info,103,registered(home),registered(home),Passed,,0.69%,85098496,-28672
+15,ModuleMobile,Network type,119,lte,lte-a,Failed,,0.69%,85012480,-86016
+16,ModuleMobile,Mobile data received today (SIM1),185,222921867,222921867,Passed,,0.69%,84971520,-40960
+17,ModuleMobile,Mobile data sent today (SIM1),187,5026025,20066537,Failed,,0.69%,85241856,270336
+18,ModuleMobile,Mobile data received this week (SIM1),189,222921867,222921867,Passed,,0.69%,85303296,61440
+19,ModuleMobile,Mobile data sent this week (SIM1),191,5026025,20066537,Failed,,0.69%,85143552,-159744
+20,ModuleMobile,Mobile data received this month (SIM1),193,850352471,1700682071,Failed,,0.69%,85204992,61440
+21,ModuleMobile,Mobile data sent this month (SIM1),195,33960211,135803155,Failed,,0.69%,85237760,32768
+22,ModuleMobile,Mobile data received last 24h (SIM1),197,13938200,222957080,Failed,,0.69%,85209088,-28672
