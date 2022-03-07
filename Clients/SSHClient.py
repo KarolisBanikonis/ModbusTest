@@ -1,13 +1,12 @@
 # Third party imports
-from socket import timeout
 import paramiko
-import time
 
 # Local imports
+from MainModules.ConnectionFailedError import ConnectionFailedError
 
 class SSHClient:
 
-    CONNECT_ATTEMPTS = 5
+    CONNECT_ATTEMPTS = 2
 
     def __init__(self, configuration):
         self.ssh = paramiko.client.SSHClient()
@@ -16,18 +15,22 @@ class SSHClient:
         self.username = configuration['USERNAME']
         self.password = configuration['PASSWORD']
 
+    # def raise_error(self, value):
+    #     if(value != None):
+
+
     def try_ssh_connect(self):
         state = self.ssh.get_transport().is_active()
         if(state):
             return True
         else:
             try_connect_nr = 0
-            while(try_connect_nr <= self.CONNECT_ATTEMPTS):
+            while(try_connect_nr < self.CONNECT_ATTEMPTS):
                 try_connect_nr += 1
                 connected = self.ssh_connect()
                 if(connected):
                     return True
-            return False
+            raise ConnectionFailedError("Connection failed - SSH.")
 
     def ssh_connect(self):
         try:
@@ -43,11 +46,13 @@ class SSHClient:
             print(f"Check if you have valid connection: {err}")
             return False
         except OSError as err:
-            print(f"SSH connection failed, check host value: {err}")
+            # print(f"SSH connection failed, check host value: {err}")
             return False
 
     def ssh_issue_command(self, command):
-        # connected = self.try_ssh_connect()
+        connected = self.try_ssh_connect()
         _stdin, _stdout,_stderr = self.ssh.exec_command(command)
         output = _stdout.read().decode()
+        if(output == None or output == ""):
+            raise ConnectionFailedError("Connection failed - In SSH command exec.")
         return output

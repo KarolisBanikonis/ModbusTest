@@ -4,6 +4,7 @@ import json
 # Local imports
 from Libraries.FileMethods import extract_status, get_used_memory_from_string
 from Libraries.ConversionMethods import convert_string_to_bytes
+from MainModules.ConnectionFailedError import ConnectionFailedError
 
 def ssh_get_uci_hwinfo(ssh, module):
     output = ssh.ssh_issue_command(f"uci get hwinfo.hwinfo.{module}")
@@ -15,7 +16,9 @@ def ubus_call(ssh, service, procedure):
 
 def get_parsed_ubus_data(ssh, current_data):
     actual_data = ubus_call(ssh, current_data['service'], current_data['procedure'])
-    parsed_data = json.loads(actual_data)
+    if(actual_data == None or actual_data == ""):
+        raise ConnectionFailedError("Connection failed from get_parsed_ubus_data.")
+    parsed_data = json.loads(actual_data) # CIA NULUZTA
     return parsed_data
 
 def get_concrete_ubus_data(ssh, current_data):

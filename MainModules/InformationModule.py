@@ -10,11 +10,11 @@ class InformationModule:
         self.router_model = get_router_model(self.conn, self.data['Model'])
         self.cpu_count = get_cpu_count(self.conn)
 
-    def get_used_memory(self, printExp):
+    def get_used_memory(self):
         all_memories = get_concrete_ubus_data(self.conn, self.data['Memory'])
-        if(all_memories == None):
-            printExp = "SSH connection stopped!"
-            quit()
+        # if(all_memories == None):
+        #     printExp = "SSH connection stopped!"
+        #     quit()
         total = all_memories['total'] - self.tmp_used_memory
         free = all_memories['free']
         used = total - free
@@ -28,7 +28,7 @@ class InformationModule:
     def get_cpu_usage(self):
         output = self.conn.ssh_issue_command("cat /proc/stat | grep 'cpu '")
         all_state_times = [int(s) for s in output.split() if s.isdigit()]
-        idle_time = all_state_times[3]
+        idle_time = all_state_times[3] # CIA NULUZTA
         total_time = sum(all_state_times)
         cpu_usage = 100.0 * (1.0 - idle_time / total_time)
         cpu_usage = round(cpu_usage, 3)

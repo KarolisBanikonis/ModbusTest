@@ -1,12 +1,17 @@
 # Third party imports
 from pyModbusTCP.client import ModbusClient
 
+# Local imports
+from MainModules.ConnectionFailedError import ConnectionFailedError
+
 class Modbus:
+
+    CONNECT_ATTEMPTS = 5
 
     def __init__(self, configuration):
         self.host = configuration['SERVER_HOST']
         self.port = configuration['MODBUS_PORT']
-        self.client = ModbusClient(auto_open=True, auto_close=True)
+        self.client = ModbusClient(auto_open=True, auto_close=True, timeout=1)
         # uncomment this line to see debug message
         # client.debug(True)
 
@@ -24,7 +29,10 @@ class Modbus:
         return True
 
     def read_registers(self, data):
+        connected = self.try_new()
         registers_data = self.client.read_holding_registers(data['address'], data['number'])
+        if(registers_data == None or registers_data == ""):
+            raise ConnectionFailedError("Connection failed - In Modbus read reg.")
         return registers_data
 
     def try_connect(self):
@@ -36,3 +44,16 @@ class Modbus:
                 return True
         else:
             return True
+
+    def try_new(self):
+        state = self.client.is_open()
+        if(state):
+            return True
+        else:
+            try_connect_nr = 0
+            while(try_connect_nr < self.CONNECT_ATTEMPTS):
+                try_connect_nr += 1
+                connected = self.client.open()
+                if(connected):
+                    return True
+            raise ConnectionFailedError("Connection failed - Modbus.")
