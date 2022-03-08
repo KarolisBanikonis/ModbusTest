@@ -36,7 +36,7 @@ class Module:
         bin_temp1 = format(read_data[0], '08b')
         bin_temp2 = format(read_data[1], '08b')
         bin_str = (f"{bin_temp1}{bin_temp2}")
-        result = self.binaryToDecimal(bin_str)
+        result = self.binary_to_decimal(bin_str)
         return result
 
     def convert_reg_text(self, read_data):
@@ -49,32 +49,29 @@ class Module:
                 break
         return text
 
-    def binaryToDecimal(self, n):
+    def binary_to_decimal(self, n):
         return int(n, 2)
 
-    def format_data(self, information, value):
-        return f"{information}: {value}"
-
-    def convert_string_for_errors(self, data):
+    def __remove_whitespace(self, data):
         if(type(data) == str):
             data = data.casefold()#.translate(str.maketrans('', '', string.whitespace))
             pattern = re.compile(r'\s+')
             data = re.sub(pattern, '', data)
             return data
 
-    def check_if_strings_equal(self, data1, data2):
+    def __check_if_strings_pass(self, data1, data2):
         if(data1 == data2):
             return self.RESULT_PASSED
         else:
             return self.RESULT_FAILED
 
-    def check_error_value(self, data1, data2):
+    def __check_if_numbers_pass(self, data1, data2):
         if(math.fabs(data1 - data2) > self.MID_ERROR):
             return self.RESULT_FAILED
         else:
             return self.RESULT_PASSED
 
-    def check_datetime_error_value(self, data1, data2):
+    def __check_if_datetime_pass(self, data1, data2):
         difference = data1 - data2
         # print(f"DIFFERENCE = {difference.seconds}")
         if(math.fabs(difference.seconds) > self.DATATIME_ERROR):
@@ -86,15 +83,15 @@ class Module:
     #Parsed data from ubus can have string and int as well
     def check_if_results_match(self, modbus_data, actual_data):
         if(type(modbus_data) == str):
-            modbus_data = self.convert_string_for_errors(modbus_data)
-            actual_data = self.convert_string_for_errors(actual_data)
-            is_data_equal = self.check_if_strings_equal(modbus_data, actual_data)
+            modbus_data = self.__remove_whitespace(modbus_data)
+            actual_data = self.__remove_whitespace(actual_data)
+            is_data_equal = self.__check_if_strings_pass(modbus_data, actual_data)
         elif(type(modbus_data) == int):
             if(actual_data != int):
                 actual_data = int(actual_data)
-            is_data_equal = self.check_error_value(modbus_data, actual_data)
+            is_data_equal = self.__check_if_numbers_pass(modbus_data, actual_data)
         elif(type(modbus_data) == datetime):
-            is_data_equal = self.check_datetime_error_value(modbus_data, actual_data)
+            is_data_equal = self.__check_if_datetime_pass(modbus_data, actual_data)
         return [modbus_data, actual_data, is_data_equal] # I could create class with these
 
     #results: modbus_data, actual_data, is_data_equal

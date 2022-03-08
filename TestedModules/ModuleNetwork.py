@@ -21,8 +21,8 @@ class ModuleNetwork(Module):
         numbers = []
         for i in range(len(read_data)):
             temp = format(read_data[i], '016b')
-            numbers.append(str(self.binaryToDecimal(temp[0:8])))
-            numbers.append(str(self.binaryToDecimal(temp[8:16])))
+            numbers.append(str(self.binary_to_decimal(temp[0:8])))
+            numbers.append(str(self.binary_to_decimal(temp[8:16])))
         ip = self.format_ip(numbers)
         return ip
 

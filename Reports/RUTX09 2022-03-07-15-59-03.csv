@@ -1,6 +1,0 @@
-Model,RUTX09
-
-Iteration nr.,Module name,Register name,Register number,Modbus value,Router value,Result,,CPU usage,Used RAM,Used RAM difference
-1,ModuleSystem,System uptime,1,28885,28885,Passed,,0.652%,84357120,-65536
-2,ModuleSystem,Mobile signal strength (RSSI in dBm),3,-77,-77,Passed,,0.652%,84271104,-86016
-3,ModuleSystem,System temperature (in 0.1 °C),5,410,410,Passed,,0.652%,84303872,32768

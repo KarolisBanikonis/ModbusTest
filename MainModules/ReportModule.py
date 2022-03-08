@@ -19,10 +19,8 @@ class ReportModule:
         try:
             self.report = open(self.report_file, 'a', newline='')
             self.writer = csv.writer(self.report)
-            # return report, writer
         except IOError:
             print(f"Could not open the file at {self.report_file}")
-            # return None
 
     def close(self):
         self.report.close()
