@@ -1,4 +1,4 @@
-def extract_status(input):
+def get_first_digit(input):
     for symbol in input:
         if(symbol.isdigit()):
             return symbol

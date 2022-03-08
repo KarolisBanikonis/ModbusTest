@@ -2,12 +2,12 @@
 import json
 
 # Local imports
-from Libraries.DataMethods import extract_status, get_used_memory_from_string
+from Libraries.DataMethods import get_first_digit, get_used_memory_from_string
 from Libraries.ConversionMethods import convert_string_to_bytes
 
 def ssh_get_uci_hwinfo(ssh, module):
     output = ssh.ssh_issue_command(f"uci get hwinfo.hwinfo.{module}")
-    return extract_status(output)
+    return get_first_digit(output)
 
 def ubus_call(ssh, service, procedure, print_status=None):
     output = ssh.ssh_issue_command(f"ubus -v call {service} {procedure}", print_status)
@@ -29,7 +29,7 @@ def gsmctl_call(ssh, flag, print_status=None):
 
 def try_enable_gps(ssh):
     gps_enabled = ssh.ssh_issue_command("uci get gps.gpsd.enabled")
-    if(extract_status(gps_enabled) == "0"):
+    if(get_first_digit(gps_enabled) == "0"):
         ssh.ssh_issue_command("uci set gps.gpsd.enabled='1'")
         ssh.ssh_issue_command("uci commit gps.gpsd")
         ssh.ssh_issue_command("/etc/init.d/gpsd start")
@@ -47,4 +47,4 @@ def get_df_used_memory(ssh, mounted_on):
 
 def get_cpu_count(ssh):
     output = ssh.ssh_issue_command("grep 'model name' /proc/cpuinfo | wc -l")
-    return int(extract_status(output))
+    return int(get_first_digit(output))

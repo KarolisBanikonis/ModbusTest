@@ -3,8 +3,8 @@ from datetime import datetime
 import math
 import re
 
-# Third party imports
-from colorama import Fore, Style
+# Local imports
+from Libraries.PrintMethods import print_with_colour
 
 class Module:
 
@@ -26,7 +26,7 @@ class Module:
         
     def print_test_results(self, output_list, current_json, modbus_data, final_data, cpu, ram):
         output_list[1] = f"Tests were done - {self.total_number}."
-        output_list[2] = f"{Fore.GREEN}Tests passed - {self.correct_number}.{Style.RESET_ALL}{Fore.RED} Tests failed - {self.total_number - self.correct_number}.{Style.RESET_ALL}"
+        output_list[2] = f"{print_with_colour(f'Tests passed - {self.correct_number}.', 'GREEN')}{print_with_colour(f' Tests failed - {self.total_number - self.correct_number}.', 'RED')}"
         output_list[3] = f"CPU usage - {cpu}. RAM usage: {ram}."
         output_list[4] = f"Module being tested - {self.module_name}."
         output_list[5] = f"Testing - {current_json['name']}. Address - {current_json['address']}."

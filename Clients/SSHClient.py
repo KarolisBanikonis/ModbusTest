@@ -6,6 +6,7 @@ import paramiko
 
 # Local imports
 from MainModules.ConnectionFailedError import ConnectionFailedError
+from Libraries.PrintMethods import print_with_colour
 
 class SSHClient:
 
@@ -28,7 +29,7 @@ class SSHClient:
             while(try_connect_nr < self.CONNECT_ATTEMPTS):
                 try_connect_nr += 1
                 if(print_status != None):
-                    print_status[7] = f"Reconnecting SSH attempt nr {try_connect_nr} out of {self.CONNECT_ATTEMPTS}!"
+                    print_status[7] = print_with_colour(f"Reconnecting SSH attempt nr {try_connect_nr} out of {self.CONNECT_ATTEMPTS}!", "YELLOW")
                 connected = self.ssh_connect()
                 if(connected):
                     if(print_status != None):
@@ -63,7 +64,7 @@ class SSHClient:
                 time.sleep(self.SLEEP_TIME)
                 self.try_ssh_connect(print_status)
                 output = self.ssh_issue_command(command, print_status)
-        except ConnectionResetError as err:
+        except ConnectionResetError:
             time.sleep(self.SLEEP_TIME)
             output = self.ssh_issue_command(command, print_status)
         return output

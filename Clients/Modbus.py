@@ -6,6 +6,7 @@ from pyModbusTCP.client import ModbusClient
 
 # Local imports
 from MainModules.ConnectionFailedError import ConnectionFailedError
+from Libraries.PrintMethods import print_with_colour
 
 class Modbus:
 
@@ -64,7 +65,7 @@ class Modbus:
             while(try_connect_nr < self.CONNECT_ATTEMPTS):
                 try_connect_nr += 1
                 if(print_status != None):
-                    print_status[7] = f"Reconnecting Modbus attempt nr {try_connect_nr} out of {self.CONNECT_ATTEMPTS}!"
+                    print_status[7] = print_with_colour(f"Reconnecting Modbus attempt nr {try_connect_nr} out of {self.CONNECT_ATTEMPTS}!", "YELLOW")
                 time.sleep(self.SLEEP_TIME)
                 state = self.client.is_open()
                 if(state):
