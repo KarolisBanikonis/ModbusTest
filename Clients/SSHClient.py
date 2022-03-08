@@ -29,7 +29,7 @@ class SSHClient:
             while(try_connect_nr < self.CONNECT_ATTEMPTS):
                 try_connect_nr += 1
                 if(print_status != None):
-                    print_status[7] = print_with_colour(f"Reconnecting SSH attempt nr {try_connect_nr} out of {self.CONNECT_ATTEMPTS}!", "YELLOW")
+                    print_status[7] = print_with_colour(f"Reconnecting SSH attempt nr. {try_connect_nr} out of {self.CONNECT_ATTEMPTS}!", "YELLOW")
                 connected = self.ssh_connect()
                 if(connected):
                     if(print_status != None):
@@ -55,7 +55,7 @@ class SSHClient:
             return False
 
     def ssh_issue_command(self, command, print_status=None):
-        connected = self.try_ssh_connect()
+        connected = self.try_ssh_connect(print_status)
         try:
             _stdin, _stdout,_stderr = self.ssh.exec_command(command)
             output = _stdout.read().decode()
@@ -65,6 +65,7 @@ class SSHClient:
                 self.try_ssh_connect(print_status)
                 output = self.ssh_issue_command(command, print_status)
         except ConnectionResetError:
+            print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
             time.sleep(self.SLEEP_TIME)
             output = self.ssh_issue_command(command, print_status)
         return output

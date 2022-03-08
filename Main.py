@@ -48,7 +48,7 @@ def main():
                 try:
                     for module in module_instances:
                         test_count = module.read_all_data(output_list, test_count)
-                    time.sleep(5)
+                    time.sleep(1)
                 except ConnectionFailedError as err:
                     output_list[7] = print_with_colour(f"Connection stopped: {err}", "RED")
                     close_all_instances([ssh_client.ssh, modbus.client])
