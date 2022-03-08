@@ -1,6 +1,6 @@
 # Local imports
 from MainModules.Module import Module
-from Libraries.FileMethods import remove_char
+from Libraries.DataMethods import remove_char
 from Libraries.ConversionMethods import convert_timestamp_to_date, convert_string_to_date
 from Libraries.SSHMethods import try_enable_gps, get_parsed_ubus_data, get_concrete_ubus_data
 

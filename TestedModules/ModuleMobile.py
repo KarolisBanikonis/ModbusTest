@@ -1,6 +1,6 @@
 # Local imports
 from MainModules.Module import Module
-from Libraries.FileMethods import remove_char, get_value_in_parenthesis
+from Libraries.DataMethods import remove_char, get_value_in_parenthesis
 from Libraries.SSHMethods import ssh_get_uci_hwinfo, get_parsed_ubus_data, get_concrete_ubus_data
 
 class ModuleMobile(Module):
