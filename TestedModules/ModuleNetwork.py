@@ -33,10 +33,10 @@ class ModuleNetwork(Module):
         memory = test_count[2]
         for i in range(len(self.data)):
             current = self.data[i]
-            result = self.modbus.read_registers(current)
+            result = self.modbus.read_registers(current, output_list)
             if(current['address'] == 55):
                 modbus_data = self.convert_reg_text(result)
-                parsed_data = get_parsed_ubus_data(self.ssh, current)
+                parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
                 final_data = remove_char(parsed_data['macaddr'], ':') # returns lower case
             #WAN IP       neeed to add check if it is Null
             if(current['address'] == 139):
@@ -45,8 +45,8 @@ class ModuleNetwork(Module):
             results = self.check_if_results_match(modbus_data, final_data)
             self.change_test_count(results)
             past_memory = memory
-            memory = self.info.get_used_memory()
-            cpu_usage = self.info.get_cpu_usage()
+            memory = self.info.get_used_memory(output_list)
+            cpu_usage = self.info.get_cpu_usage(output_list)
             memory_difference = memory - past_memory
             self.report.writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2], '', cpu_usage, memory, memory_difference])
             self.print_test_results(output_list, current, results[0], results[1], cpu_usage, memory_difference)

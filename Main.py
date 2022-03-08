@@ -48,19 +48,16 @@ def main():
                 # delete_file_content(CSV_REPORT_FILE)
                 output_list[0] = f"Model - {info.router_model}"
                 # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS
+
                 for module in module_instances:
-                    # test_count = module.read_all_data(output_list, test_count)
                     try:
                         test_count = module.read_all_data(output_list, test_count)
                     except ConnectionFailedError as err:
                         output_list[7] = f"Connection stopped: {err}"
                         close_all_instances([ssh_client.ssh, modbus.client])
-                    # except socket.er ror as err:
-                    #     output_list[7] = f"Socket error: {err}"
-                    #     close_all_instances([ssh_client.ssh, modbus.client])
-                    # except paramiko.SSHException as err:
-                    #     output_list[7] = f"SSH connection stopped: {err}"
-                    #     close_all_instances([ssh_client.ssh, modbus.client])
+                    except KeyboardInterrupt as err:
+                        output_list[7] = f"User stopped tests with KeyboardInterrupt."
+                        close_all_instances([ssh_client.ssh, modbus.client])
 
                 time.sleep(1) # Jei istrauki laida cia baigias programos vykdymas
             

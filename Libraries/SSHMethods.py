@@ -4,30 +4,29 @@ import json
 # Local imports
 from Libraries.FileMethods import extract_status, get_used_memory_from_string
 from Libraries.ConversionMethods import convert_string_to_bytes
-from MainModules.ConnectionFailedError import ConnectionFailedError
 
 def ssh_get_uci_hwinfo(ssh, module):
     output = ssh.ssh_issue_command(f"uci get hwinfo.hwinfo.{module}")
     return extract_status(output)
 
-def ubus_call(ssh, service, procedure):
-    output = ssh.ssh_issue_command(f"ubus -v call {service} {procedure}")
+def ubus_call(ssh, service, procedure, print_status=None):
+    output = ssh.ssh_issue_command(f"ubus -v call {service} {procedure}", print_status)
     return output
 
-def get_parsed_ubus_data(ssh, current_data):
-    actual_data = ubus_call(ssh, current_data['service'], current_data['procedure'])
+def get_parsed_ubus_data(ssh, current_data, print_status=None):
+    actual_data = ubus_call(ssh, current_data['service'], current_data['procedure'], print_status)
     # if(actual_data == None or actual_data == ""):
         # raise ConnectionFailedError("Connection failed from get_parsed_ubus_data.")
     parsed_data = json.loads(actual_data) # CIA NULUZTA
     return parsed_data
 
-def get_concrete_ubus_data(ssh, current_data):
-    parsed_data = get_parsed_ubus_data(ssh, current_data)
+def get_concrete_ubus_data(ssh, current_data, print_status=None):
+    parsed_data = get_parsed_ubus_data(ssh, current_data, print_status)
     concrete_data = parsed_data[current_data['parse']]
     return concrete_data
 
-def gsmctl_call(ssh, flag):
-    output = ssh.ssh_issue_command(f"gsmctl -{flag}")
+def gsmctl_call(ssh, flag, print_status=None):
+    output = ssh.ssh_issue_command(f"gsmctl -{flag}", print_status)
     return output
 
 def try_enable_gps(ssh):

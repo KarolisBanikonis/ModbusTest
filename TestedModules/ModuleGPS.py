@@ -18,11 +18,11 @@ class ModuleGPS(Module):
         memory = test_count[2]
         for i in range(len(self.data)):
             current = self.data[i]
-            result = self.modbus.read_registers(current)
+            result = self.modbus.read_registers(current, output_list)
             if(current['number'] == 16):
                 modbus_data = self.convert_reg_text(result)
                 modbus_data = remove_char(modbus_data, "\x00")
-                parsed_data = get_parsed_ubus_data(self.ssh, current)
+                parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
                 if(current['address'] == 147):
                     #modbus = timestamp x 1000
                     #ubus = datetime in string
@@ -37,13 +37,13 @@ class ModuleGPS(Module):
                     final_data = convert_timestamp_to_date(timestamp[0])
             elif(current['number'] == 2):
                 modbus_data = self.convert_reg_number(result)
-                parsed_data = get_parsed_ubus_data(self.ssh, current)
+                parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
                 final_data = parsed_data[current['parse']]
             results = self.check_if_results_match(modbus_data, final_data)
             self.change_test_count(results)
             past_memory = memory
-            memory = self.info.get_used_memory()
-            cpu_usage = self.info.get_cpu_usage()
+            memory = self.info.get_used_memory(output_list)
+            cpu_usage = self.info.get_cpu_usage(output_list)
             memory_difference = memory - past_memory
             self.report.writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2], '', cpu_usage, memory, memory_difference])
             self.print_test_results(output_list, current, results[0], results[1], cpu_usage, memory_difference)

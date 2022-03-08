@@ -32,16 +32,14 @@ class Modbus:
         self.client.port(self.port)
         return True
 
-    def read_registers(self, data):
-        connected = self.try_new()
+    def read_registers(self, data, print_status=None):
+        connected = self.try_reconnect(print_status)
         registers_data = self.client.read_holding_registers(data['address'], data['number'])
         if(registers_data == "" or registers_data == None):
-            # self.try_new()
-            # self.read_registers(data)
             # raise ConnectionFailedError("Connection failed - In Modbus read reg.")
             time.sleep(self.SLEEP_TIME)
-            connected = self.try_new()
-            registers_data = self.read_registers(data)
+            connected = self.try_reconnect(print_status)
+            registers_data = self.read_registers(data, print_status)
         return registers_data
 
     def try_connect(self):
@@ -54,21 +52,30 @@ class Modbus:
         else:
             return True
 
-    def try_new(self):
+    def try_reconnect(self, print_status=None):
         state = self.client.is_open()
         if(state):
             return True
         else:
+            connected = self.client.open() # It is always closed(except first)
+            if(connected):
+                return True
             try_connect_nr = 0
             while(try_connect_nr < self.CONNECT_ATTEMPTS):
                 try_connect_nr += 1
+                if(print_status != None):
+                    print_status[7] = f"Reconnecting Modbus attempt nr {try_connect_nr} out of {self.CONNECT_ATTEMPTS}!"
                 time.sleep(self.SLEEP_TIME)
                 state = self.client.is_open()
                 if(state):
+                    if(print_status != None):
+                        print_status[7] = ""
                     return True
                 else:
                     connected = self.client.open()
                 if(connected):
+                    if(print_status != None):
+                        print_status[7] = ""
                     return True
                 # connected = self.client.open()
                 # if(connected):

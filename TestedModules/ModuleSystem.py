@@ -21,11 +21,11 @@ class ModuleSystem(Module):
         memory = test_count[2]
         for i in range(len(self.data)):
             current = self.data[i]
-            result = self.modbus.read_registers(current)
+            result = self.modbus.read_registers(current, output_list)
             # CHECK BY SOURCE FIRST
             if(current['source'] == "ubus" and current['number'] == 16):
                 modbus_data = self.convert_reg_text(result)
-                parsed_data = get_parsed_ubus_data(self.ssh, current)
+                parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
                 if(current['address'] == 39): #different parse
                     final_data = parsed_data['mnfinfo'][current['parse']]
                 else:
@@ -35,14 +35,14 @@ class ModuleSystem(Module):
                     modbus_data = self.convert_ref_signal(result[1])
                 else:
                     modbus_data = self.convert_reg_number(result)
-                parsed_data = get_parsed_ubus_data(self.ssh, current)
+                parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
                 if(current['address'] == 3):
                     final_data = parsed_data['mobile'][0][current['parse']]
                 else:
                     final_data = parsed_data[current['parse']]
             elif(current['source'] == "ubus" and current['number'] == 1):
                 modbus_data = result[0] # CIA NULUZTA
-                parsed_data = get_parsed_ubus_data(self.ssh, current)
+                parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
                 if(current['address'] == 324):
                     final_data = parsed_data['result'][0][current['parse']]
                 elif(current['address'] == 325):
@@ -53,8 +53,8 @@ class ModuleSystem(Module):
             results = self.check_if_results_match(modbus_data, final_data)
             self.change_test_count(results)
             past_memory = memory
-            memory = self.info.get_used_memory()
-            cpu_usage = self.info.get_cpu_usage()
+            memory = self.info.get_used_memory(output_list)
+            cpu_usage = self.info.get_cpu_usage(output_list)
             memory_difference = memory - past_memory
             self.report.writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2], '', cpu_usage, memory, memory_difference])
             self.print_test_results(output_list, current, results[0], results[1], cpu_usage, memory_difference)

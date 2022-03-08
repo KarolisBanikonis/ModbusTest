@@ -1,0 +1,10 @@
+Model,RUTX09
+
+Iteration nr.,Module name,Register name,Register number,Modbus value,Router value,Result,,CPU usage,Used RAM,Used RAM difference
+1,ModuleSystem,System uptime,1,3120,3120,Passed,,1.295%,75677696,-24576
+2,ModuleSystem,Mobile signal strength (RSSI in dBm),3,-81,-81,Passed,,1.295%,75767808,90112
+3,ModuleSystem,System temperature (in 0.1 °C),5,340,340,Passed,,1.296%,75915264,147456
+4,ModuleSystem,System hostname,7,teltonika-rutx09.com,teltonika-rutx09.com,Passed,,1.296%,75878400,-36864
+5,ModuleSystem,Router serial number,39,1107883912,1107883912,Passed,,1.296%,76017664,139264
+6,ModuleSystem,Router name,71,rutx09,rutx09,Passed,,1.297%,76193792,176128
+7,ModuleSystem,Digital non-isolated input (4 PIN connector),324,0,0,Passed,,1.297%,76177408,-16384
