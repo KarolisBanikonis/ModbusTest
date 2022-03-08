@@ -102,6 +102,3 @@ class Module:
         self.total_number += 1
         if(results[2] == self.RESULT_PASSED):
             self.correct_number += 1
-
-    def print_total_module_test_results(self):
-        print(f"Successful: {self.correct_number}, Not successful: {self.total_number - self.correct_number}, Total: {self.total_number}.")

@@ -1,7 +1,7 @@
 # Local imports
 from MainModules.Module import Module
 from Libraries.FileMethods import remove_char, get_value_in_parenthesis
-from Libraries.SSHMethods import ssh_get_uci_hwinfo, get_parsed_ubus_data
+from Libraries.SSHMethods import ssh_get_uci_hwinfo, get_parsed_ubus_data, get_concrete_ubus_data
 
 class ModuleMobile(Module):
 
@@ -37,13 +37,12 @@ class ModuleMobile(Module):
                     final_data = get_value_in_parenthesis(final_data)
             elif(current['number'] == 2):
                 modbus_data = self.convert_reg_number(result)
-                # Not really found? = 185, 187, 189, 191, 193, 195
-                parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
-                final_data = parsed_data[current['parse']]
+                final_data = get_concrete_ubus_data(self.ssh, current, output_list)
+                # final_data = parsed_data[current['parse']]
             elif(current['number'] == 1):
                 modbus_data = result[0]
-                parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
-                final_data = parsed_data[current['parse']]
+                final_data = get_concrete_ubus_data(self.ssh, current, output_list)
+                # final_data = parsed_data[current['parse']]
             results = self.check_if_results_match(modbus_data, final_data)
             self.change_test_count(results)
             past_memory = self.memory

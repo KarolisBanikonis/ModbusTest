@@ -2,7 +2,7 @@
 from MainModules.Module import Module
 from Libraries.FileMethods import remove_char
 from Libraries.ConversionMethods import convert_timestamp_to_date, convert_string_to_date
-from Libraries.SSHMethods import try_enable_gps, get_parsed_ubus_data
+from Libraries.SSHMethods import try_enable_gps, get_parsed_ubus_data, get_concrete_ubus_data
 
 class ModuleGPS(Module):
 
@@ -33,12 +33,12 @@ class ModuleGPS(Module):
                     # print(f"UBUS = {final_data} typeof {type(final_data)}")
                 elif(current['address'] == 163):
                     modbus_data = convert_string_to_date(modbus_data)
-                    timestamp = [parsed_data[current['parse']]]
-                    final_data = convert_timestamp_to_date(timestamp[0])
+                    timestamp = parsed_data[current['parse']]
+                    final_data = convert_timestamp_to_date(timestamp)
             elif(current['number'] == 2):
                 modbus_data = self.convert_reg_number(result)
-                parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
-                final_data = parsed_data[current['parse']]
+                final_data = get_concrete_ubus_data(self.ssh, current, output_list)
+                # final_data = parsed_data[current['parse']]
             results = self.check_if_results_match(modbus_data, final_data)
             self.change_test_count(results)
             past_memory = memory

@@ -1,7 +1,7 @@
 # Local imports
 from MainModules.Module import Module
 from Libraries.FileMethods import remove_char
-from Libraries.SSHMethods import get_parsed_ubus_data
+from Libraries.SSHMethods import get_parsed_ubus_data, get_concrete_ubus_data
 
 class ModuleNetwork(Module):
 
@@ -36,8 +36,8 @@ class ModuleNetwork(Module):
             result = self.modbus.read_registers(current, output_list)
             if(current['address'] == 55):
                 modbus_data = self.convert_reg_text(result)
-                parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
-                final_data = remove_char(parsed_data['macaddr'], ':') # returns lower case
+                final_data_with_colon = get_concrete_ubus_data(self.ssh, current, output_list)# returns lower case
+                final_data = remove_char(final_data_with_colon, ':')
             #WAN IP       neeed to add check if it is Null
             if(current['address'] == 139):
                 modbus_data = self.convert_reg_ip(result)

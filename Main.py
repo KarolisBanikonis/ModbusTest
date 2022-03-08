@@ -9,7 +9,7 @@ import paramiko
 import socket
 
 # Local imports
-from Libraries.FileMethods import read_file, close_all_instances, terminate_program
+from Libraries.FileMethods import read_file, close_all_instances
 from MainModules.ConnectionFailedError import ConnectionFailedError
 from MainModules.ModuleLoader import ModuleLoader
 from MainModules.ConfigurationModule import ConfigurationModule
@@ -27,7 +27,7 @@ def main():
     ssh_client = SSHClient(conf.get_all_data())
     ssh_connected = ssh_client.ssh_connect()
     if(ssh_connected == False):
-        terminate_program()
+        quit()
     info = InformationModule(ssh_client, data['InformationModule'][0])
     report = ReportModule(info)
     modbus = Modbus(conf.get_all_data())
