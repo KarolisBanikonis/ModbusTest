@@ -1,5 +1,4 @@
 # Standard library imports
-import time
 
 # Third party imports
 import paramiko
@@ -23,7 +22,7 @@ class SSHClient:
     def try_ssh_connect(self, print_status=None):
         state = self.ssh.get_transport().is_active()
         if(state):
-            return True
+            return
         else:
             try_connect_nr = 0
             while(try_connect_nr < self.CONNECT_ATTEMPTS):
@@ -34,37 +33,41 @@ class SSHClient:
                 if(connected):
                     if(print_status != None):
                         print_status[7] = ""
-                    return True
+                    return
             raise ConnectionFailedError("Connection failed - SSH.")
 
     def ssh_connect(self):
         try:
             self.ssh.connect(self.host, username=self.username, password=self.password, timeout=1)
             return True
-        except paramiko.AuthenticationException:
-            print("SSH Authentication failed, check your credentials!")
+        except OSError:
             return False
-        except paramiko.ssh_exception.NoValidConnectionsError as err:
-            print(f"Not valid SSH connection: {err}")
-            return False
-        except TimeoutError as err:
-            print(f"Check if you have valid connection: {err}")
-            return False
-        except OSError as err:
-            # print(f"SSH connection failed, check host value: {err}")
+
+    def first_ssh_connect(self):
+        try:
+            self.ssh.connect(self.host, username=self.username, password=self.password, timeout=1)
+            return True
+        except (paramiko.AuthenticationException, paramiko.ssh_exception.NoValidConnectionsError, OSError) as err:
+            error_text = ""
+            if(isinstance(err, paramiko.AuthenticationException)):
+                error_text = "SSH Authentication failed, check your credentials!"
+            elif(isinstance(err, paramiko.ssh_exception.NoValidConnectionsError)):
+                error_text = f"Not valid SSH connection: {err}"
+            else: #OSError
+                error_text = f"SSH connection failed, check host value: {err}"
+            print(error_text)
             return False
 
     def ssh_issue_command(self, command, print_status=None):
-        connected = self.try_ssh_connect(print_status)
+        # self.try_ssh_connect(print_status)
         try:
+            self.try_ssh_connect(print_status)
             _stdin, _stdout,_stderr = self.ssh.exec_command(command)
             output = _stdout.read().decode()
             if(output == "" or output == None):
-                # raise ConnectionFailedError("Connection failed - In SSH command exec.")
-                time.sleep(self.SLEEP_TIME)
-                self.try_ssh_connect(print_status)
+                print("IF STATEMENT")
                 output = self.ssh_issue_command(command, print_status)
         except ConnectionResetError:
-            time.sleep(self.SLEEP_TIME)
+            print("ConnectionResetError")
             output = self.ssh_issue_command(command, print_status)
         return output

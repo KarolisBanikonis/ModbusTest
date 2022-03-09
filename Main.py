@@ -26,7 +26,7 @@ def main():
     conf = ConfigurationModule(CONFIGURATION_FILE)
     data = read_file(PARAMETERS_FILE)
     ssh_client = SSHClient(conf.get_all_data())
-    ssh_connected = ssh_client.ssh_connect()
+    ssh_connected = ssh_client.first_ssh_connect()
     if(ssh_connected == False):
         quit()
     info = InformationModule(ssh_client, data['InformationModule'][0])
@@ -51,7 +51,7 @@ def main():
                 try:
                     for module in module_instances:
                         test_count = module.read_all_data(output_list, test_count)
-                        ftp_client.store_report()
+                        # ftp_client.store_report()
                     time.sleep(1)
                 except FTPError as err:
                     output_list[7] = print_with_colour(err, "RED")
