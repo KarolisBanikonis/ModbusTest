@@ -23,5 +23,14 @@
                 }
             ]
         }
+    ],
+    "FTP":[
+        {
+            "FTP_USE": "Yes",
+            "FTP_HOST": "127.0.0.1",
+            "FTP_PORT": 21,
+            "FTP_USER": "ftpuser",
+            "FTP_PASSWORD": "Admin123"
+        }
     ]
 }

@@ -65,7 +65,6 @@ class SSHClient:
                 self.try_ssh_connect(print_status)
                 output = self.ssh_issue_command(command, print_status)
         except ConnectionResetError:
-            print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
             time.sleep(self.SLEEP_TIME)
             output = self.ssh_issue_command(command, print_status)
         return output

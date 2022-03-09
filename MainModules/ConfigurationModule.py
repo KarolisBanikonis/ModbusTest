@@ -11,3 +11,6 @@ class ConfigurationModule:
 
     def get_all_data(self):
         return self.data['Settings'][0]
+
+    def get_ftp_data(self):
+        return self.data['FTP'][0]

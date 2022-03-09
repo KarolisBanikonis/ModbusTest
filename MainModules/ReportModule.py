@@ -8,19 +8,27 @@ class ReportModule:
 
     def __init__(self, info):
         self.router_model = info.router_model
-        self.report_file = f"{self.REPORTS_DIRECTORY}{self.generate_file_name(self.router_model)}.csv"
+        self.report_file = f"{self.generate_file_name(self.router_model)}.csv"
+        self.report_file_path = f"{self.REPORTS_DIRECTORY}{self.report_file}"
         self.write_router_name_and_header()
 
     def generate_file_name(self, name):
         date = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        return f"{name} {date}"
+        return f"{name}-{date}"
 
     def open_report(self):
         try:
-            self.report = open(self.report_file, 'a', newline='')
+            self.report = open(self.report_file_path, 'a', newline='')
             self.writer = csv.writer(self.report)
         except IOError:
-            print(f"Could not open the file at {self.report_file}")
+            print(f"Could not open the file at {self.report_file_path}")
+
+    def open_report_for_ftp(self):
+        try:
+            report = open(self.report_file_path, 'rb')
+            return report
+        except IOError:
+            print(f"Could not open the file at {self.report_file_path}")
 
     def close(self):
         self.report.close()
