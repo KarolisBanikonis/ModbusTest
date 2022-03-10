@@ -1,6 +1,8 @@
 # Standard library imports
 import csv
-from datetime import datetime
+
+# Local imports
+from Libraries.DataMethods import get_current_data_as_string
 
 class ReportModule:
 
@@ -13,7 +15,7 @@ class ReportModule:
         self.write_router_name_and_header()
 
     def generate_file_name(self, name):
-        date = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        date = get_current_data_as_string("%Y-%m-%d-%H-%M-%S")
         return f"{name}-{date}"
 
     def open_report(self):
@@ -41,4 +43,4 @@ class ReportModule:
         self.report.close()
 
     def write_header(self):
-        self.writer.writerow(['Iteration nr.', 'Module name','Register name', 'Register number', 'Modbus value', 'Router value', 'Result','','CPU usage','Used RAM','Used RAM difference'])
+        self.writer.writerow(['Iteration nr.', 'Module name','Register name', 'Register number', 'Modbus value', 'Router value', 'Result','','CPU usage','Total Used RAM','Used RAM difference'])

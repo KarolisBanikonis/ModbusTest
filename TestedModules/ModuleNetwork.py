@@ -48,8 +48,9 @@ class ModuleNetwork(Module):
             memory = self.info.get_used_memory(output_list)
             cpu_usage = self.info.get_cpu_usage(output_list)
             memory_difference = memory - past_memory
-            self.report.writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2], '', cpu_usage, memory, memory_difference])
-            self.print_test_results(output_list, current, results[0], results[1], cpu_usage, memory_difference)
+            total_mem_difference = self.info.mem_used_at_start - memory
+            self.report.writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2], '', cpu_usage, total_mem_difference, memory_difference])
+            self.print_test_results(output_list, current, results[0], results[1], cpu_usage, total_mem_difference)
         self.report.close()
         return [self.total_number, self.correct_number, memory]
         

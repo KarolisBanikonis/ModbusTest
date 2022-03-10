@@ -13,12 +13,12 @@ class EmailClient:
         self.password = conf['PASSWORD']
         self.receiver = conf['RECEIVER']
         self.interval = conf['INTERVAL_HOURS']
-        self.message = conf['HEADER'] + conf['MESSAGE'] + "\n"
+        self.message = "Subject: Tests summary\n\n Tests summary:\n\n"
 
     def send_email(self, output_list):
         text = self.message
-        for line in output_list:
-            text += remove_colour_tags(f"{line}\n")
+        for i in range(4):
+            text += remove_colour_tags(f"{output_list[i]}\n")
 
         context = ssl.create_default_context()
         with smtplib.SMTP_SSL(self.smtp, self.port, context=context) as server:

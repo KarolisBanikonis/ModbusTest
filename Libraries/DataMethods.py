@@ -1,3 +1,5 @@
+# Standard library imports
+from datetime import datetime
 import re
 
 def get_first_digit(input):
@@ -30,3 +32,7 @@ def get_used_memory_from_string(string_value):
 def remove_colour_tags(data):
     pattern = '.\[.*?m'
     return re.sub(pattern, '', data)
+
+def get_current_data_as_string(format):
+    current_data = datetime.now().strftime(format)
+    return current_data

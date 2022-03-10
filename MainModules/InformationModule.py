@@ -9,6 +9,7 @@ class InformationModule:
         self.tmp_used_memory = get_df_used_memory(self.conn, "/tmp")
         self.router_model = get_router_model(self.conn, self.data['Model'])
         self.cpu_count = get_cpu_count(self.conn)
+        self.mem_used_at_start = self.get_used_memory()
 
     def get_used_memory(self, print_status=None):
         all_memories = get_concrete_ubus_data(self.conn, self.data['Memory'], print_status)

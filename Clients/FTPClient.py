@@ -36,8 +36,6 @@ class FTPClient:
         self.ftp.quit()
 
     def store_report(self):
-        if(self.allowed.casefold() != "yes"):
-            return
         self.connect()
         report = self.report_module.open_report_for_ftp()
         command = f'STOR {self.report_module.report_file}'

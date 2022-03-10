@@ -44,8 +44,6 @@
             "USER": "labas0113@gmail.com",
             "PASSWORD": "belekas111",
             "RECEIVER": "labas0113@gmail.com",
-            "HEADER": "Subject: Tests summary\n\n",
-            "MESSAGE": "Tests summary:\n",
             "INTERVAL_HOURS": 1
         }
     ]

@@ -10,11 +10,12 @@ class Scheduler:
         self.ftp = ftp
         self.email = email
         self.scheduler = BackgroundScheduler()
-        self.scheduler.add_job(self.ftp.store_report, 'interval', minutes=self.ftp.interval)
-        # self.scheduler.add_job(self.email.send_email, 'interval', minutes=1)
+        if(self.ftp.allowed.casefold() != "yes"):
+            self.scheduler.add_job(self.ftp.store_report, 'interval', minutes=self.ftp.interval)
     
     def start(self):
         self.scheduler.start()
 
     def send_email(self, output_list):
-        self.scheduler.add_job(self.email.send_email, 'interval', hours=self.email.interval, args=output_list)
+        if(self.email.allowed.casefold() != "yes"):
+            self.scheduler.add_job(self.email.send_email, 'interval', hours=self.email.interval, args=output_list)
