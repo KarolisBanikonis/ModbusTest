@@ -2,9 +2,11 @@
     "Settings":[
         {
             "SERVER_HOST": "192.168.1.1",
-            "MODBUS_PORT": 510,
+            "MODBUS_PORT": 511,
             "USERNAME": "root",
             "PASSWORD": "Admin123",
+            "RECONNECT_ATTEMPTS": 7,
+            "TIMEOUT": 2,
             "MODULES" : [
                 {
                     "name": "ModuleSystem"
@@ -31,6 +33,18 @@
             "FTP_PORT": 21,
             "FTP_USER": "ftpuser",
             "FTP_PASSWORD": "Admin123"
+        }
+    ],
+    "Email":[
+        {
+            "EMAIL_USE": "Yes",
+            "PORT": 465,
+            "SMTP": "smtp.gmail.com",
+            "USER": "labas0113@gmail.com",
+            "PASSWORD": "belekas111",
+            "RECEIVER": "labas0113@gmail.com",
+            "HEADER": "Subject: Tests are done!\n\n",
+            "MESSAGE": " model tests are done!"
         }
     ]
 }

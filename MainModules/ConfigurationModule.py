@@ -14,3 +14,6 @@ class ConfigurationModule:
 
     def get_ftp_data(self):
         return self.data['FTP'][0]
+
+    def get_email_data(self):
+        return self.data['Email'][0]
