@@ -10,7 +10,7 @@ from Libraries.PrintMethods import print_with_colour
 class SSHClient:
 
     CONNECT_ATTEMPTS = 7
-    SLEEP_TIME = 0.2
+    TIMEOUT = 1
 
     def __init__(self, configuration):
         self.ssh = paramiko.client.SSHClient()
@@ -38,14 +38,14 @@ class SSHClient:
 
     def ssh_connect(self):
         try:
-            self.ssh.connect(self.host, username=self.username, password=self.password, timeout=1)
+            self.ssh.connect(self.host, username=self.username, password=self.password, timeout=self.TIMEOUT)
             return True
         except OSError:
             return False
 
     def first_ssh_connect(self):
         try:
-            self.ssh.connect(self.host, username=self.username, password=self.password, timeout=1)
+            self.ssh.connect(self.host, username=self.username, password=self.password, timeout=self.TIMEOUT)
             return True
         except (paramiko.AuthenticationException, paramiko.ssh_exception.NoValidConnectionsError, OSError) as err:
             error_text = ""
@@ -59,15 +59,12 @@ class SSHClient:
             return False
 
     def ssh_issue_command(self, command, print_status=None):
-        # self.try_ssh_connect(print_status)
         try:
             self.try_ssh_connect(print_status)
             _stdin, _stdout,_stderr = self.ssh.exec_command(command)
             output = _stdout.read().decode()
-            if(output == "" or output == None):
-                print("IF STATEMENT")
+            if(output == None):
                 output = self.ssh_issue_command(command, print_status)
         except ConnectionResetError:
-            print("ConnectionResetError")
             output = self.ssh_issue_command(command, print_status)
         return output

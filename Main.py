@@ -42,27 +42,23 @@ def main():
 
     with output(output_type="list", initial_len=8, interval=0) as output_list:
         while True:
-            modbus_connected = modbus.try_connect()
-            if(modbus_connected == False):
+            output_list[0] = f"Model - {info.router_model}"
+            # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS
+            try:
+                for module in module_instances:
+                    test_count = module.read_all_data(output_list, test_count)
+                    # ftp_client.store_report()
+                time.sleep(1)
+            except FTPError as err:
+                output_list[7] = print_with_colour(err, "RED")
+            except ConnectionFailedError as err:
+                output_list[7] = print_with_colour(f"Connection stopped: {err}", "RED")
                 close_all_instances([ssh_client.ssh, modbus.client])
-            else:
-                output_list[0] = f"Model - {info.router_model}"
-                # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS
-                try:
-                    for module in module_instances:
-                        test_count = module.read_all_data(output_list, test_count)
-                        # ftp_client.store_report()
-                    time.sleep(1)
-                except FTPError as err:
-                    output_list[7] = print_with_colour(err, "RED")
-                except ConnectionFailedError as err:
-                    output_list[7] = print_with_colour(f"Connection stopped: {err}", "RED")
-                    close_all_instances([ssh_client.ssh, modbus.client])
-                except KeyboardInterrupt as err:
-                    output_list[7] = print_with_colour("User stopped tests with KeyboardInterrupt.", "RED")
-                    close_all_instances([ssh_client.ssh, modbus.client])
-                # finally:
-                #     close_all_instances([ssh_client.ssh, modbus.client])
+            except KeyboardInterrupt as err:
+                output_list[7] = print_with_colour("User stopped tests with KeyboardInterrupt.", "RED")
+                close_all_instances([ssh_client.ssh, modbus.client])
+            # finally:
+            #     close_all_instances([ssh_client.ssh, modbus.client])
 
 if __name__ == "__main__":
     main()
