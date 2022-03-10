@@ -2,11 +2,10 @@
 
 # Standard library imports
 import time
-import datetime
+from datetime import datetime
 
 # Third party imports
 from reprint import output
-from apscheduler.schedulers.blocking import BlockingScheduler
 
 # Local imports
 from Libraries.FileMethods import read_file, close_all_instances
@@ -21,6 +20,7 @@ from Clients.EmailClient import EmailClient
 from MainModules.ReportModule import ReportModule
 from Libraries.PrintMethods import print_with_colour
 from MainModules.FTPError import FTPError
+from MainModules.Scheduler import Scheduler
 
 CONFIGURATION_FILE = "config.json"
 PARAMETERS_FILE = "registers.json"
@@ -42,18 +42,21 @@ def main():
     module_instances = module_loader.init_modules(data, modbus, info, report)
     test_count = [0, 0, info.get_used_memory()] # test_number, correct_number, used_ram
     ftp_client = FTPClient(conf.get_ftp_data(), report)
-    email = EmailClient(conf.get_email_data(), info.router_model)
+    email = EmailClient(conf.get_email_data())
+    scheduler = Scheduler(ftp_client, email)
+    # scheduler.start()
 
     with output(output_type="list", initial_len=8, interval=0) as output_list:
+        scheduler.send_email([output_list])
+        scheduler.start()
         while True:
-
-            output_list[0] = f"Model - {info.router_model}. Start time: {datetime.now().strftime('%Y-%m-%d-%H-%M')}"
+            output_list[0] = f"Model - {info.router_model}. Start time: {datetime.now().strftime('%Y-%m-%d-%H-%M')}."
             # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS
             try:
                 for module in module_instances:
                     test_count = module.read_all_data(output_list, test_count)
                     # ftp_client.store_report()
-                email.send_email()
+                # email.send_email(output_list)
                 time.sleep(10)
             except FTPError as err:
                 output_list[7] = print_with_colour(err, "RED")

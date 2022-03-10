@@ -1,3 +1,5 @@
+import re
+
 def get_first_digit(input):
     for symbol in input:
         if(symbol.isdigit()):
@@ -24,3 +26,7 @@ def get_used_memory_from_string(string_value):
         elif(symbol.isdigit()):
             first_space = True
     return used_memory
+
+def remove_colour_tags(data):
+    pattern = '.\[.*?m'
+    return re.sub(pattern, '', data)

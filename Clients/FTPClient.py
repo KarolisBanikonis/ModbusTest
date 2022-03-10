@@ -13,6 +13,7 @@ class FTPClient:
         self.port = config['FTP_PORT']
         self.username = config['FTP_USER']
         self.password = config['FTP_PASSWORD']
+        self.interval = config['INTERVAL_MINUTES']
         self.report_module = report_module
         self.ftp = ftplib.FTP()
 
