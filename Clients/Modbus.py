@@ -6,7 +6,7 @@ from pyModbusTCP.client import ModbusClient
 
 # Local imports
 from MainModules.ConnectionFailedError import ConnectionFailedError
-from Libraries.PrintMethods import print_with_colour
+from Libraries.PrintMethods import print_error
 
 class Modbus:
 
@@ -43,32 +43,34 @@ class Modbus:
             return True
 
     def read_registers(self, data, print_status=None):
-        # try:
         self.try_reconnect(print_status)
         registers_data = self.client.read_holding_registers(data['address'], data['number'])
-        if(registers_data == None or registers_data == ""):
-            # raise ConnectionFailedError("Connection failed - In Modbus read reg.")
-            registers_data = self.read_registers(data, print_status)
+        # if(registers_data == None or registers_data == ""):
+        #     # raise ConnectionFailedError("Connection failed - In Modbus read reg.")
+        #     registers_data = self.read_registers(data, print_status)
         return registers_data
 
     def try_reconnect(self, print_status=None):
-        state = self.try_connect()
-        if(state):
-            return
-        else:
-            try_connect_nr = 0
-            while(try_connect_nr < self.connect_attempts):
-                try_connect_nr += 1
-                state = self.try_connect()
-                if(state):
-                    if(print_status != None):
-                        print_status[7] = ""
-                        return
+        time.sleep(0.3)
+        # state = self.try_connect()
+        # if(state):
+        #     return
+        # else:
+        # print("IN RECONNECT MODBUS")
+        try_connect_nr = 0
+        while(try_connect_nr < self.connect_attempts):
+            try_connect_nr += 1
+            state = self.try_connect()
+            if(state):
                 if(print_status != None):
-                    time.sleep(self.timeout)
-                    print_status[7] = print_with_colour(f"Reconnecting Modbus attempt nr. {try_connect_nr} out of {self.connect_attempts}!", "YELLOW")
-                    
-            raise ConnectionFailedError("Connection failed - Modbus.")
+                    print_error("", print_status)
+                    return
+            if(print_status != None):
+                time.sleep(self.timeout) # only on Linux needed
+                error_text = f"Reconnecting Modbus attempt nr. {try_connect_nr} out of {self.connect_attempts}!"
+                print_error(error_text, print_status, "YELLOW")
+                
+        raise ConnectionFailedError("Connection failed - Modbus.")
 
     # def try_reconnect(self, print_status=None):
     #     state = self.client.is_open()

@@ -17,7 +17,7 @@ from Clients.Modbus import Modbus
 from Clients.FTPClient import FTPClient
 from Clients.EmailClient import EmailClient
 from MainModules.ReportModule import ReportModule
-from Libraries.PrintMethods import print_with_colour
+from Libraries.PrintMethods import print_error
 from Libraries.DataMethods import get_current_data_as_string
 from MainModules.FTPError import FTPError
 from MainModules.Scheduler import Scheduler
@@ -54,15 +54,15 @@ def main():
             try:
                 for module in module_instances:
                     test_count = module.read_all_data(output_list, test_count)
-                email.send_email(output_list)
+                # email.send_email(output_list)
                 time.sleep(10)
             except FTPError as err:
-                output_list[7] = print_with_colour(err, "RED")
+                print_error(err, output_list, "RED")
             except ConnectionFailedError as err:
-                output_list[7] = print_with_colour(f"Connection stopped: {err}", "RED")
+                # print_error(f"Connection stopped: {err}", output_list, "RED")
                 close_all_instances([ssh_client.ssh, modbus.client])
             except KeyboardInterrupt as err:
-                output_list[7] = print_with_colour("User stopped tests with KeyboardInterrupt.", "RED")
+                print_error("User stopped tests with KeyboardInterrupt.", output_list, "RED")
                 close_all_instances([ssh_client.ssh, modbus.client])
             # finally:
             #     close_all_instances([ssh_client.ssh, modbus.client])

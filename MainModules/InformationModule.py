@@ -1,5 +1,7 @@
+# Local imports
 from Libraries.SSHMethods import get_df_used_memory, get_router_model, get_cpu_count, get_concrete_ubus_data
 from Clients.SSHClient import SSHClient
+from Libraries.DataMethods import get_numbers_in_string
 
 class InformationModule:
 
@@ -25,7 +27,7 @@ class InformationModule:
 
     def get_cpu_usage(self, print_status=None):
         output = self.conn.ssh_issue_command("cat /proc/stat | grep 'cpu '", print_status)
-        all_state_times = [int(s) for s in output.split() if s.isdigit()]
+        all_state_times = get_numbers_in_string(output)
         idle_time = all_state_times[3] # CIA NULUZTA
         total_time = sum(all_state_times)
         cpu_usage = 100.0 * (1.0 - idle_time / total_time)

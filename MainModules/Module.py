@@ -92,6 +92,8 @@ class Module:
             is_data_equal = self.__check_if_numbers_pass(modbus_data, actual_data)
         elif(type(modbus_data) == datetime):
             is_data_equal = self.__check_if_datetime_pass(modbus_data, actual_data)
+        elif(modbus_data == None):
+            is_data_equal = self.RESULT_FAILED
         return [modbus_data, actual_data, is_data_equal] # I could create class with these
 
     #results: modbus_data, actual_data, is_data_equal

@@ -18,6 +18,8 @@ class ModuleNetwork(Module):
         return ip
     
     def convert_reg_ip(self, read_data):
+        if(read_data == None):
+            return
         numbers = []
         for i in range(len(read_data)):
             temp = format(read_data[i], '016b')
@@ -38,10 +40,10 @@ class ModuleNetwork(Module):
                 modbus_data = self.convert_reg_text(result)
                 final_data_with_colon = get_concrete_ubus_data(self.ssh, current, output_list)# returns lower case
                 final_data = remove_char(final_data_with_colon, ':')
-            #WAN IP       neeed to add check if it is Null
-            if(current['address'] == 139):
+            #WAN IP       neeed to add check if it is None
+            if(current['address'] == 139): # previous value will be checked
                 modbus_data = self.convert_reg_ip(result)
-                final_data = self.ssh.ssh_issue_command("curl ifconfig.me") # !!! checking only public id
+                # final_data = self.ssh.ssh_issue_command("curl ifconfig.me") # !!! checking only public id
             results = self.check_if_results_match(modbus_data, final_data)
             self.change_test_count(results)
             past_memory = memory

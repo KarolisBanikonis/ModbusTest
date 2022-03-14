@@ -7,6 +7,14 @@ def get_first_digit(input):
         if(symbol.isdigit()):
             return symbol
 
+def get_numbers_in_string(input):
+    # [int(s) for s in input.split() if s.isdigit()]
+    numbers = []
+    for symbol in input.split():
+        if(symbol.isdigit()):
+            numbers.append(int(symbol))
+    return numbers
+
 def remove_char(data, characters):
     remove_table = dict.fromkeys(map(ord, characters), None)
     data = data.translate(remove_table)
