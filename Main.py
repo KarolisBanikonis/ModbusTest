@@ -55,7 +55,7 @@ def main():
                 for module in module_instances:
                     test_count = module.read_all_data(output_list, test_count)
                 # email.send_email(output_list)
-                time.sleep(10)
+                time.sleep(2)
             except FTPError as err:
                 print_error(err, output_list, "RED")
             except ConnectionFailedError as err:

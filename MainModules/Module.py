@@ -3,6 +3,9 @@ from datetime import datetime
 import math
 import re
 
+# Third party imports
+from multipledispatch import dispatch
+
 # Local imports
 from Libraries.PrintMethods import print_with_colour
 
@@ -81,27 +84,67 @@ class Module:
 
     #Parsed data from registers.json can have string and int values
     #Parsed data from ubus can have string and int as well
+    # def check_if_results_match(self, modbus_data, actual_data):
+    #     if(type(modbus_data) == str):
+    #         if(type(actual_data) == list):
+    #             for data in actual_data:
+    #                 is_data_equal = self.__check_if_strings_pass(modbus_data, data)
+    #                 if(is_data_equal == self.RESULT_PASSED):
+    #                     actual_data = data
+    #                     break
+    #         else:
+    #             modbus_data = self.__remove_whitespace(modbus_data)
+    #             actual_data = self.__remove_whitespace(actual_data)
+    #             is_data_equal = self.__check_if_strings_pass(modbus_data, actual_data)
+    #     elif(type(modbus_data) == int):
+    #         if(actual_data != int):
+    #             actual_data = int(actual_data)
+    #         is_data_equal = self.__check_if_numbers_pass(modbus_data, actual_data)
+    #     elif(type(modbus_data) == datetime):
+    #         is_data_equal = self.__check_if_datetime_pass(modbus_data, actual_data)
+    #     elif(modbus_data == None):
+    #         is_data_equal = self.RESULT_PASSED
+    #     return [modbus_data, actual_data, is_data_equal] # I could create class with these
+
+    @dispatch(str, str)
     def check_if_results_match(self, modbus_data, actual_data):
-        if(type(modbus_data) == str):
-            if(type(actual_data) == list):
-                for data in actual_data:
-                    is_data_equal = self.__check_if_strings_pass(modbus_data, data)
-                    if(is_data_equal == self.RESULT_PASSED):
-                        actual_data = data
-                        break
-            else:
-                modbus_data = self.__remove_whitespace(modbus_data)
-                actual_data = self.__remove_whitespace(actual_data)
-                is_data_equal = self.__check_if_strings_pass(modbus_data, actual_data)
-        elif(type(modbus_data) == int):
-            if(actual_data != int):
-                actual_data = int(actual_data)
-            is_data_equal = self.__check_if_numbers_pass(modbus_data, actual_data)
-        elif(type(modbus_data) == datetime):
-            is_data_equal = self.__check_if_datetime_pass(modbus_data, actual_data)
-        elif(modbus_data == None):
-            is_data_equal = self.RESULT_PASSED
+        modbus_data = self.__remove_whitespace(modbus_data)
+        actual_data = self.__remove_whitespace(actual_data)
+        is_data_equal = self.__check_if_strings_pass(modbus_data, actual_data)
         return [modbus_data, actual_data, is_data_equal] # I could create class with these
+
+    @dispatch(str, list)
+    def check_if_results_match(self, modbus_data, actual_data):
+        for data in actual_data:
+            is_data_equal = self.__check_if_strings_pass(modbus_data, data)
+            if(is_data_equal == self.RESULT_PASSED):
+                actual_data = data
+                break
+        return [modbus_data, actual_data, is_data_equal]
+
+    @dispatch((int, int), (int, float))
+    def check_if_results_match(self, modbus_data, actual_data):
+        is_data_equal = self.__check_if_numbers_pass(modbus_data, actual_data)
+        return [modbus_data, actual_data, is_data_equal]
+
+    @dispatch(int, str)
+    def check_if_results_match(self, modbus_data, actual_data):
+        actual_data = int(actual_data)
+        is_data_equal = self.__check_if_numbers_pass(modbus_data, actual_data)
+        return [modbus_data, actual_data, is_data_equal]
+
+    @dispatch(datetime, datetime)
+    def check_if_results_match(self, modbus_data, actual_data):
+        is_data_equal = self.__check_if_datetime_pass(modbus_data, actual_data)
+        return [modbus_data, actual_data, is_data_equal]
+
+    @dispatch(object, object)
+    def check_if_results_match(self, modbus_data, actual_data):
+        if(modbus_data == None):
+            is_data_equal = self.RESULT_PASSED
+            return [modbus_data, actual_data, is_data_equal]
+        else:
+            raise TypeError()
 
     #results: modbus_data, actual_data, is_data_equal
     def change_test_count(self, results):

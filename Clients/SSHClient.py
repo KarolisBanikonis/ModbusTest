@@ -29,12 +29,10 @@ class SSHClient:
                 if(print_status != None):
                     error_text = f"Reconnecting SSH attempt nr. {try_connect_nr} out of {self.connect_attempts}!"
                     print_error(error_text, print_status, "YELLOW")
-                    # print_status[7] = print_with_colour(f"Reconnecting SSH attempt nr. {try_connect_nr} out of {self.connect_attempts}!", "YELLOW")
                 connected = self.ssh_connect()
                 if(connected):
                     if(print_status != None):
                         print_error("", print_status)
-                        # print_status[7] = ""
                     return
             raise ConnectionFailedError("Connection failed - SSH.")
 

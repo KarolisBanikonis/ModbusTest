@@ -30,9 +30,9 @@ def gsmctl_call(ssh, flag, print_status=None):
 def try_enable_gps(ssh):
     gps_enabled = ssh.ssh_issue_command("uci get gps.gpsd.enabled")
     if(get_first_digit(gps_enabled) == "0"):
-        ssh.ssh_issue_command("uci set gps.gpsd.enabled='1'")
-        ssh.ssh_issue_command("uci commit gps.gpsd")
-        ssh.ssh_issue_command("/etc/init.d/gpsd start")
+        ssh.ssh.exec_command("uci set gps.gpsd.enabled='1'")
+        ssh.ssh.exec_command("uci commit gps")
+        ssh.ssh.exec_command("/etc/init.d/gpsd start")
 
 def get_router_model(ssh, data):
     parsed_data = get_parsed_ubus_data(ssh, data)

@@ -43,16 +43,19 @@ class ModuleNetwork(Module):
         memory = test_count[2]
         for i in range(len(self.data)):
             current = self.data[i]
-            result = self.modbus.read_registers(current, output_list)
             if(current['address'] == 55):
+                result = self.modbus.read_registers(current, output_list)
                 modbus_data = self.convert_reg_text(result)
                 final_data_with_colon = get_concrete_ubus_data(self.ssh, current, output_list)# returns lower case
                 final_data = remove_char(final_data_with_colon, ':')
             elif(current['address'] == 139): #WAN IP
-                if(result == None):
+                ubus_data = get_concrete_ubus_data(self.ssh, current, output_list)
+                final_data = self.add_interfaces_ip_to_list(ubus_data)
+                if(len(final_data) <= 2):
                     modbus_data = None
                     final_data = None
                 else:
+                    result = self.modbus.read_registers(current, output_list)
                     modbus_data = self.convert_reg_ip(result)
                     ubus_data = get_concrete_ubus_data(self.ssh, current, output_list)
                     final_data = self.add_interfaces_ip_to_list(ubus_data)
