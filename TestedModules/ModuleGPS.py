@@ -9,16 +9,19 @@ class ModuleGPS(Module):
     def __init__(self, data, ssh, modbus, info, report):
         super().__init__(data, ssh, modbus, info, report)
         self.module_name = __class__.__name__
+        try_enable_gps(self.ssh)
 
     def read_all_data(self, output_list, test_count):
         self.total_number = test_count[0]
         self.correct_number = test_count[1]
-        try_enable_gps(self.ssh)
         self.report.open_report()
         memory = test_count[2]
         for i in range(len(self.data)):
             current = self.data[i]
             result = self.modbus.read_registers(current, output_list)
+            if(result == None):
+                try_enable_gps(self.ssh)
+                return test_count
             if(current['number'] == 16):
                 modbus_data = self.convert_reg_text(result)
                 modbus_data = remove_char(modbus_data, "\x00")

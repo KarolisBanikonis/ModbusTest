@@ -1,7 +1,7 @@
 # Local imports
 from MainModules.Module import Module
 from Libraries.DataMethods import remove_char
-from Libraries.SSHMethods import get_concrete_ubus_data
+from Libraries.SSHMethods import get_concrete_ubus_data, get_parsed_ubus_data
 
 class ModuleNetwork(Module):
 
@@ -18,8 +18,8 @@ class ModuleNetwork(Module):
         return ip
     
     def convert_reg_ip(self, read_data):
-        if(read_data == None):
-            return
+        # if(read_data == None):
+        #     return
         numbers = []
         for i in range(len(read_data)):
             temp = format(read_data[i], '016b')
@@ -27,6 +27,14 @@ class ModuleNetwork(Module):
             numbers.append(str(self.binary_to_decimal(temp[8:16])))
         ip = self.format_ip(numbers)
         return ip
+
+    def add_interfaces_ip_to_list(self, ubus_data):
+        ip_list = []
+        for interface in ubus_data:
+            if(interface['up'] == True):
+                if(len(interface['ipv4-address']) != 0):
+                    ip_list.append(interface['ipv4-address'][0]['address'])
+        return ip_list
 
     def read_all_data(self, output_list, test_count):
         self.total_number = test_count[0]
@@ -40,10 +48,14 @@ class ModuleNetwork(Module):
                 modbus_data = self.convert_reg_text(result)
                 final_data_with_colon = get_concrete_ubus_data(self.ssh, current, output_list)# returns lower case
                 final_data = remove_char(final_data_with_colon, ':')
-            #WAN IP       neeed to add check if it is None
-            if(current['address'] == 139): # previous value will be checked
-                modbus_data = self.convert_reg_ip(result)
-                # final_data = self.ssh.ssh_issue_command("curl ifconfig.me") # !!! checking only public id
+            elif(current['address'] == 139): #WAN IP
+                if(result == None):
+                    modbus_data = None
+                    final_data = None
+                else:
+                    modbus_data = self.convert_reg_ip(result)
+                    ubus_data = get_concrete_ubus_data(self.ssh, current, output_list)
+                    final_data = self.add_interfaces_ip_to_list(ubus_data)
             results = self.check_if_results_match(modbus_data, final_data)
             self.change_test_count(results)
             past_memory = memory

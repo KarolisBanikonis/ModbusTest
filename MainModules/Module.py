@@ -83,9 +83,16 @@ class Module:
     #Parsed data from ubus can have string and int as well
     def check_if_results_match(self, modbus_data, actual_data):
         if(type(modbus_data) == str):
-            modbus_data = self.__remove_whitespace(modbus_data)
-            actual_data = self.__remove_whitespace(actual_data)
-            is_data_equal = self.__check_if_strings_pass(modbus_data, actual_data)
+            if(type(actual_data) == list):
+                for data in actual_data:
+                    is_data_equal = self.__check_if_strings_pass(modbus_data, data)
+                    if(is_data_equal == self.RESULT_PASSED):
+                        actual_data = data
+                        break
+            else:
+                modbus_data = self.__remove_whitespace(modbus_data)
+                actual_data = self.__remove_whitespace(actual_data)
+                is_data_equal = self.__check_if_strings_pass(modbus_data, actual_data)
         elif(type(modbus_data) == int):
             if(actual_data != int):
                 actual_data = int(actual_data)
@@ -93,7 +100,7 @@ class Module:
         elif(type(modbus_data) == datetime):
             is_data_equal = self.__check_if_datetime_pass(modbus_data, actual_data)
         elif(modbus_data == None):
-            is_data_equal = self.RESULT_FAILED
+            is_data_equal = self.RESULT_PASSED
         return [modbus_data, actual_data, is_data_equal] # I could create class with these
 
     #results: modbus_data, actual_data, is_data_equal

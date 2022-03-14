@@ -92,7 +92,7 @@
 		  "name":"LAN MAC address",
 		  "address":55,
 		  "number":16,
-		  "source":"ubus",
+		  "source": "ubus",
 		  "service": "network.device",
 		  "procedure": "status '{\"name\":\"eth0\"}'",
 		  "parse": "macaddr"
@@ -100,7 +100,11 @@
 	   {
 		  "name":"Current WAN IP address",
 		  "address":139,
-		  "number":2
+		  "number":2,
+		  "source": "ubus",
+		  "service": "network.interface.wan",
+		  "procedure": "dump",
+		  "parse": "interface"
 	   }
 	],
 	"ModuleGPS":[
