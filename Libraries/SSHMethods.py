@@ -32,7 +32,7 @@ def try_enable_gps(ssh):
     if(get_first_digit(gps_enabled) == "0"):
         ssh.ssh.exec_command("uci set gps.gpsd.enabled='1'")
         ssh.ssh.exec_command("uci commit gps")
-        ssh.ssh.exec_command("/etc/init.d/gpsd start")
+        ssh.ssh.exec_command("/etc/init.d/gpsd restart")
 
 def get_router_model(ssh, data):
     parsed_data = get_parsed_ubus_data(ssh, data)

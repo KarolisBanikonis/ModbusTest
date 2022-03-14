@@ -21,21 +21,27 @@ def remove_char(data, characters):
     return data
 
 def get_value_in_parenthesis(data):
-    return data[data.find("(")+1:data.find(")")]
+    pattern = '\((.*?)\)'
+    result = re.search(pattern, data).group(1)
+    return result
+    # return data[data.find("(")+1:data.find(")")]
 
 def get_used_memory_from_string(string_value):
-    count_first_spaces = 0
-    first_space = True
-    used_memory = ""
-    for symbol in string_value:
-        if(count_first_spaces == 2 and symbol != ' '):
-            used_memory += symbol
-        if(symbol == ' ' and first_space):
-            count_first_spaces += 1
-            first_space = False
-        elif(symbol.isdigit()):
-            first_space = True
-    return used_memory
+    pattern = '\d+\.\d\w'
+    result = re.findall(pattern, string_value)[1]
+    return result
+    # count_first_spaces = 0
+    # first_space = True
+    # used_memory = ""
+    # for symbol in string_value:
+    #     if(count_first_spaces == 2 and symbol != ' '):
+    #         used_memory += symbol
+    #     if(symbol == ' ' and first_space):
+    #         count_first_spaces += 1
+    #         first_space = False
+    #     elif(symbol.isdigit()):
+    #         first_space = True
+    # return used_memory
 
 def remove_colour_tags(data):
     pattern = '.\[.*?m'
