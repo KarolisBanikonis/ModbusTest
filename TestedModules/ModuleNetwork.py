@@ -43,22 +43,9 @@ class ModuleNetwork(Module):
         memory = test_count[2]
         for i in range(len(self.data)):
             current = self.data[i]
-            if(current['address'] == 55):
-                result = self.modbus.read_registers(current, output_list)
-                modbus_data = self.convert_reg_text(result)
-                final_data_with_colon = get_concrete_ubus_data(self.ssh, current, output_list)# returns lower case
-                final_data = remove_char(final_data_with_colon, ':')
-            elif(current['address'] == 139): #WAN IP
-                ubus_data = get_concrete_ubus_data(self.ssh, current, output_list)
-                final_data = self.add_interfaces_ip_to_list(ubus_data)
-                if(len(final_data) <= 2):
-                    modbus_data = None
-                    final_data = None
-                else:
-                    result = self.modbus.read_registers(current, output_list)
-                    modbus_data = self.convert_reg_ip(result)
-                    ubus_data = get_concrete_ubus_data(self.ssh, current, output_list)
-                    final_data = self.add_interfaces_ip_to_list(ubus_data)
+            # Specific function for every register address
+            function_name = f"get_modbus_and_device_data_read_register_nr_{current['address']}"
+            modbus_data, final_data = getattr(self, function_name)(current, output_list)
             results = self.check_if_results_match(modbus_data, final_data)
             self.change_test_count(results)
             past_memory = memory
@@ -71,4 +58,22 @@ class ModuleNetwork(Module):
         self.report.close()
         return [self.total_number, self.correct_number, memory]
         
-                
+    def get_modbus_and_device_data_read_register_nr_55(self, current, output_list):
+        result = self.modbus.read_registers(current, output_list)
+        modbus_data = self.convert_reg_text(result)
+        final_data_with_colon = get_concrete_ubus_data(self.ssh, current, output_list)# returns lower case
+        final_data = remove_char(final_data_with_colon, ':')
+        return modbus_data, final_data
+
+    def get_modbus_and_device_data_read_register_nr_139(self, current, output_list):
+        ubus_data = get_concrete_ubus_data(self.ssh, current, output_list)
+        final_data = self.add_interfaces_ip_to_list(ubus_data)
+        if(len(final_data) <= 2):
+            modbus_data = None
+            final_data = None
+        else:
+            result = self.modbus.read_registers(current, output_list)
+            modbus_data = self.convert_reg_ip(result)
+            ubus_data = get_concrete_ubus_data(self.ssh, current, output_list)
+            final_data = self.add_interfaces_ip_to_list(ubus_data)
+        return modbus_data, final_data

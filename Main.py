@@ -48,25 +48,26 @@ def main():
     with output(output_type="list", initial_len=8, interval=0) as output_list:
         scheduler.send_email([output_list])
         scheduler.start()
-        while True:
-            output_list[0] = f"Model - {info.router_model}. Start time: {get_current_data_as_string('%Y-%m-%d-%H-%M')}."
-            # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS
-            try:
+        try:
+            while True:
+                output_list[0] = f"Model - {info.router_model}. Start time: {get_current_data_as_string('%Y-%m-%d-%H-%M')}."
+                # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS
                 for module in module_instances:
-                    test_count = module.read_all_data(output_list, test_count)
+                    try:
+                        test_count = module.read_all_data(output_list, test_count)
+                    except FTPError as err:
+                        print_error(err, output_list, "RED")
                 # email.send_email(output_list)
                 time.sleep(2)
-            except FTPError as err:
-                print_error(err, output_list, "RED")
-            except ConnectionFailedError as err:
-                # print_error(f"Connection stopped: {err}", output_list, "RED")
-                close_all_instances([ssh_client.ssh, modbus.client])
-            except KeyboardInterrupt as err:
-                report.write_end_header()
-                print_error("User stopped tests with KeyboardInterrupt.", output_list, "RED")
-                close_all_instances([ssh_client.ssh, modbus.client])
-            # finally:
-            #     close_all_instances([ssh_client.ssh, modbus.client])
+        except ConnectionFailedError as err:
+            print_error(f"Connection stopped: {err}", output_list, "RED")
+        except KeyboardInterrupt as err:
+            print_error("User stopped tests with KeyboardInterrupt.", output_list, "RED")
+        except AttributeError as err:
+            print_error(f"Such attribute does not exist: {err}", output_list, "RED")
+        finally:
+            report.write_end_header()
+            close_all_instances([ssh_client.ssh, modbus.client])
 
 if __name__ == "__main__":
     main()

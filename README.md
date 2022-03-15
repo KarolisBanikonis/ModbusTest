@@ -16,7 +16,9 @@ Configuration file have three sections: "Settings", "FTP" and "Email".
     "PASSWORD" - login credential used by SSH protocol.
     "RECONNECT_ATTEMPTS" - how many times program should try re-establish connection when it is lost.
     "TIMEOUT" - how long program should wait in seconds between attempts to reconnect.
-    "MODULES" - what modules should be tested, according to subsystems that are enabled. Typically, you should not change "MODULES" values. Be cautious that, module names must match file names without extention in /TestedModules directory.
+    "MODULES" - what modules should be tested, according to subsystems that are enabled.
+
+Typically, you should not change "MODULES" values. Be cautious that, module names must match file names without extention in /TestedModules directory.
 
 "FTP" section:
 

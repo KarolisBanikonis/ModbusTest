@@ -22,26 +22,8 @@ class ModuleGPS(Module):
             if(result == None):
                 try_enable_gps(self.ssh)
                 return test_count
-            if(current['number'] == 16):
-                modbus_data = self.convert_reg_text(result)
-                modbus_data = remove_char(modbus_data, "\x00")
-                parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
-                if(current['address'] == 147):
-                    #modbus = timestamp x 1000
-                    #ubus = datetime in string
-                    modbus_data = convert_timestamp_to_date(int(modbus_data)) # MIGHT NEED TO /= 1000?
-                    # print(f"MODBUS = {modbus_data} typeof {type(modbus_data)}")
-                    final_data_string = parsed_data['coordinates'][current['parse']]
-                    final_data = convert_string_to_date(final_data_string)
-                    # print(f"UBUS = {final_data} typeof {type(final_data)}")
-                elif(current['address'] == 163):
-                    modbus_data = convert_string_to_date(modbus_data)
-                    timestamp = parsed_data[current['parse']]
-                    final_data = convert_timestamp_to_date(timestamp)
-            elif(current['number'] == 2):
-                modbus_data = self.convert_reg_number(result)
-                final_data = get_concrete_ubus_data(self.ssh, current, output_list)
-                # final_data = parsed_data[current['parse']]
+            function_name = f"get_modbus_and_device_data_read_register_count_{current['number']}"
+            modbus_data, final_data = getattr(self, function_name)(result, current, output_list)
             results = self.check_if_results_match(modbus_data, final_data)
             self.change_test_count(results)
             past_memory = memory
@@ -53,3 +35,23 @@ class ModuleGPS(Module):
             self.print_test_results(output_list, current, results[0], results[1], cpu_usage, total_mem_difference)
         self.report.close()
         return [self.total_number, self.correct_number, memory]
+
+    def get_modbus_and_device_data_read_register_count_16(self, result, current, output_list):
+        modbus_data, parsed_data = self.get_modbus_and_device_data_for_number_16(result, current, output_list)
+        if(current['address'] == 147):
+            #modbus = timestamp x 1000
+            #ubus = datetime in string
+            modbus_data = convert_timestamp_to_date(int(modbus_data)) # MIGHT NEED TO /= 1000?
+            # print(f"MODBUS = {modbus_data} typeof {type(modbus_data)}")
+            final_data_string = parsed_data['coordinates'][current['parse']]
+            final_data = convert_string_to_date(final_data_string)
+            # print(f"UBUS = {final_data} typeof {type(final_data)}")
+        elif(current['address'] == 163):
+            modbus_data = convert_string_to_date(modbus_data)
+            timestamp = parsed_data[current['parse']]
+            final_data = convert_timestamp_to_date(timestamp)
+        return modbus_data, final_data
+
+    def get_modbus_and_device_data_read_register_count_2(self, result, current, output_list):
+        modbus_data, final_data = self.get_modbus_and_device_data_for_number_2(result, current, output_list)
+        return modbus_data, final_data

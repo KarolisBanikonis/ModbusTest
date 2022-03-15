@@ -46,7 +46,7 @@ class Modbus:
         try_connect_nr = 0
         while(try_connect_nr < self.connect_attempts):
             try_connect_nr += 1
-            time.sleep(0.7)
+            # time.sleep(0.7)
             registers_data = self.client.read_holding_registers(data['address'], data['number'])
             if(registers_data != None):
                 print_error("", print_status)

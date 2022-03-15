@@ -42,7 +42,7 @@ class ReportModule:
         self.writer.writerow(["Model", self.router_model, '', "Start time", self.start_date, '', '', '', '', '', ''])
         self.writer.writerow([])
         self.write_header()
-        self.report.close()
+        self.close()
 
     # Maybe i should make it with temporary file instead
     def write_end_header(self):

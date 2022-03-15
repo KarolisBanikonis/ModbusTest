@@ -8,6 +8,8 @@ from multipledispatch import dispatch
 
 # Local imports
 from Libraries.PrintMethods import print_with_colour
+from Libraries.DataMethods import remove_char
+from Libraries.SSHMethods import get_parsed_ubus_data, get_concrete_ubus_data
 
 class Module:
 
@@ -82,30 +84,6 @@ class Module:
         else:
             return self.RESULT_PASSED
 
-    #Parsed data from registers.json can have string and int values
-    #Parsed data from ubus can have string and int as well
-    # def check_if_results_match(self, modbus_data, actual_data):
-    #     if(type(modbus_data) == str):
-    #         if(type(actual_data) == list):
-    #             for data in actual_data:
-    #                 is_data_equal = self.__check_if_strings_pass(modbus_data, data)
-    #                 if(is_data_equal == self.RESULT_PASSED):
-    #                     actual_data = data
-    #                     break
-    #         else:
-    #             modbus_data = self.__remove_whitespace(modbus_data)
-    #             actual_data = self.__remove_whitespace(actual_data)
-    #             is_data_equal = self.__check_if_strings_pass(modbus_data, actual_data)
-    #     elif(type(modbus_data) == int):
-    #         if(actual_data != int):
-    #             actual_data = int(actual_data)
-    #         is_data_equal = self.__check_if_numbers_pass(modbus_data, actual_data)
-    #     elif(type(modbus_data) == datetime):
-    #         is_data_equal = self.__check_if_datetime_pass(modbus_data, actual_data)
-    #     elif(modbus_data == None):
-    #         is_data_equal = self.RESULT_PASSED
-    #     return [modbus_data, actual_data, is_data_equal] # I could create class with these
-
     @dispatch(str, str)
     def check_if_results_match(self, modbus_data, actual_data):
         modbus_data = self.__remove_whitespace(modbus_data)
@@ -151,3 +129,19 @@ class Module:
         self.total_number += 1
         if(results[2] == self.RESULT_PASSED):
             self.correct_number += 1
+
+    def get_modbus_and_device_data_for_number_16(self, result, current, output_list):
+        modbus_data = self.convert_reg_text(result)
+        modbus_data = remove_char(modbus_data, "\x00") # this step needed for 348, 103, 119(mobile), also gps
+        parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
+        return modbus_data, parsed_data
+
+    def get_modbus_and_device_data_for_number_2(self, result, current, output_list):
+        modbus_data = self.convert_reg_number(result)
+        final_data = get_concrete_ubus_data(self.ssh, current, output_list)
+        return modbus_data, final_data
+
+    def get_modbus_and_device_data_for_number_1(self, result, current, output_list):
+        modbus_data = result[0]
+        parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
+        return modbus_data, parsed_data

@@ -22,34 +22,8 @@ class ModuleSystem(Module):
         for i in range(len(self.data)):
             current = self.data[i]
             result = self.modbus.read_registers(current, output_list)
-            # CHECK BY SOURCE FIRST
-            if(current['source'] == "ubus" and current['number'] == 16):
-                modbus_data = self.convert_reg_text(result)
-                parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
-                if(current['address'] == 39): #different parse
-                    final_data = parsed_data['mnfinfo'][current['parse']]
-                else:
-                    final_data = parsed_data[current['parse']]
-            elif(current['source'] == "ubus" and current['number'] == 2):
-                if(current['address'] == 3):
-                    modbus_data = self.convert_ref_signal(result[1])
-                else:
-                    modbus_data = self.convert_reg_number(result)
-                parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
-                if(current['address'] == 3):
-                    final_data = parsed_data['mobile'][0][current['parse']]
-                else:
-                    final_data = parsed_data[current['parse']]
-            elif(current['source'] == "ubus" and current['number'] == 1):
-                modbus_data = result[0] # CIA NULUZTA
-                parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
-                if(current['address'] == 324):
-                    final_data = parsed_data['result'][0][current['parse']]
-                elif(current['address'] == 325):
-                    final_data = parsed_data['result'][1][current['parse']]
-            elif(current['source'] == "gsmctl"): #only signal uses gsmctl
-                modbus_data = self.convert_reg_number(result)
-                final_data = gsmctl_call(self.ssh, current['flag'], output_list)
+            function_name = f"get_modbus_and_device_data_read_register_count_{current['number']}_{current['source']}"
+            modbus_data, final_data = getattr(self, function_name)(result, current, output_list)
             results = self.check_if_results_match(modbus_data, final_data)
             self.change_test_count(results)
             past_memory = memory
@@ -61,3 +35,33 @@ class ModuleSystem(Module):
             self.print_test_results(output_list, current, results[0], results[1], cpu_usage, total_mem_difference)
         self.report.close()
         return [self.total_number, self.correct_number, memory]
+
+    def get_modbus_and_device_data_read_register_count_1_ubus(self, result, current, output_list):
+        modbus_data, parsed_data = self.get_modbus_and_device_data_for_number_1(result, current, output_list)
+        if(current['address'] == 324):
+            final_data = parsed_data['result'][0][current['parse']]
+        elif(current['address'] == 325):
+            final_data = parsed_data['result'][1][current['parse']]
+        return modbus_data, final_data
+
+    def get_modbus_and_device_data_read_register_count_2_ubus(self, result, current, output_list):
+        if(current['address'] == 3):
+            modbus_data = self.convert_ref_signal(result[1])
+            parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
+            final_data = parsed_data['mobile'][0][current['parse']]
+        else:
+            modbus_data, final_data = self.get_modbus_and_device_data_for_number_2(result, current, output_list)
+        return modbus_data, final_data
+
+    def get_modbus_and_device_data_read_register_count_2_gsmctl(self, result, current, output_list):
+        modbus_data = self.convert_reg_number(result)
+        final_data = gsmctl_call(self.ssh, current['flag'], output_list)
+        return modbus_data, final_data
+
+    def get_modbus_and_device_data_read_register_count_16_ubus(self, result, current, output_list):
+        modbus_data, parsed_data = self.get_modbus_and_device_data_for_number_16(result, current, output_list)
+        if(current['address'] == 39):
+            final_data = parsed_data['mnfinfo'][current['parse']]
+        else:
+            final_data = parsed_data[current['parse']]
+        return modbus_data, final_data

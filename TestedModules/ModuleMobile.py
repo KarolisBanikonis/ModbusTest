@@ -27,20 +27,8 @@ class ModuleMobile(Module):
         for i in range(len(data_area)):
             current = data_area[i]
             result = self.modbus.read_registers(current, output_list)
-            if(current['number'] == 16):
-                modbus_data = self.convert_reg_text(result)
-                if(current['address'] == 348 or current['address'] == 103 or current['address'] == 119): # maybe dont need if?
-                    modbus_data = remove_char(modbus_data, "\x00")
-                parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
-                final_data = parsed_data['mobile'][current['parse']]
-                if(current['address'] == 119):
-                    final_data = get_value_in_parenthesis(final_data)
-            elif(current['number'] == 2):
-                modbus_data = self.convert_reg_number(result)
-                final_data = get_concrete_ubus_data(self.ssh, current, output_list)
-            elif(current['number'] == 1):
-                modbus_data = result[0]
-                final_data = get_concrete_ubus_data(self.ssh, current, output_list)
+            function_name = f"get_modbus_and_device_data_read_register_count_{current['number']}"
+            modbus_data, final_data = getattr(self, function_name)(result, current, output_list)
             results = self.check_if_results_match(modbus_data, final_data)
             self.change_test_count(results)
             past_memory = self.memory
@@ -50,3 +38,19 @@ class ModuleMobile(Module):
             total_mem_difference = self.info.mem_used_at_start - self.memory
             self.report.writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2], '', cpu_usage, total_mem_difference, memory_difference])
             self.print_test_results(output_list, current, results[0], results[1], cpu_usage, total_mem_difference)
+
+    def get_modbus_and_device_data_read_register_count_16(self, result, current, output_list):
+        modbus_data, parsed_data = self.get_modbus_and_device_data_for_number_16(result, current, output_list)
+        final_data = parsed_data['mobile'][current['parse']]
+        if(current['address'] == 119):
+            final_data = get_value_in_parenthesis(final_data)
+        return modbus_data, final_data
+
+    def get_modbus_and_device_data_read_register_count_1(self, result, current, output_list):
+        modbus_data, parsed_data = self.get_modbus_and_device_data_for_number_1(result, current, output_list)
+        final_data = parsed_data[current['parse']]
+        return modbus_data, final_data
+
+    def get_modbus_and_device_data_read_register_count_2(self, result, current, output_list):
+        modbus_data, final_data = self.get_modbus_and_device_data_for_number_2(result, current, output_list)
+        return modbus_data, final_data
