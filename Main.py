@@ -62,6 +62,7 @@ def main():
                 # print_error(f"Connection stopped: {err}", output_list, "RED")
                 close_all_instances([ssh_client.ssh, modbus.client])
             except KeyboardInterrupt as err:
+                report.write_end_header()
                 print_error("User stopped tests with KeyboardInterrupt.", output_list, "RED")
                 close_all_instances([ssh_client.ssh, modbus.client])
             # finally:
