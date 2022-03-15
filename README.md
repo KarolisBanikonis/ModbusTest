@@ -9,6 +9,7 @@ To start a program you need to configure configuration file "config.json", then 
 Configuration file have three sections: "Settings", "FTP" and "Email".
 
 "Settings" section:
+
     "SERVER_HOST" - what address Modbus TCP and SSH should connect to.
     "MODBUS_PORT" - what port Modbus TCP should use.
     "USERNAME" - login credential used by SSH protocol.
@@ -18,6 +19,7 @@ Configuration file have three sections: "Settings", "FTP" and "Email".
     "MODULES" - what modules should be tested, according to subsystems that are enabled. Typically, you should not change "MODULES" values. Be cautious that, module names must match file names without extention in /TestedModules directory.
 
 "FTP" section:
+
     "FTP_USE" - should program store reports in FTP server. Write "Yes" to enable it.
     "FTP_HOST" - what address FTP should connect to.
     "FTP_PORT" - what port FTP should use.
@@ -26,6 +28,7 @@ Configuration file have three sections: "Settings", "FTP" and "Email".
     "INTERVAL_MINUTES" - at what interval in minutes program should upload report to FTP server.
 
 "Email" section:
+
     "EMAIL_USE" - should program send emails with test summary. Write "Yes" to enable it.
     "PORT" - what port SMTP should use.
     "SMTP" - what SMTP server should be used.
