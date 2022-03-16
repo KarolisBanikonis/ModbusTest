@@ -1,3 +1,0 @@
-class FTPError(Exception):
-
-    pass

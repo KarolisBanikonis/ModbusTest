@@ -22,7 +22,7 @@ Typically, you should not change "MODULES" values. Be cautious that, module name
 
 "FTP" section:
 
-    "FTP_USE" - should program store reports in FTP server. Write "Yes" to enable it.
+    "FTP_USE" - should program store reports in FTP server. Write "true" to enable it and "false" to disable it.
     "FTP_HOST" - what address FTP should connect to.
     "FTP_PORT" - what port FTP should use.
     "FTP_USER" - what username FTP should use to login.
@@ -31,8 +31,7 @@ Typically, you should not change "MODULES" values. Be cautious that, module name
 
 "Email" section:
 
-    "EMAIL_USE" - should program send emails with test summary. Write "Yes" to enable it.
-    "PORT" - what port SMTP should use.
+    "EMAIL_USE" - should program send emails with test summary. Write "true" to enable it and "false" to disable it.
     "SMTP" - what SMTP server should be used.
     "USER" - what username should be used to login to sender's email account.
     "PASSWORD" - what password should be used to login to sender's email account.

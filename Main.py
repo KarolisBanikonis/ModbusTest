@@ -20,15 +20,15 @@ from MainModules.ReportModule import ReportModule
 from Libraries.PrintMethods import print_error
 from Libraries.DataMethods import get_current_data_as_string
 from Libraries.FileMethods import delete_file_content
-from MainModules.FTPError import FTPError
 from MainModules.Scheduler import Scheduler
-from MainModules.Logger import  get_log_file_path
+from MainModules.Logger import  init_logger, get_log_file_path
 
 LOG_FILE = get_log_file_path()
 CONFIGURATION_FILE = "config.json"
 PARAMETERS_FILE = "registers.json"
 
 def main():
+    logger = init_logger(__name__)
     delete_file_content(LOG_FILE)
     conf = ConfigurationModule(CONFIGURATION_FILE)
     data = read_file(PARAMETERS_FILE)
@@ -51,26 +51,24 @@ def main():
 
     with output(output_type="list", initial_len=8, interval=0) as output_list:
         scheduler.send_email_periodically([output_list])
-        scheduler.store_ftp_periodically()
+        scheduler.store_ftp_periodically([output_list])
         scheduler.start()
         try:
             while True:
                 output_list[0] = f"Model - {info.router_model}. Start time: {get_current_data_as_string('%Y-%m-%d-%H-%M')}."
                 # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS
                 for module in module_instances:
-                    # try:
+                    email.send_email(output_list)
                     test_count = module.read_all_data(output_list, test_count)
-                        # ftp_client.store_report()
-                    # except FTPError as err:
-                        # print_error(err, output_list, "RED")
-                # email.send_email(output_list)
                 time.sleep(2)
-        except ConnectionFailedError as err:
-            print_error(f"Connection stopped: {err}", output_list, "RED")
-        except KeyboardInterrupt as err:
-            print_error("User stopped tests with KeyboardInterrupt.", output_list, "RED")
-        except AttributeError as err:
-            print_error(f"Such attribute does not exist: {err}", output_list, "RED")
+        except (ConnectionFailedError, KeyboardInterrupt, AttributeError) as err:
+            if(isinstance(err, ConnectionFailedError)):
+                error_text = f"Connection stopped: {err}"
+            elif(isinstance(err, KeyboardInterrupt)):
+                error_text = "User stopped tests with KeyboardInterrupt."
+            elif(isinstance(err, AttributeError)):
+                error_text = f"Such attribute does not exist: {err}"
+            print_error(error_text, output_list, "RED")
         finally:
             report.write_end_header()
             close_all_instances([ssh_client.ssh, modbus.client])

@@ -28,23 +28,22 @@
     ],
     "FTP":[
         {
-            "FTP_USE": "Yes",
+            "FTP_USE": true,
             "FTP_HOST": "127.0.0.1",
             "FTP_PORT": 21,
-            "FTP_USER": "ftpuser1",
+            "FTP_USER": "ftpuser",
             "FTP_PASSWORD": "Admin123",
-            "INTERVAL_MINUTES": 1
+            "INTERVAL_MINUTES": 10
         }
     ],
     "Email":[
         {
-            "EMAIL_USE": "Yes",
-            "PORT": 465,
+            "EMAIL_USE": true,
             "SMTP": "smtp.gmail.com",
             "USER": "labas0113@gmail.com",
             "PASSWORD": "belekas111",
-            "RECEIVER": "labas0113@gmail.com",
-            "INTERVAL_HOURS": 1
+            "RECEIVER": "labas01139999999@gmail.com",
+            "INTERVAL_HOURS": 15
         }
     ]
 }

@@ -3,8 +3,8 @@ import ftplib
 import socket
 
 # Local imports
-from MainModules.FTPError import FTPError
 from MainModules.Logger import init_logger
+from Libraries.PrintMethods import print_error
 
 class FTPClient:
 
@@ -19,7 +19,7 @@ class FTPClient:
         self.report_module = report_module
         self.ftp = ftplib.FTP()
 
-    def connect(self):
+    def connect(self, output_list):
         try:
             self.ftp.connect(self.host, self.port)
             self.ftp.login(self.username, self.password)
@@ -31,17 +31,20 @@ class FTPClient:
                 error_text = f"FTP failed to connect, check port value: {err}"
             else:
                 error_text = f"FTP failed to login: {err}"
-            self.allowed = "no"
+            self.allowed = False
             self.logger.error(error_text)
-            # raise FTPError(error_text)
+            print_error(error_text, output_list, "RED")
 
     def disconnect(self):
         self.ftp.quit()
 
     def store_report(self, output_list):
-        self.connect(output_list)
-        report = self.report_module.open_report_for_ftp()
-        command = f'STOR {self.report_module.report_file}'
-        self.ftp.storbinary(command, report)
-        report.close()
-        self.disconnect()
+        if(self.allowed):
+            self.connect(output_list)
+        if(self.allowed):
+            report = self.report_module.open_report_for_ftp()
+            command = f'STOR {self.report_module.report_file}'
+            self.ftp.storbinary(command, report)
+            self.logger.info("Report was uploaded with FTP successfully.")
+            report.close()
+            self.disconnect()

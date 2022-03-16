@@ -49,7 +49,8 @@ class Modbus:
             time.sleep(0.7)
             registers_data = self.client.read_holding_registers(data['address'], data['number'])
             if(registers_data != None):
-                # print_error("", print_status)
+                if(try_connect_nr > 1):
+                    print_error("", print_status)
                 return registers_data
             else:
                 error_text = f"Reconnecting Modbus attempt nr. {try_connect_nr} out of {self.connect_attempts}!"
