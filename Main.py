@@ -19,13 +19,17 @@ from Clients.EmailClient import EmailClient
 from MainModules.ReportModule import ReportModule
 from Libraries.PrintMethods import print_error
 from Libraries.DataMethods import get_current_data_as_string
+from Libraries.FileMethods import delete_file_content
 from MainModules.FTPError import FTPError
 from MainModules.Scheduler import Scheduler
+from MainModules.Logger import  get_log_file_path
 
+LOG_FILE = get_log_file_path()
 CONFIGURATION_FILE = "config.json"
 PARAMETERS_FILE = "registers.json"
 
 def main():
+    delete_file_content(LOG_FILE)
     conf = ConfigurationModule(CONFIGURATION_FILE)
     data = read_file(PARAMETERS_FILE)
     ssh_client = SSHClient(conf.get_all_data())
@@ -46,17 +50,19 @@ def main():
     scheduler = Scheduler(ftp_client, email)
 
     with output(output_type="list", initial_len=8, interval=0) as output_list:
-        scheduler.send_email([output_list])
+        scheduler.send_email_periodically([output_list])
+        scheduler.store_ftp_periodically()
         scheduler.start()
         try:
             while True:
                 output_list[0] = f"Model - {info.router_model}. Start time: {get_current_data_as_string('%Y-%m-%d-%H-%M')}."
                 # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS
                 for module in module_instances:
-                    try:
-                        test_count = module.read_all_data(output_list, test_count)
-                    except FTPError as err:
-                        print_error(err, output_list, "RED")
+                    # try:
+                    test_count = module.read_all_data(output_list, test_count)
+                        # ftp_client.store_report()
+                    # except FTPError as err:
+                        # print_error(err, output_list, "RED")
                 # email.send_email(output_list)
                 time.sleep(2)
         except ConnectionFailedError as err:

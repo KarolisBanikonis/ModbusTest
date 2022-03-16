@@ -31,7 +31,7 @@
             "FTP_USE": "Yes",
             "FTP_HOST": "127.0.0.1",
             "FTP_PORT": 21,
-            "FTP_USER": "ftpuser",
+            "FTP_USER": "ftpuser1",
             "FTP_PASSWORD": "Admin123",
             "INTERVAL_MINUTES": 1
         }

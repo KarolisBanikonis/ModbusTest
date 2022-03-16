@@ -7,11 +7,12 @@ from Libraries.SSHMethods import try_enable_gps, get_parsed_ubus_data, get_concr
 class ModuleGPS(Module):
 
     def __init__(self, data, ssh, modbus, info, report):
-        super().__init__(data, ssh, modbus, info, report)
-        self.module_name = __class__.__name__
+        super().__init__(data, ssh, modbus, info, report, __class__.__name__)
+        # self.module_name = __class__.__name__
         try_enable_gps(self.ssh)
 
     def read_all_data(self, output_list, test_count):
+        self.logger.info(f"Started {self.module_name} testing!")
         self.total_number = test_count[0]
         self.correct_number = test_count[1]
         self.report.open_report()
@@ -34,6 +35,7 @@ class ModuleGPS(Module):
             self.report.writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2], '', cpu_usage, total_mem_difference, memory_difference])
             self.print_test_results(output_list, current, results[0], results[1], cpu_usage, total_mem_difference)
         self.report.close()
+        self.logger.info(f"Module - {self.module_name} tests are over!")
         return [self.total_number, self.correct_number, memory]
 
     def get_modbus_and_device_data_read_register_count_16(self, result, current, output_list):

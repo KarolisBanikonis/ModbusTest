@@ -4,6 +4,7 @@ import importlib
 # Local imports
 from Libraries.SSHMethods import ssh_get_uci_hwinfo
 from Clients.SSHClient import SSHClient
+from MainModules.Logger import init_logger
 
 class ModuleLoader:
 
@@ -14,6 +15,7 @@ class ModuleLoader:
         self.modules_info = conf_module.get_data('MODULES')
         self.modules_to_load = []
         self.check_hw_info()
+        self.logger = init_logger(__name__)
         
     def check_hw_info(self):
         for module_info in self.modules_info:
@@ -33,6 +35,7 @@ class ModuleLoader:
                     class_ = getattr(module, module_name)
                     instance = class_(data[module_name], self.conn, modbus, info, report)
                     instantiated_modules.append(instance)
+                    self.logger.info(f"Class object {class_} was instantiated!")
                 except AttributeError as err:
                     print(f"Such attribute does not exist: {err}")
         return instantiated_modules
@@ -41,6 +44,7 @@ class ModuleLoader:
         module = None
         try:
             module = importlib.import_module(self.MODULES_DIRECTORY + module_name)
+            self.logger.info(f"Module {module.__name__} was loaded!")
             return module
         except ModuleNotFoundError:
             print(f"Module {module_name} was not imported!")

@@ -6,12 +6,13 @@ from Libraries.SSHMethods import ssh_get_uci_hwinfo, get_parsed_ubus_data, get_c
 class ModuleMobile(Module):
 
     def __init__(self, data, ssh, modbus, info, report):
-        super().__init__(data, ssh, modbus, info, report)
-        self.module_name = __class__.__name__
+        super().__init__(data, ssh, modbus, info, report, __class__.__name__)
+        # self.module_name = __class__.__name__
         self.sim = 1
         self.dual_sim_status = ssh_get_uci_hwinfo(self.ssh, "dual_sim")
 
     def read_all_data(self, output_list, test_count): #check if sim is inserted
+        self.logger.info(f"Started {self.module_name} testing!")
         self.report.open_report()
         self.total_number = test_count[0]
         self.correct_number = test_count[1]
@@ -21,6 +22,7 @@ class ModuleMobile(Module):
             self.sim = 2
             self.read_data(self.data[1]['SIM2'], output_list)
         self.report.close()
+        self.logger.info(f"Module - {self.module_name} tests are over!")
         return [self.total_number, self.correct_number, self.memory]
 
     def read_data(self, data_area, output_list):

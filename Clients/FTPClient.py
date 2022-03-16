@@ -4,10 +4,12 @@ import socket
 
 # Local imports
 from MainModules.FTPError import FTPError
+from MainModules.Logger import init_logger
 
 class FTPClient:
 
     def __init__(self, config, report_module):
+        self.logger = init_logger(__name__)
         self.allowed = config['FTP_USE']
         self.host = config['FTP_HOST']
         self.port = config['FTP_PORT']
@@ -30,13 +32,14 @@ class FTPClient:
             else:
                 error_text = f"FTP failed to login: {err}"
             self.allowed = "no"
-            raise FTPError(error_text)
+            self.logger.error(error_text)
+            # raise FTPError(error_text)
 
     def disconnect(self):
         self.ftp.quit()
 
-    def store_report(self):
-        self.connect()
+    def store_report(self, output_list):
+        self.connect(output_list)
         report = self.report_module.open_report_for_ftp()
         command = f'STOR {self.report_module.report_file}'
         self.ftp.storbinary(command, report)
