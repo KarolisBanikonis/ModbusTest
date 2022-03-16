@@ -6,10 +6,12 @@ import paramiko
 # Local imports
 from MainModules.ConnectionFailedError import ConnectionFailedError
 from Libraries.PrintMethods import print_error
+from MainModules.Logger import init_logger
 
 class SSHClient:
 
     def __init__(self, configuration):
+        self.logger = init_logger(__name__)
         self.ssh = paramiko.client.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.host = configuration['SERVER_HOST']
@@ -28,6 +30,7 @@ class SSHClient:
                 try_connect_nr += 1
                 if(print_status != None):
                     error_text = f"Reconnecting SSH attempt nr. {try_connect_nr} out of {self.connect_attempts}!"
+                    self.logger.critical(error_text)
                     print_error(error_text, print_status, "YELLOW")
                 connected = self.ssh_connect()
                 if(connected):
@@ -46,6 +49,7 @@ class SSHClient:
     def first_ssh_connect(self):
         try:
             self.ssh.connect(self.host, username=self.username, password=self.password, timeout=self.timeout)
+            self.logger.info("SSH setup is successful!")
             return True
         except (paramiko.AuthenticationException, paramiko.ssh_exception.NoValidConnectionsError, OSError) as err:
             error_text = ""
@@ -56,6 +60,7 @@ class SSHClient:
             else: #OSError
                 error_text = f"SSH connection failed, check host value: {err}"
             print(error_text)
+            self.logger.critical(error_text)
             return False
 
     def ssh_issue_command(self, command, print_status=None):

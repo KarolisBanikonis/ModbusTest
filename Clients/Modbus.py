@@ -7,10 +7,12 @@ from pyModbusTCP.client import ModbusClient
 # Local imports
 from MainModules.ConnectionFailedError import ConnectionFailedError
 from Libraries.PrintMethods import print_error
+from MainModules.Logger import init_logger
 
 class Modbus:
 
     def __init__(self, configuration):
+        self.logger = init_logger(__name__)
         self.host = configuration['SERVER_HOST']
         self.port = configuration['MODBUS_PORT']
         self.connect_attempts = configuration['RECONNECT_ATTEMPTS']
@@ -23,13 +25,17 @@ class Modbus:
 
     def setup_modbus(self):
         self.client.host(self.host)
+        error_text = ""
         if(type(self.port) != int):
-            print("Modbus port must be integer value!")
-            return False
-        if(self.port < 1 or self.port > 65535):
-            print("Modbus port value must be between 1 and 65535!")
+            error_text = "Modbus port must be integer value!"
+        elif(self.port < 1 or self.port > 65535):
+            error_text = "Modbus port value must be between 1 and 65535!"
+        if(error_text != ""):
+            print(error_text)
+            self.logger.critical(error_text)
             return False
         self.client.port(self.port)
+        self.logger.info("Modbus setup is successful!")
         return True
 
     def try_connect(self):
@@ -54,6 +60,7 @@ class Modbus:
                 return registers_data
             else:
                 error_text = f"Reconnecting Modbus attempt nr. {try_connect_nr} out of {self.connect_attempts}!"
+                self.logger.critical(error_text)
                 time.sleep(self.timeout) # only on Linux needed
                 print_error(error_text, print_status, "YELLOW")
         return registers_data

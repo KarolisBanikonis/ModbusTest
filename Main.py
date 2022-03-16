@@ -21,7 +21,7 @@ from Libraries.PrintMethods import print_error
 from Libraries.DataMethods import get_current_data_as_string
 from Libraries.FileMethods import delete_file_content
 from MainModules.Scheduler import Scheduler
-from MainModules.Logger import  init_logger, get_log_file_path
+from MainModules.Logger import init_logger, get_log_file_path, Logger
 
 LOG_FILE = get_log_file_path()
 CONFIGURATION_FILE = "config.json"
@@ -31,7 +31,7 @@ def main():
     logger = init_logger(__name__)
     delete_file_content(LOG_FILE)
     conf = ConfigurationModule(CONFIGURATION_FILE)
-    data = read_file(PARAMETERS_FILE)
+    data = read_file(PARAMETERS_FILE, logger)
     ssh_client = SSHClient(conf.get_all_data())
     ssh_connected = ssh_client.first_ssh_connect()
     if(ssh_connected == False):
@@ -58,7 +58,6 @@ def main():
                 output_list[0] = f"Model - {info.router_model}. Start time: {get_current_data_as_string('%Y-%m-%d-%H-%M')}."
                 # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS
                 for module in module_instances:
-                    email.send_email(output_list)
                     test_count = module.read_all_data(output_list, test_count)
                 time.sleep(2)
         except (ConnectionFailedError, KeyboardInterrupt, AttributeError) as err:
@@ -69,8 +68,10 @@ def main():
             elif(isinstance(err, AttributeError)):
                 error_text = f"Such attribute does not exist: {err}"
             print_error(error_text, output_list, "RED")
+            logger.critical(error_text)
         finally:
             report.write_end_header()
+            logger.info("Program is terminated!")
             close_all_instances([ssh_client.ssh, modbus.client])
 
 if __name__ == "__main__":

@@ -21,3 +21,5 @@ def init_logger(name):
     file_handler.setFormatter(file_format)
     logger.addHandler(file_handler)
     return logger
+
+Logger = init_logger(__name__)
