@@ -17,7 +17,7 @@ class Modbus:
         self.port = configuration['MODBUS_PORT']
         self.connect_attempts = configuration['RECONNECT_ATTEMPTS']
         self.timeout = configuration['TIMEOUT']
-        self.client = ModbusClient()
+        self.client = ModbusClient(timeout=0.5)
         # uncomment this line to see debug message
         # client.debug(True)
 

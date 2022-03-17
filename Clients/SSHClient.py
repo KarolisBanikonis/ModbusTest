@@ -19,6 +19,7 @@ class SSHClient:
         self.password = configuration['PASSWORD']
         self.connect_attempts = configuration['RECONNECT_ATTEMPTS']
         self.timeout = configuration['TIMEOUT']
+        self.init_ssh_setup()
 
     def try_ssh_connect(self, print_status=None):
         state = self.ssh.get_transport().is_active()
@@ -46,11 +47,10 @@ class SSHClient:
         except OSError:
             return False
 
-    def first_ssh_connect(self):
+    def init_ssh_setup(self):
         try:
             self.ssh.connect(self.host, username=self.username, password=self.password, timeout=self.timeout)
             self.logger.info("SSH setup is successful!")
-            return True
         except (paramiko.AuthenticationException, paramiko.ssh_exception.NoValidConnectionsError, OSError) as err:
             error_text = ""
             if(isinstance(err, paramiko.AuthenticationException)):
@@ -61,7 +61,7 @@ class SSHClient:
                 error_text = f"SSH connection failed, check host value: {err}"
             print(error_text)
             self.logger.critical(error_text)
-            return False
+            quit()
 
     def ssh_issue_command(self, command, print_status=None):
         try:

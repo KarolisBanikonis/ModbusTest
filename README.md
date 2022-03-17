@@ -31,7 +31,6 @@ Typically, you should not change "MODULES" values. Be cautious that, module name
 
 "Email" section:
 
-    "EMAIL_USE" - should program send emails with test summary. Write "true" to enable it and "false" to disable it.
     "SMTP" - what SMTP server should be used.
     "USER" - what username should be used to login to sender's email account.
     "PASSWORD" - what password should be used to login to sender's email account.

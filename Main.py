@@ -33,19 +33,18 @@ def main():
     conf = ConfigurationModule(CONFIGURATION_FILE)
     data = read_file(PARAMETERS_FILE, logger)
     ssh_client = SSHClient(conf.get_all_data())
-    ssh_connected = ssh_client.first_ssh_connect()
-    if(ssh_connected == False):
-        quit()
-    info = InformationModule(ssh_client, data['InformationModule'][0])
+    info = InformationModule(ssh_client, data['InformationModule'])
     report = ReportModule(info)
     modbus = Modbus(conf.get_all_data())
     modbus_is_setup_valid = modbus.setup_modbus()
     if(modbus_is_setup_valid == False):
-        close_all_instances([ssh_client.ssh, modbus.client])
+        close_all_instances([ssh_client.ssh])
     module_loader = ModuleLoader(conf, ssh_client)
     module_instances = module_loader.init_modules(data, modbus, info, report)
     test_count = [0, 0, info.mem_used_at_start] # test_number, correct_number, used_ram
-    ftp_client = FTPClient(conf.get_ftp_data(), report)
+
+    if(conf.get_ftp_data()['FTP_USE']):
+        ftp_client = FTPClient(conf.get_ftp_data(), report)
     email = EmailClient(conf.get_email_data())
     scheduler = Scheduler(ftp_client, email)
 

@@ -10,7 +10,7 @@ from Libraries.PrintMethods import print_error
 class EmailClient:
 
     def __init__(self, conf):
-        self.allowed = conf['EMAIL_USE']
+        self.allowed = True
         self.port = 465
         self.smtp = conf['SMTP']
         self.username = conf['USER']

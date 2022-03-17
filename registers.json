@@ -1,20 +1,20 @@
 {
-	"InformationModule":[
+	"InformationModule":
+	{
+		"Model":
 		{
-			"Model":
-            {
-                "service":"mnfinfo",
-                "procedure":"get",
-                "parse":"name"
-            },
-            "Memory":
-            {
-                "service":"system",
-                "procedure":"info",
-                "parse":"memory"
-            }
+			"service":"mnfinfo",
+			"procedure":"get",
+			"parse":"name"
+		},
+		"Memory":
+		{
+			"service":"system",
+			"procedure":"info",
+			"parse":"memory"
 		}
-	],
+	}
+	,
 	"ModuleSystem":[
 	   {
 		  "name":"System uptime",
