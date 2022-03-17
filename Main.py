@@ -50,8 +50,8 @@ def main():
     scheduler = Scheduler(ftp_client, email)
 
     with output(output_type="list", initial_len=8, interval=0) as output_list:
-        scheduler.send_email_periodically([output_list])
-        scheduler.store_ftp_periodically([output_list])
+        # scheduler.send_email_periodically([output_list])
+        # scheduler.store_ftp_periodically([output_list])
         scheduler.start()
         try:
             while True:
@@ -70,7 +70,7 @@ def main():
             print_error(error_text, output_list, "RED")
             logger.critical(error_text)
         finally:
-            report.write_end_header()
+            # report.write_end_header()
             logger.info("Program is terminated!")
             close_all_instances([ssh_client.ssh, modbus.client])
 

@@ -50,3 +50,7 @@ def remove_colour_tags(data):
 def get_current_data_as_string(format):
     current_data = datetime.now().strftime(format)
     return current_data
+
+def replace_modem_id(data, modem_id):
+    pattern = '3-1'
+    return re.sub(pattern, modem_id, data)

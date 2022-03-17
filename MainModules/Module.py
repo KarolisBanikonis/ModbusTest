@@ -30,7 +30,6 @@ class Module:
         self.report = report
         self.total_number = 0
         self.correct_number = 0
-        self.module_name = ""
         
     def print_test_results(self, output_list, current_json, modbus_data, final_data, cpu, ram):
         output_list[1] = f"Tests were done - {self.total_number}."
@@ -41,6 +40,8 @@ class Module:
         output_list[6] = f"Value from Modbus - {modbus_data}. Value from router - {final_data}."
 
     def convert_reg_number(self, read_data):
+        if(read_data == None):
+            return read_data
         bin_temp1 = format(read_data[0], '08b')
         bin_temp2 = format(read_data[1], '08b')
         bin_str = (f"{bin_temp1}{bin_temp2}")
@@ -48,6 +49,8 @@ class Module:
         return result
 
     def convert_reg_text(self, read_data):
+        if(read_data == None):
+            return read_data
         text = ""
         for i in range(len(read_data)):
             if(read_data[i] != 0):
@@ -121,8 +124,12 @@ class Module:
 
     @dispatch(object, object)
     def check_if_results_match(self, modbus_data, actual_data):
-        if(modbus_data == None):
+        if(modbus_data == None and actual_data == None):
             is_data_equal = self.RESULT_PASSED
+            return [modbus_data, actual_data, is_data_equal]
+        elif(modbus_data == None):
+            modbus_data = "Error"
+            is_data_equal = self.RESULT_FAILED
             return [modbus_data, actual_data, is_data_equal]
         else:
             raise TypeError()
@@ -133,18 +140,21 @@ class Module:
         if(results[2] == self.RESULT_PASSED):
             self.correct_number += 1
 
-    def get_modbus_and_device_data_for_number_16(self, result, current, output_list):
-        modbus_data = self.convert_reg_text(result)
-        modbus_data = remove_char(modbus_data, "\x00") # this step needed for 348, 103, 119(mobile), also gps
+    def get_modbus_and_device_data_for_number_16(self, modbus_data, current, output_list):
+        if(modbus_data != None):
+            modbus_data = self.convert_reg_text(modbus_data)
+            modbus_data = remove_char(modbus_data, "\x00") # this step needed for 348, 103, 119(mobile), also gps
         parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
         return modbus_data, parsed_data
 
-    def get_modbus_and_device_data_for_number_2(self, result, current, output_list):
-        modbus_data = self.convert_reg_number(result)
+    def get_modbus_and_device_data_for_number_2(self, modbus_data, current, output_list):
+        if(modbus_data != None):
+            modbus_data = self.convert_reg_number(modbus_data)
         final_data = get_concrete_ubus_data(self.ssh, current, output_list)
         return modbus_data, final_data
 
-    def get_modbus_and_device_data_for_number_1(self, result, current, output_list):
-        modbus_data = result[0]
+    def get_modbus_and_device_data_for_number_1(self, modbus_data, current, output_list):
+        if(modbus_data != None):
+            modbus_data = modbus_data[0]
         parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
         return modbus_data, parsed_data

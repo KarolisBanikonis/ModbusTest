@@ -1,6 +1,7 @@
 # Local imports
 from MainModules.Module import Module
 from Libraries.SSHMethods import gsmctl_call, get_parsed_ubus_data
+from Libraries.DataMethods import get_first_digit
 
 class ModuleSystem(Module):
 
@@ -12,7 +13,9 @@ class ModuleSystem(Module):
         # a = ~ read_data
         # a += 1
         # print(f"{a}")
-        return read_data - 65536
+        if(read_data == None):
+            return read_data
+        return read_data[1] - 65536
 
     def read_all_data(self, output_list, test_count):
         self.logger.info(f"Started {self.module_name} testing!")
@@ -40,15 +43,16 @@ class ModuleSystem(Module):
 
     def get_modbus_and_device_data_read_register_count_1_ubus(self, result, current, output_list):
         modbus_data, parsed_data = self.get_modbus_and_device_data_for_number_1(result, current, output_list)
-        if(current['address'] == 324):
-            final_data = parsed_data['result'][0][current['parse']]
-        elif(current['address'] == 325):
-            final_data = parsed_data['result'][1][current['parse']]
+        final_data = get_first_digit(parsed_data[current['parse']])
+        # if(current['address'] == 324):
+        #     final_data = parsed_data['result'][0][current['parse']]
+        # elif(current['address'] == 325):
+        #     final_data = parsed_data['result'][1][current['parse']]
         return modbus_data, final_data
 
     def get_modbus_and_device_data_read_register_count_2_ubus(self, result, current, output_list):
         if(current['address'] == 3):
-            modbus_data = self.convert_ref_signal(result[1])
+            modbus_data = self.convert_ref_signal(result)
             parsed_data = get_parsed_ubus_data(self.ssh, current, output_list)
             final_data = parsed_data['mobile'][0][current['parse']]
         else:

@@ -1,15 +1,23 @@
 # Local imports
 from MainModules.Module import Module
-from Libraries.DataMethods import remove_char, get_value_in_parenthesis
-from Libraries.SSHMethods import ssh_get_uci_hwinfo, get_parsed_ubus_data, get_concrete_ubus_data
+from Libraries.DataMethods import remove_char, get_value_in_parenthesis, replace_modem_id
+from Libraries.SSHMethods import ssh_get_uci_hwinfo, get_router_id
 
 class ModuleMobile(Module):
 
     def __init__(self, data, ssh, modbus, info, report):
         super().__init__(data, ssh, modbus, info, report, __class__.__name__)
         # self.module_name = __class__.__name__
-        self.sim = 1
         self.dual_sim_status = ssh_get_uci_hwinfo(self.ssh, "dual_sim")
+        self.modem_id = get_router_id(self.ssh, data[0]['ModemId'])
+        self.change_data_with_modem_id()
+
+    def change_data_with_modem_id(self):
+        for data in self.data[0]['SIM1']:
+            data['procedure'] = replace_modem_id(data['procedure'], self.modem_id)
+        if(self.dual_sim_status == "1"):
+            for data in self.data[1]['SIM2']:
+                data['procedure'] = replace_modem_id(data['procedure'], self.modem_id)
 
     def read_all_data(self, output_list, test_count): #check if sim is inserted
         self.logger.info(f"Started {self.module_name} testing!")
@@ -19,7 +27,6 @@ class ModuleMobile(Module):
         self.memory = test_count[2]
         self.read_data(self.data[0]['SIM1'], output_list)
         if(self.dual_sim_status == "1"):
-            self.sim = 2
             self.read_data(self.data[1]['SIM2'], output_list)
         self.report.close()
         self.logger.info(f"Module - {self.module_name} tests are over!")

@@ -13,6 +13,11 @@ def ubus_call(ssh, service, procedure, print_status=None):
     output = ssh.ssh_issue_command(f"ubus -v call {service} {procedure}", print_status)
     return output
 
+def get_router_id(ssh, current_data):
+    parsed_data = get_parsed_ubus_data(ssh, current_data)
+    modem_id = parsed_data[current_data['parse1']][0][current_data['parse2']]
+    return modem_id
+
 def get_parsed_ubus_data(ssh, current_data, print_status=None):
     actual_data = ubus_call(ssh, current_data['service'], current_data['procedure'], print_status)
     parsed_data = json.loads(actual_data) # CIA NULUZTA

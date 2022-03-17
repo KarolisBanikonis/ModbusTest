@@ -17,7 +17,7 @@ class Modbus:
         self.port = configuration['MODBUS_PORT']
         self.connect_attempts = configuration['RECONNECT_ATTEMPTS']
         self.timeout = configuration['TIMEOUT']
-        self.client = ModbusClient(auto_open=True, auto_close=True, timeout=0.1)
+        self.client = ModbusClient()
         # uncomment this line to see debug message
         # client.debug(True)
 
@@ -48,22 +48,48 @@ class Modbus:
         #     return True
 
     def read_registers(self, data, print_status):
-        # self.try_reconnect(print_status)
-        try_connect_nr = 0
-        while(try_connect_nr < self.connect_attempts):
-            try_connect_nr += 1
-            time.sleep(0.7)
+        if not self.client.is_open():
+            if not self.client.open():
+                try_connect_nr = 0
+                while(try_connect_nr < self.connect_attempts):
+                    try_connect_nr += 1
+                    error_text = f"Reconnecting Modbus attempt nr. {try_connect_nr} out of {self.connect_attempts}!"
+                    self.logger.critical(error_text)
+                    print_error(error_text, print_status, "YELLOW")
+                    time.sleep(self.timeout)
+                    if not self.client.is_open():
+                        self.client.open()
+                    if self.client.is_open():
+                        print_error("", print_status)
+                        break
+                    if(try_connect_nr >= self.connect_attempts):
+                        raise ConnectionFailedError("Connection failed - Modbus.")
+
+        if self.client.is_open():
             registers_data = self.client.read_holding_registers(data['address'], data['number'])
-            if(registers_data != None):
-                if(try_connect_nr > 1):
-                    print_error("", print_status)
-                return registers_data
-            else:
-                error_text = f"Reconnecting Modbus attempt nr. {try_connect_nr} out of {self.connect_attempts}!"
-                self.logger.critical(error_text)
-                time.sleep(self.timeout) # only on Linux needed
-                print_error(error_text, print_status, "YELLOW")
+        self.client.close()
         return registers_data
+
+
+
+
+
+    # def read_registers(self, data, print_status): #with auto open, close
+    #     try_connect_nr = 0
+    #     while(try_connect_nr < self.connect_attempts):
+    #         try_connect_nr += 1
+    #         time.sleep(0.7)
+    #         registers_data = self.client.read_holding_registers(data['address'], data['number'])
+    #         if(registers_data != None):
+    #             if(try_connect_nr > 1):
+    #                 print_error("", print_status)
+    #             return registers_data
+    #         else:
+    #             error_text = f"Reconnecting Modbus attempt nr. {try_connect_nr} out of {self.connect_attempts}!"
+    #             self.logger.critical(error_text)
+    #             time.sleep(self.timeout) # only on Linux needed
+    #             print_error(error_text, print_status, "YELLOW")
+    #     raise ConnectionFailedError("Connection failed - Modbus.")
 
     def try_reconnect(self, print_status=None):
         time.sleep(0.7)

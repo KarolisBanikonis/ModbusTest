@@ -39,7 +39,7 @@ class ReportModule:
 
     def write_router_name_and_header(self):
         self.open_report()
-        self.writer.writerow(["Model", self.router_model, '', "Start time", self.start_date, '', '', '', '', '', ''])
+        self.writer.writerow(["Model", self.router_model, '', "Start time", self.start_date]) #, '', '', '', '', '', ''
         self.writer.writerow([])
         self.write_header()
         self.close()

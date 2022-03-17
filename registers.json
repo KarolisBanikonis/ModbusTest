@@ -73,8 +73,8 @@
 		"address":324,
 		"number":1,
 		"source":"ubus",
-		"service": "vuci.services.io",
-		"procedure": "collect_ioman_info",
+		"service": "ioman.gpio.din1",
+		"procedure": "status",
 		"parse": "value"
 		},
 		{
@@ -82,8 +82,8 @@
 		"address":325,
 		"number":1,
 		"source":"ubus",
-		"service": "vuci.services.io",
-		"procedure": "collect_ioman_info",
+		"service": "ioman.gpio.dout1",
+		"procedure": "status",
 		"parse": "value"
 		}
 	],
@@ -167,6 +167,13 @@
 	],
 	"ModuleMobile":[
 	   {
+		   "ModemId":{
+				"source":"ubus",
+				"service": "vuci.network.mobile",
+				"procedure": "get_all_modems",
+				"parse1": "modems",
+				"parse2": "id"
+		   },
 		  	"SIM1":[
 			{
 				"name":"IMSI",
