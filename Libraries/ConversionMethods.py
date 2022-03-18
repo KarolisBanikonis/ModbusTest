@@ -3,14 +3,20 @@ from datetime import datetime
 import math
 
 def convert_timestamp_to_date(timestamp):
+    '''Convert Unix timestamp to date.'''
+
     date = datetime.utcfromtimestamp(timestamp)
     return date
 
 def convert_string_to_date(string_data):
+    '''Convert date's string representation to datetime object.'''
+
     date = datetime.strptime(string_data, '%Y-%m-%d %H:%M:%S')
     return date
 
 def convert_string_to_bytes(string_data):
+    '''Convert information unit's string representation to bytes.'''
+
     size_types = ["B", "K", "M", "G"]
     size = ""
     type = ""

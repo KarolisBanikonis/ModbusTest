@@ -5,10 +5,13 @@ import socket
 # Local imports
 from MainModules.Logger import init_logger
 from Libraries.PrintMethods import print_error
+from Libraries.FileMethods import open_file
 
 class FTPClient:
 
     def __init__(self, config, report_module):
+        '''Set settings required for storing files with FTP.'''
+
         self.logger = init_logger(__name__)
         self.allowed = config['FTP_USE']
         self.host = config['FTP_HOST']
@@ -20,6 +23,8 @@ class FTPClient:
         self.ftp = ftplib.FTP()
 
     def connect(self, output_list):
+        '''Try to connect and log in to the FTP server.'''
+
         try:
             self.ftp.connect(self.host, self.port)
             self.ftp.login(self.username, self.password)
@@ -36,15 +41,20 @@ class FTPClient:
             print_error(error_text, output_list, "RED")
 
     def disconnect(self):
+        '''Close the connection with FTP server.'''
+
         self.ftp.quit()
 
     def store_report(self, output_list):
+        '''Try to store report to the FTP server.'''
+
         if(self.allowed):
             self.connect(output_list)
         if(self.allowed):
             report = self.report_module.open_report_for_ftp()
-            command = f'STOR {self.report_module.report_file}'
-            self.ftp.storbinary(command, report)
-            self.logger.info("Report was uploaded with FTP successfully.")
-            report.close()
-            self.disconnect()
+            if(report is not None):
+                command = f'STOR {self.report_module.report_file}'
+                self.ftp.storbinary(command, report)
+                self.logger.info("Report was uploaded with FTP successfully.")
+                report.close()
+                self.disconnect()

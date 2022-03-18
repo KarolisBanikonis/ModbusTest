@@ -34,7 +34,7 @@ def gsmctl_call(ssh, flag, print_status=None):
 
 def try_enable_gps(ssh):
     gps_enabled = ssh.ssh_issue_command("uci get gps.gpsd.enabled")
-    if(get_first_digit(gps_enabled) == "0"):
+    if(get_first_digit(gps_enabled) == 0):
         ssh.ssh.exec_command("uci set gps.gpsd.enabled='1'")
         ssh.ssh.exec_command("uci commit gps")
         ssh.ssh.exec_command("/etc/init.d/gpsd restart")
@@ -52,4 +52,4 @@ def get_df_used_memory(ssh, mounted_on):
 
 def get_cpu_count(ssh):
     output = ssh.ssh_issue_command("grep 'model name' /proc/cpuinfo | wc -l")
-    return int(get_first_digit(output))
+    return get_first_digit(output)

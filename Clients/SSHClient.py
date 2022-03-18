@@ -11,6 +11,8 @@ from MainModules.Logger import init_logger
 class SSHClient:
 
     def __init__(self, configuration):
+        '''Set settings required for establishing SSH connection.'''
+
         self.logger = init_logger(__name__)
         self.ssh = paramiko.client.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -21,7 +23,33 @@ class SSHClient:
         self.timeout = configuration['TIMEOUT']
         self.init_ssh_setup()
 
+    def init_ssh_setup(self):
+        '''
+        Data validation for making connections via SSH.
+        Trying to establish connection for the first time in program.
+        '''
+
+        try:
+            self.ssh.connect(self.host, username=self.username, password=self.password, timeout=self.timeout)
+            self.logger.info("SSH setup is successful!")
+        except (paramiko.AuthenticationException, paramiko.ssh_exception.NoValidConnectionsError, OSError) as err:
+            error_text = ""
+            if(isinstance(err, paramiko.AuthenticationException)):
+                error_text = "SSH Authentication failed, check your credentials!"
+            elif(isinstance(err, paramiko.ssh_exception.NoValidConnectionsError)):
+                error_text = f"Not valid SSH connection: {err}"
+            else: #OSError
+                error_text = f"SSH connection failed, check host value: {err}"
+            print(error_text)
+            self.logger.critical(error_text)
+            quit()
+
     def try_ssh_connect(self, print_status=None):
+        '''
+        Try to establish connection via SSH with server.
+        If connection is not made, try to establish connection set amount of times.
+        '''
+        
         state = self.ssh.get_transport().is_active()
         if(state):
             return
@@ -41,29 +69,17 @@ class SSHClient:
             raise ConnectionFailedError("Connection failed - SSH.")
 
     def ssh_connect(self):
+        '''Try to establish connection via SSH with server once.'''
+
         try:
             self.ssh.connect(self.host, username=self.username, password=self.password, timeout=self.timeout)
             return True
         except OSError:
             return False
 
-    def init_ssh_setup(self):
-        try:
-            self.ssh.connect(self.host, username=self.username, password=self.password, timeout=self.timeout)
-            self.logger.info("SSH setup is successful!")
-        except (paramiko.AuthenticationException, paramiko.ssh_exception.NoValidConnectionsError, OSError) as err:
-            error_text = ""
-            if(isinstance(err, paramiko.AuthenticationException)):
-                error_text = "SSH Authentication failed, check your credentials!"
-            elif(isinstance(err, paramiko.ssh_exception.NoValidConnectionsError)):
-                error_text = f"Not valid SSH connection: {err}"
-            else: #OSError
-                error_text = f"SSH connection failed, check host value: {err}"
-            print(error_text)
-            self.logger.critical(error_text)
-            quit()
-
     def ssh_issue_command(self, command, print_status=None):
+        '''Execute a command on the SSH server.'''
+
         try:
             self.try_ssh_connect(print_status)
             _stdin, _stdout,_stderr = self.ssh.exec_command(command)

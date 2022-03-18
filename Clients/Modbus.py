@@ -12,6 +12,8 @@ from MainModules.Logger import init_logger
 class Modbus:
 
     def __init__(self, configuration):
+        '''Set settings required for establishing Modbus connection.'''
+
         self.logger = init_logger(__name__)
         self.host = configuration['SERVER_HOST']
         self.port = configuration['MODBUS_PORT']
@@ -20,6 +22,8 @@ class Modbus:
         self.client = ModbusClient(timeout=0.5)
 
     def setup_modbus(self):
+        '''Configuration data validation and initial setup.'''
+
         self.client.host(self.host)
         error_text = ""
         if(type(self.port) != int):
@@ -35,6 +39,11 @@ class Modbus:
         return True
 
     def try_to_reconnect(self, print_status):
+        '''
+        Try to establish connection via Modbus TCP with server.
+        If connection is not made, try to establish connection set amount of times.
+        '''
+
         if not self.client.is_open():
             if not self.client.open():
                 try_connect_nr = 0
@@ -55,6 +64,8 @@ class Modbus:
                 return True
 
     def read_registers(self, data, print_status):
+        '''Read server's registers values via Modbus TCP.'''
+
         is_connected = self.try_to_reconnect(print_status)
         if is_connected:
             registers_data = self.client.read_holding_registers(data['address'], data['number'])

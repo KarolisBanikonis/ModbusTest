@@ -7,7 +7,7 @@ import time
 from reprint import output
 
 # Local imports
-from Libraries.FileMethods import read_file, close_all_instances
+from Libraries.FileMethods import read_json_file, close_all_instances
 from MainModules.ConnectionFailedError import ConnectionFailedError
 from MainModules.ModuleLoader import ModuleLoader
 from MainModules.ConfigurationModule import ConfigurationModule
@@ -31,7 +31,7 @@ def main():
     logger = init_logger(__name__)
     delete_file_content(LOG_FILE)
     conf = ConfigurationModule(CONFIGURATION_FILE)
-    data = read_file(PARAMETERS_FILE, logger)
+    data = read_json_file(PARAMETERS_FILE, logger)
     ssh_client = SSHClient(conf.get_all_data())
     info = InformationModule(ssh_client, data['InformationModule'])
     report = ReportModule(info)
@@ -49,8 +49,9 @@ def main():
     scheduler = Scheduler(ftp_client, email)
 
     with output(output_type="list", initial_len=8, interval=0) as output_list:
+        a = type(output_list)
         # scheduler.send_email_periodically([output_list])
-        # scheduler.store_ftp_periodically([output_list])
+        scheduler.store_ftp_periodically([output_list])
         scheduler.start()
         try:
             while True:

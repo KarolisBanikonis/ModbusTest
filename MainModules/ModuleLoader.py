@@ -20,10 +20,10 @@ class ModuleLoader:
     def check_hw_info(self):
         for module_info in self.modules_info:
             if(module_info['name'] == "ModuleSystem"):
-                module_enabled = "1"
+                module_enabled = 1
             else:
                 module_enabled = ssh_get_uci_hwinfo(self.conn, module_info['hw_info'])
-            if(module_enabled == "1"):
+            if(module_enabled == 1):
                 self.modules_to_load.append(module_info['name'])
         
     def init_modules(self, data, modbus, info, report):

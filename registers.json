@@ -114,7 +114,8 @@
 		  "number":2,
 		  "service": "gpsd",
 		  "procedure": "position",
-		  "parse": "latitude"
+		  "parse": "latitude",
+		  "type": "float"
 	   },
 	   {
 		  "name":"GPS longitude coordinate",
@@ -122,7 +123,8 @@
 		  "number":2,
 		  "service": "gpsd",
 		  "procedure": "position",
-		  "parse": "longitude"
+		  "parse": "longitude",
+		  "type": "float"
 	   },
 	   {
 		  "name":"GPS fix time",
@@ -130,7 +132,8 @@
 		  "number":16,
 		  "service": "vuci.services.gps",
 		  "procedure": "get_coordinates",
-		  "parse": "fix_time"
+		  "parse": "fix_time",
+		  "type": "timestamp"
 	   },
 	   {
 		  "name":"GPS date and time",
@@ -138,7 +141,8 @@
 		  "number":16,
 		  "service": "gpsd",
 		  "procedure": "position",
-		  "parse": "timestamp"
+		  "parse": "timestamp",
+		  "type": "date"
 	   },
 	   {
 		  "name":"GPS speed",
@@ -146,7 +150,8 @@
 		  "number":2,
 		  "service": "gpsd",
 		  "procedure": "position",
-		  "parse": "speed"
+		  "parse": "speed",
+		  "type": "int"
 	   },
 	   {
 		  "name":"GPS satellite count",
@@ -154,7 +159,8 @@
 		  "number":2,
 		  "service": "gpsd",
 		  "procedure": "position",
-		  "parse": "satellites"
+		  "parse": "satellites",
+		  "type": "int"
 	   },
 	   {
 		  "name":"GPS accuracy",
@@ -162,7 +168,8 @@
 		  "number":2,
 		  "service": "gpsd",
 		  "procedure": "position",
-		  "parse": "accuracy"
+		  "parse": "accuracy",
+		  "type": "float"
 	   }
 	],
 	"ModuleMobile":[

@@ -30,7 +30,7 @@ class Module:
         self.report = report
         self.total_number = 0
         self.correct_number = 0
-        
+
     def print_test_results(self, output_list, current_json, modbus_data, final_data, cpu, ram):
         output_list[1] = f"Tests were done - {self.total_number}."
         output_list[2] = f"{print_with_colour(f'Tests passed - {self.correct_number}.', 'GREEN')}{print_with_colour(f' Tests failed - {self.total_number - self.correct_number}.', 'RED')}"
@@ -86,9 +86,8 @@ class Module:
             return self.RESULT_PASSED
 
     def __check_if_datetime_pass(self, data1, data2):
-        difference = data1 - data2
-        # print(f"DIFFERENCE = {difference.seconds}")
-        if(math.fabs(difference.seconds) > self.DATATIME_ERROR):
+        difference = math.fabs((data1-data2).total_seconds())
+        if(difference > self.DATATIME_ERROR):
             return self.RESULT_FAILED
         else:
             return self.RESULT_PASSED
@@ -110,6 +109,11 @@ class Module:
         return [modbus_data, actual_data, is_data_equal]
 
     @dispatch((int, int), (int, float))
+    def check_if_results_match(self, modbus_data, actual_data):
+        is_data_equal = self.__check_if_numbers_pass(modbus_data, actual_data)
+        return [modbus_data, actual_data, is_data_equal]
+
+    @dispatch(float, float)
     def check_if_results_match(self, modbus_data, actual_data):
         is_data_equal = self.__check_if_numbers_pass(modbus_data, actual_data)
         return [modbus_data, actual_data, is_data_equal]

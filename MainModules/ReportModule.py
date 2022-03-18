@@ -1,10 +1,9 @@
 # Standard library imports
 import csv
 
-import pandas as pd
-
 # Local imports
 from Libraries.DataMethods import get_current_data_as_string
+from Libraries.FileMethods import open_file
 
 class ReportModule:
 
@@ -21,18 +20,21 @@ class ReportModule:
         return f"{name}-{self.start_date}"
 
     def open_report(self):
-        try:
-            self.report = open(self.report_file_path, 'a', newline='')
-            self.writer = csv.writer(self.report)
-        except IOError:
-            print(f"Could not open the file at {self.report_file_path}")
+        self.report = open_file(self.report_file_path, 'a')
+        self.writer = csv.writer(self.report)
+        # try:
+        #     self.report = open(self.report_file_path, 'a', newline='')
+        #     self.writer = csv.writer(self.report)
+        # except IOError:
+        #     print(f"Could not open the file at {self.report_file_path}")
 
     def open_report_for_ftp(self):
         try:
+            #Need to check if it exists.
             report = open(self.report_file_path, 'rb')
             return report
         except IOError:
-            print(f"Could not open the file at {self.report_file_path}")
+            return None
 
     def close(self):
         self.report.close()

@@ -1,12 +1,12 @@
 # Local imports
-from Libraries.FileMethods import read_file
+from Libraries.FileMethods import read_json_file
 from MainModules.Logger import init_logger
 
 class ConfigurationModule:
 
     def __init__(self, file_path,):
         logger = init_logger(__name__)
-        self.data = read_file(file_path, logger)
+        self.data = read_json_file(file_path, logger)
 
     def get_data(self, request_data):
         return self.data['Settings'][0][request_data]

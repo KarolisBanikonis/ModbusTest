@@ -15,7 +15,7 @@ class ModuleMobile(Module):
     def change_data_with_modem_id(self):
         for data in self.data[0]['SIM1']:
             data['procedure'] = replace_modem_id(data['procedure'], self.modem_id)
-        if(self.dual_sim_status == "1"):
+        if(self.dual_sim_status == 1):
             for data in self.data[1]['SIM2']:
                 data['procedure'] = replace_modem_id(data['procedure'], self.modem_id)
 
