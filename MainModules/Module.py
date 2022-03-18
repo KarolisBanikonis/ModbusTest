@@ -14,8 +14,8 @@ from MainModules.Logger import init_logger
 
 class Module:
 
-    MID_ERROR = 10      #might need to add more values
-    MOBILE_ERROR = 10000
+    DEFAULT_ERROR_VALUE = 10
+    MOBILE_ERROR_VALUE = 104857 #~0.1MB
     DATATIME_ERROR = 60
     RESULT_PASSED = "Passed"
     RESULT_FAILED = "Failed"
@@ -63,7 +63,7 @@ class Module:
     def binary_to_decimal(self, n):
         return int(n, 2)
 
-    def __remove_whitespace(self, data):
+    def __format_string_for_checking(self, data):
         if(type(data) == str):
             data = data.casefold()#.translate(str.maketrans('', '', string.whitespace))
             pattern = re.compile(r'\s+')
@@ -77,7 +77,10 @@ class Module:
             return self.RESULT_FAILED
 
     def __check_if_numbers_pass(self, data1, data2):
-        if(math.fabs(data1 - data2) > self.MID_ERROR):
+        used_error_value = self.DEFAULT_ERROR_VALUE
+        if(self.module_name == "ModuleMobile"):
+            used_error_value = self.MOBILE_ERROR_VALUE
+        if(math.fabs(data1 - data2) > used_error_value):
             return self.RESULT_FAILED
         else:
             return self.RESULT_PASSED
@@ -92,8 +95,8 @@ class Module:
 
     @dispatch(str, str)
     def check_if_results_match(self, modbus_data, actual_data):
-        modbus_data = self.__remove_whitespace(modbus_data)
-        actual_data = self.__remove_whitespace(actual_data)
+        modbus_data = self.__format_string_for_checking(modbus_data)
+        actual_data = self.__format_string_for_checking(actual_data)
         is_data_equal = self.__check_if_strings_pass(modbus_data, actual_data)
         return [modbus_data, actual_data, is_data_equal] # I could create class with these
 
@@ -129,15 +132,21 @@ class Module:
             return [modbus_data, actual_data, is_data_equal]
         elif(modbus_data == None):
             modbus_data = "Error"
+            possible_pass_values = ["N/A", "-"]
             is_data_equal = self.RESULT_FAILED
+            for pass_value in possible_pass_values:
+                if(pass_value == actual_data):
+                    is_data_equal = self.RESULT_PASSED
+                    break
             return [modbus_data, actual_data, is_data_equal]
         else:
-            raise TypeError()
+            raise TypeError("Check results operation can not be performed with these arguments.")
 
     #results: modbus_data, actual_data, is_data_equal
-    def change_test_count(self, results):
+
+    def change_test_count(self, is_data_equal):
         self.total_number += 1
-        if(results[2] == self.RESULT_PASSED):
+        if(is_data_equal == self.RESULT_PASSED):
             self.correct_number += 1
 
     def get_modbus_and_device_data_for_number_16(self, modbus_data, current, output_list):

@@ -21,7 +21,7 @@ from Libraries.PrintMethods import print_error
 from Libraries.DataMethods import get_current_data_as_string
 from Libraries.FileMethods import delete_file_content
 from MainModules.Scheduler import Scheduler
-from MainModules.Logger import init_logger, get_log_file_path, Logger
+from MainModules.Logger import init_logger, get_log_file_path
 
 LOG_FILE = get_log_file_path()
 CONFIGURATION_FILE = "config.json"
@@ -59,17 +59,18 @@ def main():
                 for module in module_instances:
                     test_count = module.read_all_data(output_list, test_count)
                 time.sleep(2)
-        except (ConnectionFailedError, KeyboardInterrupt, AttributeError) as err:
+        except (ConnectionFailedError, KeyboardInterrupt, AttributeError, TypeError) as err:
             if(isinstance(err, ConnectionFailedError)):
                 error_text = f"Connection stopped: {err}"
             elif(isinstance(err, KeyboardInterrupt)):
                 error_text = "User stopped tests with KeyboardInterrupt."
             elif(isinstance(err, AttributeError)):
                 error_text = f"Such attribute does not exist: {err}"
+            elif(isinstance(err, TypeError)):
+                error_text = f"Type error: {err}"
             print_error(error_text, output_list, "RED")
             logger.critical(error_text)
         finally:
-            # report.write_end_header()
             logger.info("Program is terminated!")
             close_all_instances([ssh_client.ssh, modbus.client])
 

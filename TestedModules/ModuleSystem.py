@@ -29,7 +29,7 @@ class ModuleSystem(Module):
             function_name = f"get_modbus_and_device_data_read_register_count_{current['number']}_{current['source']}"
             modbus_data, final_data = getattr(self, function_name)(result, current, output_list)
             results = self.check_if_results_match(modbus_data, final_data)
-            self.change_test_count(results)
+            self.change_test_count(results[2])
             past_memory = memory
             memory = self.info.get_used_memory(output_list)
             cpu_usage = self.info.get_cpu_usage(output_list)

@@ -52,5 +52,5 @@ def get_current_data_as_string(format):
     return current_data
 
 def replace_modem_id(data, modem_id):
-    pattern = '3-1'
+    pattern = 'your_modem_id'
     return re.sub(pattern, modem_id, data)

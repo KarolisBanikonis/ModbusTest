@@ -181,7 +181,7 @@
 				"number":16,
 				"source":"ubus",
 				"service": "vuci.network.mobile",
-				"procedure": "mobile_info '{\"modem\":\"3-1\"}'",
+				"procedure": "mobile_info '{\"modem\":\"your_modem_id\"}'",
 				"parse": "imsi"
 			},
 			{
@@ -190,7 +190,7 @@
 				"number":16,
 				"source":"ubus",
 				"service": "vuci.network.mobile",
-				"procedure": "mobile_info '{\"modem\":\"3-1\"}'",
+				"procedure": "mobile_info '{\"modem\":\"your_modem_id\"}'",
 				"parse": "operator"
 			},
 			{
@@ -199,7 +199,7 @@
 				"number":16,
 				"source":"ubus",
 				"service": "vuci.network.mobile",
-				"procedure": "mobile_info '{\"modem\":\"3-1\"}'",
+				"procedure": "mobile_info '{\"modem\":\"your_modem_id\"}'",
 				"parse": "slot"
 			},
 			{
@@ -208,7 +208,7 @@
 				"number":16,
 				"source":"ubus",
 				"service": "vuci.network.mobile",
-				"procedure": "mobile_info '{\"modem\":\"3-1\"}'",
+				"procedure": "mobile_info '{\"modem\":\"your_modem_id\"}'",
 				"parse": "netstate"
 			},
 			{
@@ -217,7 +217,7 @@
 				"number":16,
 				"source":"ubus",
 				"service": "vuci.network.mobile",
-				"procedure": "mobile_info '{\"modem\":\"3-1\"}'",
+				"procedure": "mobile_info '{\"modem\":\"your_modem_id\"}'",
 				"parse": "conntype"
 			},
 			{
@@ -226,7 +226,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"day\",\"sim\":1,\"modem\":\"3-1\",\"current\":true}'",
+				"procedure": "get '{\"period\":\"day\",\"sim\":1,\"modem\":\"your_modem_id\",\"current\":true}'",
 				"parse": "rx"
 			},
 			{
@@ -235,7 +235,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"day\",\"sim\":1,\"modem\":\"3-1\",\"current\":true}'",
+				"procedure": "get '{\"period\":\"day\",\"sim\":1,\"modem\":\"your_modem_id\",\"current\":true}'",
 				"parse": "tx"
 			},
 			{
@@ -244,7 +244,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"week\",\"sim\":1,\"modem\":\"3-1\",\"current\":true}'",
+				"procedure": "get '{\"period\":\"week\",\"sim\":1,\"modem\":\"your_modem_id\",\"current\":true}'",
 				"parse": "rx"
 			},
 			{
@@ -253,7 +253,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"week\",\"sim\":1,\"modem\":\"3-1\",\"current\":true}'",
+				"procedure": "get '{\"period\":\"week\",\"sim\":1,\"modem\":\"your_modem_id\",\"current\":true}'",
 				"parse": "tx"
 			},
 			{
@@ -262,7 +262,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"month\",\"sim\":1,\"modem\":\"3-1\",\"current\":true}'",
+				"procedure": "get '{\"period\":\"month\",\"sim\":1,\"modem\":\"your_modem_id\",\"current\":true}'",
 				"parse": "rx"
 			},
 			{
@@ -271,7 +271,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"month\",\"sim\":1,\"modem\":\"3-1\",\"current\":true}'",
+				"procedure": "get '{\"period\":\"month\",\"sim\":1,\"modem\":\"your_modem_id\",\"current\":true}'",
 				"parse": "tx"
 			},
 			{
@@ -280,7 +280,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"day\",\"sim\":1,\"modem\":\"3-1\",\"current\":false}'",
+				"procedure": "get '{\"period\":\"day\",\"sim\":1,\"modem\":\"your_modem_id\",\"current\":false}'",
 				"parse": "rx"
 			},
 			{
@@ -289,7 +289,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"day\",\"sim\":1,\"modem\":\"3-1\",\"current\":false}'",
+				"procedure": "get '{\"period\":\"day\",\"sim\":1,\"modem\":\"your_modem_id\",\"current\":false}'",
 				"parse": "tx"
 			},
 			{
@@ -307,7 +307,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"week\",\"sim\":1,\"modem\":\"3-1\",\"current\":false}'",
+				"procedure": "get '{\"period\":\"week\",\"sim\":1,\"modem\":\"your_modem_id\",\"current\":false}'",
 				"parse": "rx"
 			},
 			{
@@ -316,7 +316,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"week\",\"sim\":1,\"modem\":\"3-1\",\"current\":false}'",
+				"procedure": "get '{\"period\":\"week\",\"sim\":1,\"modem\":\"your_modem_id\",\"current\":false}'",
 				"parse": "tx"
 			},
 			{
@@ -325,7 +325,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"month\",\"sim\":1,\"modem\":\"3-1\",\"current\":false}'",
+				"procedure": "get '{\"period\":\"month\",\"sim\":1,\"modem\":\"your_modem_id\",\"current\":false}'",
 				"parse": "rx"
 			},
 			{
@@ -334,7 +334,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"month\",\"sim\":1,\"modem\":\"3-1\",\"current\":false}'",
+				"procedure": "get '{\"period\":\"month\",\"sim\":1,\"modem\":\"your_modem_id\",\"current\":false}'",
 				"parse": "tx"
 			}
 		]
@@ -347,7 +347,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"day\",\"sim\":2,\"modem\":\"3-1\",\"current\":true}'",
+				"procedure": "get '{\"period\":\"day\",\"sim\":2,\"modem\":\"your_modem_id\",\"current\":true}'",
 				"parse": "rx"
 			},
 			{
@@ -356,7 +356,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"day\",\"sim\":2,\"modem\":\"3-1\",\"current\":true}'",
+				"procedure": "get '{\"period\":\"day\",\"sim\":2,\"modem\":\"your_modem_id\",\"current\":true}'",
 				"parse": "tx"
 			},
 			{
@@ -365,7 +365,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"week\",\"sim\":2,\"modem\":\"3-1\",\"current\":true}'",
+				"procedure": "get '{\"period\":\"week\",\"sim\":2,\"modem\":\"your_modem_id\",\"current\":true}'",
 				"parse": "rx"
 			},
 			{
@@ -374,7 +374,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"week\",\"sim\":2,\"modem\":\"3-1\",\"current\":true}'",
+				"procedure": "get '{\"period\":\"week\",\"sim\":2,\"modem\":\"your_modem_id\",\"current\":true}'",
 				"parse": "tx"
 			},
 			{
@@ -383,7 +383,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"month\",\"sim\":2,\"modem\":\"3-1\",\"current\":true}'",
+				"procedure": "get '{\"period\":\"month\",\"sim\":2,\"modem\":\"your_modem_id\",\"current\":true}'",
 				"parse": "rx"
 			},
 			{
@@ -392,7 +392,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"month\",\"sim\":2,\"modem\":\"3-1\",\"current\":true}'",
+				"procedure": "get '{\"period\":\"month\",\"sim\":2,\"modem\":\"your_modem_id\",\"current\":true}'",
 				"parse": "tx"
 			},
 			{
@@ -401,7 +401,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"day\",\"sim\":2,\"modem\":\"3-1\",\"current\":false}'",
+				"procedure": "get '{\"period\":\"day\",\"sim\":2,\"modem\":\"your_modem_id\",\"current\":false}'",
 				"parse": "rx"
 			},
 			{
@@ -410,7 +410,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"day\",\"sim\":2,\"modem\":\"3-1\",\"current\":false}'",
+				"procedure": "get '{\"period\":\"day\",\"sim\":2,\"modem\":\"your_modem_id\",\"current\":false}'",
 				"parse": "tx"
 			},
 			{
@@ -419,7 +419,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"week\",\"sim\":2,\"modem\":\"3-1\",\"current\":false}'",
+				"procedure": "get '{\"period\":\"week\",\"sim\":2,\"modem\":\"your_modem_id\",\"current\":false}'",
 				"parse": "rx"
 			},
 			{
@@ -428,7 +428,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"week\",\"sim\":2,\"modem\":\"3-1\",\"current\":false}'",
+				"procedure": "get '{\"period\":\"week\",\"sim\":2,\"modem\":\"your_modem_id\",\"current\":false}'",
 				"parse": "tx"
 			},
 			{
@@ -437,7 +437,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"month\",\"sim\":2,\"modem\":\"3-1\",\"current\":false}'",
+				"procedure": "get '{\"period\":\"month\",\"sim\":2,\"modem\":\"your_modem_id\",\"current\":false}'",
 				"parse": "rx"
 			},
 			{
@@ -446,7 +446,7 @@
 				"number":2,
 				"source":"ubus",
 				"service": "mdcollect",
-				"procedure": "get '{\"period\":\"month\",\"sim\":2,\"modem\":\"3-1\",\"current\":false}'",
+				"procedure": "get '{\"period\":\"month\",\"sim\":2,\"modem\":\"your_modem_id\",\"current\":false}'",
 				"parse": "tx"
 			}
 		]

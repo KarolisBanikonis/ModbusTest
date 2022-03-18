@@ -44,12 +44,5 @@ class ReportModule:
         self.write_header()
         self.close()
 
-    # Maybe i should make it with temporary file instead
-    def write_end_header(self):
-        file = pd.read_csv(self.report_file_path)
-        self.end_date = get_current_data_as_string("%Y-%m-%d-%H-%M-%S")
-        header = ["Model", self.router_model, '', "Start time", self.start_date, '', "End time", self.end_date, '', '', '']
-        file.to_csv(self.report_file_path, header = header, index=False)
-
     def write_header(self):
         self.writer.writerow(['Iteration nr.', 'Module name','Register name', 'Register number', 'Modbus value', 'Router value', 'Result','','CPU usage','Total Used RAM','Used RAM difference'])
