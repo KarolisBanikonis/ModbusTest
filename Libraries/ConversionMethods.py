@@ -3,20 +3,39 @@ from datetime import datetime
 import math
 
 def convert_timestamp_to_date(timestamp):
-    '''Convert Unix timestamp to date.'''
+    """
+    Convert Unix timestamp to date.
 
+        Parameters:
+            timestamp (int): date in Unix timestamp format
+        Returns:
+            date (datetime): timestamp converted to datetime format
+    """
+    a = type(timestamp)
     date = datetime.utcfromtimestamp(timestamp)
     return date
 
-def convert_string_to_date(string_data):
-    '''Convert date's string representation to datetime object.'''
+def convert_string_to_date(string_date):
+    """
+    Convert date's string representation to datetime object.
 
-    date = datetime.strptime(string_data, '%Y-%m-%d %H:%M:%S')
+        Parameters:
+            string_date (str): date in string format
+        Returns:
+            date (datetime): string converted to datetime format
+    """
+    date = datetime.strptime(string_date, '%Y-%m-%d %H:%M:%S')
     return date
 
 def convert_string_to_bytes(string_data):
-    '''Convert information unit's string representation to bytes.'''
+    """
+    Convert information unit's string representation to bytes.
 
+        Parameters:
+            string_data (str): information unit's in string format
+        Returns:
+            bytes (int): data in string format converted to bytes
+    """
     size_types = ["B", "K", "M", "G"]
     size = ""
     type = ""
@@ -29,5 +48,6 @@ def convert_string_to_bytes(string_data):
     for i in range(len(size_types)):
         if(type == size_types[i]):
             break
-    return int(float(size) * math.pow(1024, i))
+    bytes = int(float(size) * math.pow(1024, i))
+    return bytes
     

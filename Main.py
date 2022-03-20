@@ -49,7 +49,6 @@ def main():
     scheduler = Scheduler(ftp_client, email)
 
     with output(output_type="list", initial_len=8, interval=0) as output_list:
-        a = type(output_list)
         # scheduler.send_email_periodically([output_list])
         scheduler.store_ftp_periodically([output_list])
         scheduler.start()

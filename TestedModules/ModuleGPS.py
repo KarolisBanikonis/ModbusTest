@@ -27,7 +27,7 @@ class ModuleGPS(Module):
 
     def read_all_data(self, output_list, test_count):
         """
-        Performs all tests of this module.
+        Performs all tests of ModuleGPS module.
 
             Parameters:
                 output_list (reprint.reprint.output.SignalList): list required for printing to terminal
@@ -41,55 +41,109 @@ class ModuleGPS(Module):
         self.report.open_report()
         memory = test_count[2]
         for i in range(len(self.data)):
-            current = self.data[i]
-            result = self.modbus.read_registers(current, output_list)
-            if(result == None):
+            param_values = self.data[i]
+            modbus_registers_data = self.modbus.read_registers(param_values, output_list)
+            if(modbus_registers_data is None):
                 try_enable_gps(self.ssh)
                 return test_count
-            function_name = f"get_modbus_and_device_data_read_register_type_{current['type']}"
-            modbus_data, final_data = getattr(self, function_name)(result, current, output_list)
-            results = self.check_if_results_match(modbus_data, final_data)
+            function_name = f"get_modbus_and_device_data_type_{param_values['type']}"
+            modbus_data, device_data = getattr(self, function_name)(modbus_registers_data, param_values, output_list)
+            results = self.check_if_results_match(modbus_data, device_data)
             self.change_test_count(results[2])
             past_memory = memory
             memory = self.info.get_used_memory(output_list)
             cpu_usage = self.info.get_cpu_usage(output_list)
             memory_difference = memory - past_memory
             total_mem_difference = self.info.mem_used_at_start - memory
-            self.report.writer.writerow([self.total_number, self.module_name, current['name'], current['address'], results[0], results[1], results[2], '', cpu_usage, total_mem_difference, memory_difference])
-            self.print_test_results(output_list, current, results[0], results[1], cpu_usage, total_mem_difference)
+            self.report.writer.writerow([self.total_number, self.module_name, param_values['name'], param_values['address'], results[0], results[1], results[2], '', cpu_usage, total_mem_difference, memory_difference])
+            self.print_test_results(output_list, param_values, results[0], results[1], cpu_usage, total_mem_difference)
         self.report.close()
         self.logger.info(f"Module - {self.module_name} tests are over!")
         return [self.total_number, self.correct_number, memory]
 
-    def get_modbus_and_device_data_read_register_type_timestamp(self, result, current, output_list): #147
-        modbus_data, parsed_data = self.get_modbus_and_device_data_for_number_16(result, current, output_list)
+    def get_modbus_and_device_data_type_timestamp(self, modbus_registers_data, param_values, output_list): #147
+        """
+        Finds converted received data via Modbus TCP and device data when register holds timestamp type information
+
+            Parameters:
+                modbus_registers_data (list): data that holds Modbus server's registers
+                param_values (dict): current register's parameters information
+                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+            Returns:
+                modbus_data (datetime): converted data received via Modbus TCP
+                device_data (datetime): parsed data received via SSH
+
+        """
+        modbus_data, parsed_data = self.convert_data_for_16_registers(modbus_registers_data, param_values, output_list)
         #modbus = timestamp x 1000
         #ubus = datetime in string
         modbus_data = convert_timestamp_to_date(int(modbus_data)) # MIGHT NEED TO /= 1000?
-        # print(f"MODBUS = {modbus_data} typeof {type(modbus_data)}")
-        final_data_string = parsed_data['coordinates'][current['parse']]
-        final_data = convert_string_to_date(final_data_string)
-        # print(f"UBUS = {final_data} typeof {type(final_data)}")
-        return modbus_data, final_data
+        device_data_str = parsed_data['coordinates'][param_values['parse']]
+        device_data = convert_string_to_date(device_data_str)
+        return modbus_data, device_data
 
-    def get_modbus_and_device_data_read_register_type_date(self, result, current, output_list): #163
-        modbus_data, parsed_data = self.get_modbus_and_device_data_for_number_16(result, current, output_list)
+    def get_modbus_and_device_data_type_date(self, modbus_registers_data, param_values, output_list): #163
+        """
+        Finds converted received data via Modbus TCP and device data when register holds date type information
+
+            Parameters:
+                modbus_registers_data (list): data that holds Modbus server's registers
+                param_values (dict): current register's parameters information
+                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+            Returns:
+                modbus_data (datetime): converted data received via Modbus TCP
+                device_data (datetime): parsed data received via SSH
+
+        """
+        modbus_data, parsed_data = self.convert_data_for_16_registers(modbus_registers_data, param_values, output_list)
         modbus_data = convert_string_to_date(modbus_data)
-        timestamp = parsed_data[current['parse']]
-        final_data = convert_timestamp_to_date(timestamp)
-        return modbus_data, final_data
+        timestamp = parsed_data[param_values['parse']]
+        device_data = convert_timestamp_to_date(timestamp)
+        return modbus_data, device_data
 
-    def get_modbus_and_device_data_read_register_type_int(self, result, current, output_list):
-        modbus_data, final_data = self.get_modbus_and_device_data_for_number_2(result, current, output_list)
-        return modbus_data, final_data
+    def get_modbus_and_device_data_type_int(self, modbus_registers_data, param_values, output_list):
+        """
+        Finds converted received data via Modbus TCP and device data when register holds integer type information
 
-    def get_modbus_and_device_data_read_register_type_float(self, result, current, output_list):
-        if(result is not None):
-            modbus_data = self.convert_float_number(result)
-        final_data = get_concrete_ubus_data(self.ssh, current, output_list)
-        return modbus_data, final_data
+            Parameters:
+                modbus_registers_data (list): data that holds Modbus server's registers
+                param_values (dict): current register's parameters information
+                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+            Returns:
+                modbus_data (int): converted data received via Modbus TCP
+                device_data (int): parsed data received via SSH
+
+        """
+        modbus_data, device_data = self.convert_data_for_2_registers(modbus_registers_data, param_values, output_list)
+        return modbus_data, device_data
+
+    def get_modbus_and_device_data_type_float(self, modbus_registers_data, param_values, output_list):
+        """
+        Finds converted received data via Modbus TCP and device data when register holds float type information
+
+            Parameters:
+                modbus_registers_data (list): data that holds Modbus server's registers
+                param_values (dict): current register's parameters information
+                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+            Returns:
+                modbus_data (float): converted data received via Modbus TCP
+                device_data (float): parsed data received via SSH
+
+        """
+        if(modbus_registers_data is not None):
+            modbus_data = self.convert_float_number(modbus_registers_data)
+        device_data = get_concrete_ubus_data(self.ssh, param_values, output_list)
+        return modbus_data, device_data
 
     def convert_float_number(self, modbus_registers_data):
+        """
+        Finds converted received data via Modbus TCP and device data when register holds timestamp type information
+
+            Parameters:
+                modbus_registers_data (list): data that holds Modbus server's registers
+            Returns:
+                decoded_value (float): converted data to float value
+        """
         # [1, 2, 3, 4] bytes
         decoder = BinaryPayloadDecoder.fromRegisters(modbus_registers_data, byteorder=Endian.Little, wordorder=Endian.Little,)
         decoded_value = decoder.decode_32bit_float()

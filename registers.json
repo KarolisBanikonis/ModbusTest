@@ -172,7 +172,7 @@
 		  "type": "float"
 	   }
 	],
-	"ModuleMobile":[
+	"ModuleMobile":
 	   {
 		   "ModemId":{
 				"source":"ubus",
@@ -344,10 +344,8 @@
 				"procedure": "get '{\"period\":\"month\",\"sim\":1,\"modem\":\"your_modem_id\",\"current\":false}'",
 				"parse": "tx"
 			}
-		]
-	   },
-	   {
-		  "SIM2":[
+		],
+		"SIM2":[
 			{
 				"name":"Mobile data received today (SIM2)",
 				"address":300,
@@ -457,6 +455,5 @@
 				"parse": "tx"
 			}
 		]
-	   }
-	]
- }
+	}
+}

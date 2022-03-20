@@ -10,8 +10,12 @@ from Libraries.PrintMethods import print_error
 class EmailClient:
 
     def __init__(self, conf):
-        '''Set settings required for sending emails.'''
+        """
+        Initializes EmailClient object. Set settings required for sending emails.
 
+            Parameters:
+                conf (ConfigurationModule): module that holds configuration information
+        """
         self.allowed = True
         self.port = 465
         self.smtp = conf['SMTP']
@@ -23,8 +27,12 @@ class EmailClient:
         self.logger = init_logger(__name__)
 
     def send_email(self, output_list):
-        '''Send an email to recipient.'''
+        """
+        Send an email to recipient.
 
+            Parameters:
+                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+        """
         if(self.allowed):
             text = self.message
             for i in range(4):

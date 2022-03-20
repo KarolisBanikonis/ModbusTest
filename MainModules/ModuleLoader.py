@@ -11,6 +11,13 @@ class ModuleLoader:
     MODULES_DIRECTORY = "TestedModules."
 
     def __init__(self, conf_module, conn : SSHClient):
+        """
+        Initializes ModuleLoader object.
+
+            Parameters:
+                conf_module (ConfigurationModule): module that holds configuration information
+                conn (SSHClient): module required to make connection to server
+        """
         self.conn = conn
         self.modules_info = conf_module.get_data('MODULES')
         self.modules_to_load = []
@@ -18,6 +25,9 @@ class ModuleLoader:
         self.logger = init_logger(__name__)
         
     def check_hw_info(self):
+        """
+        Finds which tested modules should be loaded by checking which device's subsystems are enabled.
+        """
         for module_info in self.modules_info:
             if(module_info['name'] == "ModuleSystem"):
                 module_enabled = 1
@@ -27,20 +37,37 @@ class ModuleLoader:
                 self.modules_to_load.append(module_info['name'])
         
     def init_modules(self, data, modbus, info, report):
-        instantiated_modules = []
+        """
+        Tries to initialize tested modules objects.
+
+            Parameters:
+                data (dict): registers data read from JSON format parameters file
+                modbus (Modbus): module required to make connection to server via Modbus TCP
+                info (InformationModule): module designed to monitor device's resources usage
+                report (ReportModule): module designed to write test results to report file
+            Returns:
+                tested_modules (list): list of initialized tested modules
+        """
+        tested_modules = []
         for module_name in self.modules_to_load:
             module = self.__load_module(module_name)
             if(module != None):
                 try:
                     class_ = getattr(module, module_name)
                     instance = class_(data[module_name], self.conn, modbus, info, report)
-                    instantiated_modules.append(instance)
-                    self.logger.info(f"Class object {class_} was instantiated!")
+                    tested_modules.append(instance)
+                    self.logger.info(f"Class object {class_} was initialized!")
                 except AttributeError as err:
                     print(f"Such attribute does not exist: {err}")
-        return instantiated_modules
+        return tested_modules
 
     def __load_module(self, module_name):
+        """
+        Tries to load specified module.
+
+        Parameters:
+                module_name (str): module's that should be loaded name
+        """
         module = None
         try:
             module = importlib.import_module(self.MODULES_DIRECTORY + module_name)
@@ -49,4 +76,3 @@ class ModuleLoader:
         except ModuleNotFoundError:
             print(f"Module {module_name} was not imported!")
             return None
-            # close_all_instances() ssh, modbus

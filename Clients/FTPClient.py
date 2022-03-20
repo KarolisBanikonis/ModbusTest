@@ -9,22 +9,31 @@ from Libraries.FileMethods import open_file
 
 class FTPClient:
 
-    def __init__(self, config, report_module):
-        '''Set settings required for storing files with FTP.'''
+    def __init__(self, conf, report):
+        """
+        Initializes FTPClient object. Set settings required for storing files with FTP.
 
+            Parameters:
+                conf (ConfigurationModule): module that holds configuration information
+                report (ReportModule): module designed to write test results to report file
+        """
         self.logger = init_logger(__name__)
-        self.allowed = config['FTP_USE']
-        self.host = config['FTP_HOST']
-        self.port = config['FTP_PORT']
-        self.username = config['FTP_USER']
-        self.password = config['FTP_PASSWORD']
-        self.interval = config['INTERVAL_MINUTES']
-        self.report_module = report_module
+        self.allowed = conf['FTP_USE']
+        self.host = conf['FTP_HOST']
+        self.port = conf['FTP_PORT']
+        self.username = conf['FTP_USER']
+        self.password = conf['FTP_PASSWORD']
+        self.interval = conf['INTERVAL_MINUTES']
+        self.report_module = report
         self.ftp = ftplib.FTP()
 
     def connect(self, output_list):
-        '''Try to connect and log in to the FTP server.'''
-
+        """
+        Try to connect and log in to the FTP server.
+        
+            Parameters:
+                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+        """
         try:
             self.ftp.connect(self.host, self.port)
             self.ftp.login(self.username, self.password)
@@ -41,13 +50,16 @@ class FTPClient:
             print_error(error_text, output_list, "RED")
 
     def disconnect(self):
-        '''Close the connection with FTP server.'''
-
+        """Close the connection with FTP server."""
         self.ftp.quit()
 
     def store_report(self, output_list):
-        '''Try to store report to the FTP server.'''
+        """
+        Try to store report to the FTP server.
 
+            Parameters:
+                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+        """
         if(self.allowed):
             self.connect(output_list)
         if(self.allowed):
