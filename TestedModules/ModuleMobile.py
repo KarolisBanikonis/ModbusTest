@@ -2,6 +2,7 @@
 from MainModules.Module import Module
 from Libraries.DataMethods import get_value_in_parenthesis, replace_modem_id
 from Libraries.SSHMethods import ssh_get_uci_hwinfo, get_modem_id
+from MainModules.Logger import log_msg
 
 class ModuleMobile(Module):
 
@@ -41,7 +42,7 @@ class ModuleMobile(Module):
             Returns:
                 unnamed (list): list that saves values of total tests number, correct tests number and last memory usage
         """
-        self.logger.info(f"Started {self.module_name} testing!")
+        log_msg(__name__, "info", f"Started {self.module_name} testing!")
         self.report.open_report()
         self.total_number = test_count[0]
         self.correct_number = test_count[1]
@@ -50,7 +51,7 @@ class ModuleMobile(Module):
         if(self.dual_sim_status == 1):
             self.read_data(self.data['SIM2'], output_list)
         self.report.close()
-        self.logger.info(f"Module - {self.module_name} tests are over!")
+        log_msg(__name__, "info", f"Module - {self.module_name} tests are over!")
         return [self.total_number, self.correct_number, self.memory]
 
     def read_data(self, data_area, output_list):

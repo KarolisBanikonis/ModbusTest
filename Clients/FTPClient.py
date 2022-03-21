@@ -3,7 +3,7 @@ import ftplib
 import socket
 
 # Local imports
-from MainModules.Logger import init_logger
+from MainModules.Logger import log_msg
 from Libraries.PrintMethods import print_error
 from Libraries.FileMethods import open_file
 
@@ -17,7 +17,6 @@ class FTPClient:
                 conf (ConfigurationModule): module that holds configuration information
                 report (ReportModule): module designed to write test results to report file
         """
-        self.logger = init_logger(__name__)
         self.allowed = conf['FTP_USE']
         self.host = conf['FTP_HOST']
         self.port = conf['FTP_PORT']
@@ -46,7 +45,7 @@ class FTPClient:
             else:
                 error_text = f"FTP failed to login: {err}"
             self.allowed = False
-            self.logger.error(error_text)
+            log_msg(__name__, "error", error_text)
             print_error(error_text, output_list, "RED")
 
     def disconnect(self):
@@ -67,6 +66,6 @@ class FTPClient:
             if(report is not None):
                 command = f'STOR {self.report_module.report_file}'
                 self.ftp.storbinary(command, report)
-                self.logger.info("Report was uploaded with FTP successfully.")
+                log_msg(__name__, "info", "Report was uploaded with FTP successfully.")
                 report.close()
                 self.disconnect()

@@ -1,48 +1,45 @@
 {
-    "Settings":[
-        {
-            "SERVER_HOST": "192.168.1.1",
-            "MODBUS_PORT": 513,
-            "USERNAME": "root",
-            "PASSWORD": "Admin123",
-            "RECONNECT_ATTEMPTS": 7,
-            "TIMEOUT": 2,
-            "MODULES" : [
-                {
-                    "name": "ModuleSystem"
-                },
-                {
-                    "name": "ModuleNetwork",
-                    "hw_info": "ethernet"
-                },
-                {
-                    "name": "ModuleMobile",
-                    "hw_info": "mobile"
-                },
-                {
-                    "name": "ModuleGPS",
-                    "hw_info": "gps"
-                }
-            ]
-        }
-    ],
-    "FTP":[
-        {
-            "FTP_USE": true,
-            "FTP_HOST": "127.0.0.1",
-            "FTP_PORT": 21,
-            "FTP_USER": "ftpuser",
-            "FTP_PASSWORD": "Admin123",
-            "INTERVAL_MINUTES": 10
-        }
-    ],
-    "Email":[
-        {
-            "SMTP": "smtp.gmail.com",
-            "USER": "labas0113@gmail.com",
-            "PASSWORD": "belekas111",
-            "RECEIVER": "labas01139999999@gmail.com",
-            "INTERVAL_HOURS": 15
-        }
-    ]
+    "Settings":
+    {
+        "SERVER_HOST": "192.168.1.1",
+        "MODBUS_PORT": 513,
+        "USERNAME": "root",
+        "PASSWORD": "Admin123",
+        "RECONNECT_ATTEMPTS": 7,
+        "TIMEOUT": 2,
+        "MODULES" : [
+            {
+                "name": "ModuleSystem"
+            },
+            {
+                "name": "ModuleNetwork",
+                "hw_info": "ethernet"
+            },
+            {
+                "name": "ModuleMobile",
+                "hw_info": "mobile"
+            },
+            {
+                "name": "ModuleGPS",
+                "hw_info": "gps"
+            }
+        ]
+    },
+    "FTP":
+    {
+        "FTP_USE": true,
+        "FTP_HOST": "127.0.0.1",
+        "FTP_PORT": 21,
+        "FTP_USER": "ftpuser",
+        "FTP_PASSWORD": "Admin123",
+        "INTERVAL_MINUTES": 10
+    },
+    "Email":
+    {
+        "SMTP": "smtp.gmail.com",
+        "USER": "labas0113@gmail.com",
+        "PASSWORD": "belekas111",
+        "RECEIVER": "labas01139999999@gmail.com",
+        "INTERVAL_HOURS": 15
+    }
 }

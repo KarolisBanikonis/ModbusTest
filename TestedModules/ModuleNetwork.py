@@ -2,6 +2,7 @@
 from MainModules.Module import Module
 from Libraries.DataMethods import remove_char
 from Libraries.SSHMethods import get_concrete_ubus_data
+from MainModules.Logger import log_msg
 
 class ModuleNetwork(Module):
 
@@ -77,7 +78,7 @@ class ModuleNetwork(Module):
             Returns:
                 unnamed (list): list that saves values of total tests number, correct tests number and last memory usage
         """
-        self.logger.info(f"Started {self.module_name} testing!")
+        log_msg(__name__, "info", f"Started {self.module_name} testing!")
         self.total_number = test_count[0]
         self.correct_number = test_count[1]
         self.report.open_report()
@@ -97,7 +98,7 @@ class ModuleNetwork(Module):
             self.report.writer.writerow([self.total_number, self.module_name, param_values['name'], param_values['address'], results[0], results[1], results[2], '', cpu_usage, total_mem_difference, memory_difference])
             self.print_test_results(output_list, param_values, results[0], results[1], cpu_usage, total_mem_difference)
         self.report.close()
-        self.logger.info(f"Module - {self.module_name} tests are over!")
+        log_msg(__name__, "info", f"Module - {self.module_name} tests are over!")
         return [self.total_number, self.correct_number, memory]
         
     def get_modbus_and_device_data_register_nr_55(self, param_values, output_list):

@@ -13,8 +13,7 @@
 			"procedure":"info",
 			"parse":"memory"
 		}
-	}
-	,
+	},
 	"ModuleSystem":[
 	   {
 		  "name":"System uptime",

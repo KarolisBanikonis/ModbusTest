@@ -1,10 +1,11 @@
 # Standard library imports
+from cmath import log
 import smtplib, ssl
 import socket
 
 # Local imports
 from Libraries.DataMethods import remove_colour_tags
-from MainModules.Logger import init_logger
+from MainModules.Logger import log_msg
 from Libraries.PrintMethods import print_error
 
 class EmailClient:
@@ -24,7 +25,6 @@ class EmailClient:
         self.receiver = conf['RECEIVER']
         self.interval = conf['INTERVAL_HOURS']
         self.message = "Subject: Tests summary\n\n Tests summary:\n\n"
-        self.logger = init_logger(__name__)
 
     def send_email(self, output_list):
         """
@@ -43,12 +43,12 @@ class EmailClient:
                 with smtplib.SMTP_SSL(self.smtp, self.port, context=context) as server:
                     server.login(self.username, self.password)
                     server.sendmail(self.username, self.receiver, text)
-                self.logger.info("Email was sent!")
+                log_msg(__name__, "info", "Email was sent!")
             except (smtplib.SMTPAuthenticationError, socket.gaierror) as err:
                 if(isinstance(err, smtplib.SMTPAuthenticationError)):
                     error_text = f"Email sending failed, check login credentials : {err}"
                 elif(isinstance(err, socket.gaierror)):
                     error_text = f"Email sending failed, check SMTP value : {err}"
-                self.logger.error(error_text)
+                log_msg(__name__, "error", error_text)
                 print_error(error_text, output_list, "RED")
                 self.allowed = False

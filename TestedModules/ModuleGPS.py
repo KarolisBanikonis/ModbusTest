@@ -7,7 +7,8 @@ from pymodbus.payload import BinaryPayloadDecoder
 # Local imports
 from MainModules.Module import Module
 from Libraries.ConversionMethods import convert_timestamp_to_date, convert_string_to_date
-from Libraries.SSHMethods import try_enable_gps, get_concrete_ubus_data
+from Libraries.SSHMethods import enable_gps_service, get_concrete_ubus_data
+from MainModules.Logger import log_msg
 
 class ModuleGPS(Module):
 
@@ -23,7 +24,7 @@ class ModuleGPS(Module):
                 report (ReportModule): module designed to write test results to report file
         """
         super().__init__(data, ssh, modbus, info, report, __class__.__name__)
-        try_enable_gps(self.ssh)
+        enable_gps_service(self.ssh)
 
     def read_all_data(self, output_list, test_count):
         """
@@ -35,7 +36,7 @@ class ModuleGPS(Module):
             Returns:
                 unnamed (list): list that saves values of total tests number, correct tests number and last memory usage
         """
-        self.logger.info(f"Started {self.module_name} testing!")
+        log_msg(__name__, "info", f"Started {self.module_name} testing!")
         self.total_number = test_count[0]
         self.correct_number = test_count[1]
         self.report.open_report()
@@ -43,9 +44,6 @@ class ModuleGPS(Module):
         for i in range(len(self.data)):
             param_values = self.data[i]
             modbus_registers_data = self.modbus.read_registers(param_values, output_list)
-            if(modbus_registers_data is None):
-                try_enable_gps(self.ssh)
-                return test_count
             function_name = f"get_modbus_and_device_data_type_{param_values['type']}"
             modbus_data, device_data = getattr(self, function_name)(modbus_registers_data, param_values, output_list)
             results = self.check_if_results_match(modbus_data, device_data)
@@ -58,7 +56,7 @@ class ModuleGPS(Module):
             self.report.writer.writerow([self.total_number, self.module_name, param_values['name'], param_values['address'], results[0], results[1], results[2], '', cpu_usage, total_mem_difference, memory_difference])
             self.print_test_results(output_list, param_values, results[0], results[1], cpu_usage, total_mem_difference)
         self.report.close()
-        self.logger.info(f"Module - {self.module_name} tests are over!")
+        log_msg(__name__, "info", f"Module - {self.module_name} tests are over!")
         return [self.total_number, self.correct_number, memory]
 
     def get_modbus_and_device_data_type_timestamp(self, modbus_registers_data, param_values, output_list): #147
@@ -74,6 +72,8 @@ class ModuleGPS(Module):
                 device_data (datetime): parsed data received via SSH
 
         """
+        # modbus_data, parsed_data = self.convert_data_for_2_registers(modbus_registers_data, param_values, output_list)
+
         modbus_data, parsed_data = self.convert_data_for_16_registers(modbus_registers_data, param_values, output_list)
         #modbus = timestamp x 1000
         #ubus = datetime in string

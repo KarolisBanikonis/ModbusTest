@@ -9,8 +9,8 @@ FILE_NAME = "Log.log"
 ENABLED = True
 
 def get_log_file_path():
-    file_path = f"{REPORTS_DIRECTORY}{FILE_NAME}"
-    return file_path
+    path_to_file = f"{REPORTS_DIRECTORY}{FILE_NAME}"
+    return path_to_file
 
 def init_logger(name):
     """
@@ -20,23 +20,29 @@ def init_logger(name):
             name (str): name of Logger
         Returns:
             logger (Logger): initialized Logger object
+            None, if log file was not found
     """
-    file_path = get_log_file_path()
+    path_to_file = get_log_file_path()
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
-    file_handler = logging.FileHandler(file_path)
+    try:
+        file_handler = logging.FileHandler(path_to_file)
+        file_handler.setLevel(logging.INFO)
+    except FileNotFoundError:
+        print(f"File not found at {path_to_file}.")
+        return None
     file_handler.setLevel(logging.INFO)
     file_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(file_format)
     logger.addHandler(file_handler)
     return logger
 
-def write_log(logger, severity, msg):
-    if(logger is not None and ENABLED):
-        try:
-            getattr(logger, severity)(msg)
-        except AttributeError as err:
-            ENABLED = False
-            print(f"Such attribute does not exist: {err}")
-
 Logger = init_logger(__name__)
+
+def log_msg(name, severity, msg):
+    if(Logger is not None):
+        try:
+            Logger.name = name
+            getattr(Logger, severity)(msg)
+        except AttributeError as err:
+            print(f"Such attribute does not exist: {err}")

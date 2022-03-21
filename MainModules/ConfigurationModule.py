@@ -1,18 +1,16 @@
 # Local imports
-from Libraries.FileMethods import read_json_file
-from MainModules.Logger import init_logger
+from MainModules.JsonFileModule import JsonFileModule
 
-class ConfigurationModule:
+class ConfigurationModule(JsonFileModule):
 
-    def __init__(self, file_path):
+    def __init__(self, path_to_file):
         """
         Initializes ConfigurationModule object.
 
             Parameters:
                 file_path (str): path of configuration file
         """
-        logger = init_logger(__name__)
-        self.data = read_json_file(file_path, logger)
+        self.data = self.read_json_file(path_to_file)
 
     def get_data(self, request_data):
         """
@@ -23,17 +21,25 @@ class ConfigurationModule:
             Returns:
                 data (dict): requested part of configuration file
         """
-        data = self.data['Settings'][0][request_data]
-        return data
+        config_data = self.get_param(self.data, 'Settings')
+        request_data = self.get_param(config_data, request_data)
+        # request_data = self.data['Settings'][request_data]
+        return request_data
 
-    def get_all_data(self):
+    def get_main_settings(self):
         """Returns all configuration data."""
-        return self.data['Settings'][0]
+        main_settings = self.get_param(self.data, 'Settings')
+        return main_settings
+        # return self.data['Settings']
 
-    def get_ftp_data(self):
+    def get_ftp_settings(self):
         """Returns configuration data required for uploading reports to FTP server."""
-        return self.data['FTP'][0]
+        ftp_settings = self.get_param(self.data, 'FTP')
+        return ftp_settings
+        # return self.data['FTP']
 
-    def get_email_data(self):
+    def get_email_settings(self):
         """Returns configuration data required for sending emails."""
-        return self.data['Email'][0]
+        email_settings = self.get_param(self.data, 'Email')
+        return email_settings
+        # return self.data['Email']

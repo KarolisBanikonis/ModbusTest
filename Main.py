@@ -7,11 +7,12 @@ import time
 from reprint import output
 
 # Local imports
-from Libraries.FileMethods import read_json_file, close_all_instances
+from Libraries.FileMethods import close_all_instances
 from MainModules.ConnectionFailedError import ConnectionFailedError
 from MainModules.ModuleLoader import ModuleLoader
 from MainModules.ConfigurationModule import ConfigurationModule
 from MainModules.InformationModule import InformationModule
+from MainModules.RegistersModule import RegistersModule
 from Clients.SSHClient import SSHClient
 from Clients.Modbus import Modbus
 from Clients.FTPClient import FTPClient
@@ -21,31 +22,30 @@ from Libraries.PrintMethods import print_error
 from Libraries.DataMethods import get_current_data_as_string
 from Libraries.FileMethods import delete_file_content
 from MainModules.Scheduler import Scheduler
-from MainModules.Logger import init_logger, get_log_file_path
+from MainModules.Logger import get_log_file_path, log_msg
 
 LOG_FILE = get_log_file_path()
 CONFIGURATION_FILE = "config.json"
-PARAMETERS_FILE = "registers.json"
+REGISTERS_FILE = "registers.json"
 
 def main():
-    logger = init_logger(__name__)
     delete_file_content(LOG_FILE)
     conf = ConfigurationModule(CONFIGURATION_FILE)
-    data = read_json_file(PARAMETERS_FILE, logger)
-    ssh_client = SSHClient(conf.get_all_data())
-    info = InformationModule(ssh_client, data['InformationModule'])
+    registers = RegistersModule(REGISTERS_FILE)
+    # data = read_json_file(REGISTERS_FILE)
+    ssh_client = SSHClient(conf.get_main_settings())
+    info = InformationModule(ssh_client, registers.get_param(registers.data, 'InformationModule'))
     report = ReportModule(info)
-    modbus = Modbus(conf.get_all_data())
+    modbus = Modbus(conf.get_main_settings())
     modbus_is_setup_valid = modbus.setup_modbus()
     if(modbus_is_setup_valid == False):
         close_all_instances([ssh_client.ssh])
     module_loader = ModuleLoader(conf, ssh_client)
-    module_instances = module_loader.init_modules(data, modbus, info, report)
+    module_instances = module_loader.init_modules(registers.data, modbus, info, report)
     test_count = [0, 0, info.mem_used_at_start] # test_number, correct_number, used_ram
-
-    if(conf.get_ftp_data()['FTP_USE']):
-        ftp_client = FTPClient(conf.get_ftp_data(), report)
-    email = EmailClient(conf.get_email_data())
+    if(conf.get_param(conf.get_ftp_settings(), 'FTP_USE')):
+        ftp_client = FTPClient(conf.get_ftp_settings(), report)
+    email = EmailClient(conf.get_email_settings())
     scheduler = Scheduler(ftp_client, email)
 
     with output(output_type="list", initial_len=8, interval=0) as output_list:
@@ -69,9 +69,9 @@ def main():
             elif(isinstance(err, TypeError)):
                 error_text = f"Type error: {err}"
             print_error(error_text, output_list, "RED")
-            logger.critical(error_text)
+            log_msg(__name__, "critical", error_text)
         finally:
-            logger.info("Program is terminated!")
+            log_msg(__name__, "critical", "Program is terminated!")
             close_all_instances([ssh_client.ssh, modbus.client])
 
 if __name__ == "__main__":

@@ -10,7 +10,6 @@ from multipledispatch import dispatch
 from Libraries.PrintMethods import print_with_colour
 from Libraries.DataMethods import remove_char
 from Libraries.SSHMethods import get_parsed_ubus_data, get_concrete_ubus_data
-from MainModules.Logger import init_logger
 
 class Module:
 
@@ -33,7 +32,6 @@ class Module:
                 module_name (str): name of subclass module that calls this constructor
         """
         self.module_name = module_name
-        self.logger = init_logger(module_name)
         self.data = data
         self.ssh = ssh
         self.modbus = modbus

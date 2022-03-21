@@ -92,18 +92,16 @@ def gsmctl_call(ssh, flag, output_list=None):
     output = ssh.ssh_issue_command(f"gsmctl -{flag}", output_list)
     return output
 
-def try_enable_gps(ssh):
+def enable_gps_service(ssh):
     """
-    Tries to enable GPS service on device.
+    Enables GPS service on device.
 
         Parameters:
             ssh (SSHClient): module required to make connection to server via SSH
     """
-    gps_enabled = ssh.ssh_issue_command("uci get gps.gpsd.enabled")
-    if(get_first_digit(gps_enabled) == 0):
-        ssh.ssh.exec_command("uci set gps.gpsd.enabled='1'")
-        ssh.ssh.exec_command("uci commit gps")
-        ssh.ssh.exec_command("/etc/init.d/gpsd restart")
+    ssh.ssh.exec_command("uci set gps.gpsd.enabled='1'")
+    ssh.ssh.exec_command("uci commit gps")
+    ssh.ssh.exec_command("/etc/init.d/gpsd restart")
 
 def get_router_model(ssh, param_values):
     """

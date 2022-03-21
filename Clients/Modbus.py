@@ -7,7 +7,7 @@ from pyModbusTCP.client import ModbusClient
 # Local imports
 from MainModules.ConnectionFailedError import ConnectionFailedError
 from Libraries.PrintMethods import print_error
-from MainModules.Logger import init_logger
+from MainModules.Logger import log_msg
 
 class Modbus:
 
@@ -18,7 +18,6 @@ class Modbus:
             Parameters:
                 conf (ConfigurationModule): module that holds configuration information
         """
-        self.logger = init_logger(__name__)
         self.host = conf['SERVER_HOST']
         self.port = conf['MODBUS_PORT']
         self.connect_attempts = conf['RECONNECT_ATTEMPTS']
@@ -41,10 +40,10 @@ class Modbus:
             error_text = "Modbus port value must be between 1 and 65535!"
         if(error_text != ""):
             print(error_text)
-            self.logger.critical(error_text)
+            log_msg(__name__, "critical", error_text)
             return False
         self.client.port(self.port)
-        self.logger.info("Modbus setup is successful!")
+        log_msg(__name__, "info", "Modbus setup is successful!")
         return True
 
     def try_to_reconnect(self, output_list):
@@ -64,7 +63,7 @@ class Modbus:
                 while(try_connect_nr < self.connect_attempts):
                     try_connect_nr += 1
                     error_text = f"Reconnecting Modbus attempt nr. {try_connect_nr} out of {self.connect_attempts}!"
-                    self.logger.critical(error_text)
+                    log_msg(__name__, "critical", error_text)
                     print_error(error_text, output_list, "YELLOW")
                     time.sleep(self.timeout)
                     if not self.client.is_open():

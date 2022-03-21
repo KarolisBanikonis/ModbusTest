@@ -3,9 +3,9 @@ import json
 import os.path
 
 # Local imports
-from MainModules.Logger import Logger
+from MainModules.Logger import log_msg
 
-def check_file_exists(path_to_file, logger=Logger):
+def check_file_exists(path_to_file):
     """
     Check if file at specified path exists.
 
@@ -14,11 +14,11 @@ def check_file_exists(path_to_file, logger=Logger):
     """
     if(os.path.exists(path_to_file) == False or os.path.isfile(path_to_file) == False):
         error_text = f"File at path: {path_to_file} does not exist."
-        logger.critical(error_text)
+        log_msg(__name__, "critical", error_text)
         print(error_text)
         quit()
     else:
-        logger.info(f"File at - {path_to_file} successfully found.")
+        log_msg(__name__, "info", f"File at - {path_to_file} successfully found.")
 
 def open_file(path_to_file, open_mode):
     """
@@ -62,17 +62,3 @@ def close_all_instances(instances):
     for instance in instances:
         instance.close()
     quit()
-
-def read_json_file(path_to_file, logger=Logger):
-    """
-    Read file which follows JSON format.
-
-        Parameters:
-            path_to_file (str): at what path file should be opened
-        Returns:
-            data (dict): data loaded from JSON format file
-    """
-    check_file_exists(path_to_file, logger)
-    with open(path_to_file) as file:
-        data = json.load(file)
-    return data
