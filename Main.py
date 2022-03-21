@@ -20,16 +20,13 @@ from Clients.EmailClient import EmailClient
 from MainModules.ReportModule import ReportModule
 from Libraries.PrintMethods import print_error
 from Libraries.DataMethods import get_current_data_as_string
-from Libraries.FileMethods import delete_file_content
 from MainModules.Scheduler import Scheduler
-from MainModules.Logger import get_log_file_path, log_msg
+from MainModules.Logger import log_msg
 
-LOG_FILE = get_log_file_path()
 CONFIGURATION_FILE = "config.json"
 REGISTERS_FILE = "registers.json"
 
 def main():
-    delete_file_content(LOG_FILE)
     conf = ConfigurationModule(CONFIGURATION_FILE)
     registers = RegistersModule(REGISTERS_FILE)
     # data = read_json_file(REGISTERS_FILE)

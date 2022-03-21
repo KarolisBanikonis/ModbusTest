@@ -33,24 +33,9 @@ def open_file(path_to_file, open_mode):
     """
     try:
         file = open(path_to_file, open_mode, newline='')
-        a = type(file)
         return file
     except IOError:
         return None
-
-def delete_file_content(path_to_file): # used for log
-    """
-    Delete file's content.
-
-        Parameters:
-            path_to_file (str): at what path file's content should be deleted
-    """
-    file = open_file(path_to_file, 'w')
-    if(file != None):
-        file.close()
-        return True
-    else:
-        return False
 
 def close_all_instances(instances):
     """
