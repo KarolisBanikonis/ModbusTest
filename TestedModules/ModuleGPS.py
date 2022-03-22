@@ -26,15 +26,15 @@ class ModuleGPS(Module):
         super().__init__(data, ssh, modbus, info, report, __class__.__name__)
         enable_gps_service(self.ssh)
 
-    def read_all_data(self, output_list, test_count):
+    def read_all_data(self, print_mod, test_count):
         """
         Performs all tests of ModuleGPS module.
 
             Parameters:
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
                 test_count (list): list that saves values of total tests number, correct tests number and last memory usage
             Returns:
-                unnamed (list): list that saves values of total tests number, correct tests number and last memory usage
+                (list): list that saves values of total tests number, correct tests number and last memory usage
         """
         log_msg(__name__, "info", f"Started {self.module_name} testing!")
         self.total_number = test_count[0]
@@ -43,38 +43,36 @@ class ModuleGPS(Module):
         memory = test_count[2]
         for i in range(len(self.data)):
             param_values = self.data[i]
-            modbus_registers_data = self.modbus.read_registers(param_values, output_list)
+            modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
             function_name = f"get_modbus_and_device_data_type_{param_values['type']}"
-            modbus_data, device_data = getattr(self, function_name)(modbus_registers_data, param_values, output_list)
+            modbus_data, device_data = getattr(self, function_name)(modbus_registers_data, param_values, print_mod)
             results = self.check_if_results_match(modbus_data, device_data)
             self.change_test_count(results[2])
             past_memory = memory
-            memory = self.info.get_used_memory(output_list)
-            cpu_usage = self.info.get_cpu_usage(output_list)
+            memory = self.info.get_used_memory(print_mod)
+            cpu_usage = self.info.get_cpu_usage(print_mod)
             memory_difference = memory - past_memory
             total_mem_difference = self.info.mem_used_at_start - memory
             self.report.writer.writerow([self.total_number, self.module_name, param_values['name'], param_values['address'], results[0], results[1], results[2], '', cpu_usage, total_mem_difference, memory_difference])
-            self.print_test_results(output_list, param_values, results[0], results[1], cpu_usage, total_mem_difference)
+            self.print_test_results(print_mod, param_values, results[0], results[1], cpu_usage, total_mem_difference)
         self.report.close()
         log_msg(__name__, "info", f"Module - {self.module_name} tests are over!")
         return [self.total_number, self.correct_number, memory]
 
-    def get_modbus_and_device_data_type_timestamp(self, modbus_registers_data, param_values, output_list): #147
+    def get_modbus_and_device_data_type_timestamp(self, modbus_registers_data, param_values, print_mod): #147
         """
         Finds converted received data via Modbus TCP and device data when register holds timestamp type information
 
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers
                 param_values (dict): current register's parameters information
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
             Returns:
                 modbus_data (datetime): converted data received via Modbus TCP
                 device_data (datetime): parsed data received via SSH
 
         """
-        # modbus_data, parsed_data = self.convert_data_for_2_registers(modbus_registers_data, param_values, output_list)
-
-        modbus_data, parsed_data = self.convert_data_for_16_registers(modbus_registers_data, param_values, output_list)
+        modbus_data, parsed_data = self.convert_data_for_16_registers(modbus_registers_data, param_values, print_mod)
         #modbus = timestamp x 1000
         #ubus = datetime in string
         modbus_data = convert_timestamp_to_date(int(modbus_data)) # MIGHT NEED TO /= 1000?
@@ -82,49 +80,49 @@ class ModuleGPS(Module):
         device_data = convert_string_to_date(device_data_str)
         return modbus_data, device_data
 
-    def get_modbus_and_device_data_type_date(self, modbus_registers_data, param_values, output_list): #163
+    def get_modbus_and_device_data_type_date(self, modbus_registers_data, param_values, print_mod): #163
         """
         Finds converted received data via Modbus TCP and device data when register holds date type information
 
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers
                 param_values (dict): current register's parameters information
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
             Returns:
                 modbus_data (datetime): converted data received via Modbus TCP
                 device_data (datetime): parsed data received via SSH
 
         """
-        modbus_data, parsed_data = self.convert_data_for_16_registers(modbus_registers_data, param_values, output_list)
+        modbus_data, parsed_data = self.convert_data_for_16_registers(modbus_registers_data, param_values, print_mod)
         modbus_data = convert_string_to_date(modbus_data)
         timestamp = parsed_data[param_values['parse']]
         device_data = convert_timestamp_to_date(timestamp)
         return modbus_data, device_data
 
-    def get_modbus_and_device_data_type_int(self, modbus_registers_data, param_values, output_list):
+    def get_modbus_and_device_data_type_int(self, modbus_registers_data, param_values, print_mod):
         """
         Finds converted received data via Modbus TCP and device data when register holds integer type information
 
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers
                 param_values (dict): current register's parameters information
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
             Returns:
                 modbus_data (int): converted data received via Modbus TCP
                 device_data (int): parsed data received via SSH
 
         """
-        modbus_data, device_data = self.convert_data_for_2_registers(modbus_registers_data, param_values, output_list)
+        modbus_data, device_data = self.convert_data_for_2_registers(modbus_registers_data, param_values, print_mod)
         return modbus_data, device_data
 
-    def get_modbus_and_device_data_type_float(self, modbus_registers_data, param_values, output_list):
+    def get_modbus_and_device_data_type_float(self, modbus_registers_data, param_values, print_mod):
         """
         Finds converted received data via Modbus TCP and device data when register holds float type information
 
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers
                 param_values (dict): current register's parameters information
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
             Returns:
                 modbus_data (float): converted data received via Modbus TCP
                 device_data (float): parsed data received via SSH
@@ -132,7 +130,7 @@ class ModuleGPS(Module):
         """
         if(modbus_registers_data is not None):
             modbus_data = self.convert_float_number(modbus_registers_data)
-        device_data = get_concrete_ubus_data(self.ssh, param_values, output_list)
+        device_data = get_concrete_ubus_data(self.ssh, param_values, print_mod)
         return modbus_data, device_data
 
     def convert_float_number(self, modbus_registers_data):

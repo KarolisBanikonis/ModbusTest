@@ -6,7 +6,6 @@ import socket
 # Local imports
 from Libraries.DataMethods import remove_colour_tags
 from MainModules.Logger import log_msg
-from Libraries.PrintMethods import print_error
 
 class EmailClient:
 
@@ -26,17 +25,17 @@ class EmailClient:
         self.interval = conf['INTERVAL_HOURS']
         self.message = "Subject: Tests summary\n\n Tests summary:\n\n"
 
-    def send_email(self, output_list):
+    def send_email(self, print_mod):
         """
         Send an email to recipient.
 
             Parameters:
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module stores information which needs to be send in email
         """
         if(self.allowed):
             text = self.message
             for i in range(4):
-                text += remove_colour_tags(f"{output_list[i]}\n")
+                text += remove_colour_tags(f"{print_mod.print_list[i]}\n")
 
             context = ssl.create_default_context()
             try:
@@ -50,5 +49,5 @@ class EmailClient:
                 elif(isinstance(err, socket.gaierror)):
                     error_text = f"Email sending failed, check SMTP value : {err}"
                 log_msg(__name__, "error", error_text)
-                print_error(error_text, output_list, "RED")
+                print_mod.warning(error_text)
                 self.allowed = False

@@ -7,7 +7,7 @@ import re
 from multipledispatch import dispatch
 
 # Local imports
-from Libraries.PrintMethods import print_with_colour
+# from Libraries.PrintMethods import print_with_colour
 from Libraries.DataMethods import remove_char
 from Libraries.SSHMethods import get_parsed_ubus_data, get_concrete_ubus_data
 
@@ -40,24 +40,30 @@ class Module:
         self.total_number = 0
         self.correct_number = 0
 
-    def print_test_results(self, output_list, param_values, modbus_data, device_data, cpu, ram):
+    def print_test_results(self, print_mod, param_values, modbus_data, device_data, cpu, ram):
         """
         Prints current test's results to terminal.
 
             Parameters:
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
                 param_values (dict): current register's parameters information
                 modbus_data (str): converted data received via Modbus TCP
                 device_data (str): parsed data received via SSH
                 cpu (str): current CPU usage
                 ram (str): current RAM usage
         """
-        output_list[1] = f"Tests were done - {self.total_number}."
-        output_list[2] = f"{print_with_colour(f'Tests passed - {self.correct_number}.', 'GREEN')}{print_with_colour(f' Tests failed - {self.total_number - self.correct_number}.', 'RED')}"
-        output_list[3] = f"CPU usage - {cpu}. RAM usage: {ram}."
-        output_list[4] = f"Module being tested - {self.module_name}."
-        output_list[5] = f"Testing - {param_values['name']}. Address - {param_values['address']}."
-        output_list[6] = f"Value from Modbus - {modbus_data}. Value from router - {device_data}."
+        print_mod.print_at_row(1, f"Tests were done - {self.total_number}.")
+        # print_mod[1] = f"Tests were done - {self.total_number}."
+        # print_mod[2] = f"{print_mod.colour_text(f'Tests passed - {self.correct_number}.', 'GREEN')}{print_mod.colour_text(f' Tests failed - {self.total_number - self.correct_number}.', 'RED')}"
+        print_mod.print_at_row(2, f"{print_mod.colour_text(f'Tests passed - {self.correct_number}.', 'GREEN')}{print_mod.colour_text(f' Tests failed - {self.total_number - self.correct_number}.', 'RED')}")
+        # print_mod[3] = f"CPU usage - {cpu}. RAM usage: {ram}."
+        print_mod.print_at_row(3, f"CPU usage - {cpu}. RAM usage: {ram}.")
+        print_mod.print_at_row(4, f"Module being tested - {self.module_name}.")
+        print_mod.print_at_row(5, f"Testing - {param_values['name']}. Address - {param_values['address']}.")
+        print_mod.print_at_row(6, f"Value from Modbus - {modbus_data}. Value from router - {device_data}.")
+        # print_mod[4] = f"Module being tested - {self.module_name}."
+        # print_mod[5] = f"Testing - {param_values['name']}. Address - {param_values['address']}."
+        # print_mod[6] = f"Value from Modbus - {modbus_data}. Value from router - {device_data}."
 
     def convert_reg_number(self, modbus_registers_data):
         """

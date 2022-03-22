@@ -71,4 +71,5 @@ def log_msg(name, severity, msg):
             if(is_function_callable):
                 function(msg)
         except AttributeError as err:
-            print(f"Such attribute does not exist: {err}")
+            pass
+            # print(f"Such attribute does not exist: {err}")

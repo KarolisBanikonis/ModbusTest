@@ -68,12 +68,12 @@ class ModuleNetwork(Module):
                     ip_list.append(interface['ipv4-address'][0]['address'])
         return ip_list
 
-    def read_all_data(self, output_list, test_count):
+    def read_all_data(self, print_mod, test_count):
         """
         Performs all tests of ModuleNetwork module.
 
             Parameters:
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
                 test_count (list): list that saves values of total tests number, correct tests number and last memory usage
             Returns:
                 unnamed (list): list that saves values of total tests number, correct tests number and last memory usage
@@ -87,56 +87,56 @@ class ModuleNetwork(Module):
             param_values = self.data[i]
             # Specific function for every register address
             function_name = f"get_modbus_and_device_data_register_nr_{param_values['address']}"
-            modbus_data, device_data = getattr(self, function_name)(param_values, output_list)
+            modbus_data, device_data = getattr(self, function_name)(param_values, print_mod)
             results = self.check_if_results_match(modbus_data, device_data)
             self.change_test_count(results[2])
             past_memory = memory
-            memory = self.info.get_used_memory(output_list)
-            cpu_usage = self.info.get_cpu_usage(output_list)
+            memory = self.info.get_used_memory(print_mod)
+            cpu_usage = self.info.get_cpu_usage(print_mod)
             memory_difference = memory - past_memory
             total_mem_difference = self.info.mem_used_at_start - memory
             self.report.writer.writerow([self.total_number, self.module_name, param_values['name'], param_values['address'], results[0], results[1], results[2], '', cpu_usage, total_mem_difference, memory_difference])
-            self.print_test_results(output_list, param_values, results[0], results[1], cpu_usage, total_mem_difference)
+            self.print_test_results(print_mod, param_values, results[0], results[1], cpu_usage, total_mem_difference)
         self.report.close()
         log_msg(__name__, "info", f"Module - {self.module_name} tests are over!")
         return [self.total_number, self.correct_number, memory]
         
-    def get_modbus_and_device_data_register_nr_55(self, param_values, output_list):
+    def get_modbus_and_device_data_register_nr_55(self, param_values, print_mod):
         """
         Finds converted received data via Modbus TCP and device data when starting register number is 55
 
             Parameters:
                 param_values (dict): current register's parameters information
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
             Returns:
                 modbus_data (str): converted data received via Modbus TCP
                 device_data (str): parsed data received via SSH
         """
-        modbus_registers_data = self.modbus.read_registers(param_values, output_list)
+        modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
         modbus_data = self.convert_reg_text(modbus_registers_data)
-        device_data_with_colon = get_concrete_ubus_data(self.ssh, param_values, output_list)# returns lower case
+        device_data_with_colon = get_concrete_ubus_data(self.ssh, param_values, print_mod)# returns lower case
         device_data = remove_char(device_data_with_colon, ':')
         return modbus_data, device_data
 
-    def get_modbus_and_device_data_register_nr_139(self, param_values, output_list):
+    def get_modbus_and_device_data_register_nr_139(self, param_values, print_mod):
         """
         Finds converted received data via Modbus TCP and device data when starting register number is 139
 
             Parameters:
                 param_values (dict): current register's parameters information
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
             Returns:
                 modbus_data (str): converted data received via Modbus TCP
                 device_data (str): parsed data received via SSH
         """
-        ubus_data = get_concrete_ubus_data(self.ssh, param_values, output_list)
+        ubus_data = get_concrete_ubus_data(self.ssh, param_values, print_mod)
         device_data = self.add_interfaces_ip_to_list(ubus_data)
         if(len(device_data) <= 2): #loopback and lan?
             modbus_data = None
             device_data = None
         else:
-            modbus_registers_data = self.modbus.read_registers(param_values, output_list)
+            modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
             modbus_data = self.convert_reg_ip(modbus_registers_data)
-            ubus_data = get_concrete_ubus_data(self.ssh, param_values, output_list)
+            ubus_data = get_concrete_ubus_data(self.ssh, param_values, print_mod)
             device_data = self.add_interfaces_ip_to_list(ubus_data)
         return modbus_data, device_data

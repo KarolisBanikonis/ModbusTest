@@ -6,7 +6,6 @@ from pyModbusTCP.client import ModbusClient
 
 # Local imports
 from MainModules.ConnectionFailedError import ConnectionFailedError
-from Libraries.PrintMethods import print_error
 from MainModules.Logger import log_msg
 
 class Modbus:
@@ -24,10 +23,12 @@ class Modbus:
         self.timeout = conf['TIMEOUT']
         self.client = ModbusClient(timeout=0.5)
 
-    def setup_modbus(self):
+    def setup_modbus(self, print_mod):
         """
         Configuration data validation and initial setup.
 
+            Parameters:
+                print_mod (PrintModule): module designed for printing to terminal
             Returns:
                 True, if configuration was successful
                 False, if configuration was not successful
@@ -39,20 +40,20 @@ class Modbus:
         elif(self.port < 1 or self.port > 65535):
             error_text = "Modbus port value must be between 1 and 65535!"
         if(error_text != ""):
-            print(error_text)
+            print_mod.error(error_text)
             log_msg(__name__, "critical", error_text)
             return False
         self.client.port(self.port)
         log_msg(__name__, "info", "Modbus setup is successful!")
         return True
 
-    def try_to_reconnect(self, output_list):
+    def try_to_reconnect(self, print_mod):
         """
         Try to establish connection via Modbus TCP with server.
         If connection is not made, try to establish connection set amount of times.
 
             Parameters:
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
             Returns:
                 True, if connection was established
                 Raises ConnectionFailedError exception, if connection was not established
@@ -64,29 +65,28 @@ class Modbus:
                     try_connect_nr += 1
                     error_text = f"Reconnecting Modbus attempt nr. {try_connect_nr} out of {self.connect_attempts}!"
                     log_msg(__name__, "critical", error_text)
-                    print_error(error_text, output_list, "YELLOW")
+                    print_mod.warning(error_text)
                     time.sleep(self.timeout)
                     if not self.client.is_open():
                         self.client.open()
                     if self.client.is_open():
-                        print_error("", output_list)
+                        print_mod.clear_error()
                         return True
-                    # if(try_connect_nr >= self.connect_attempts):
                 raise ConnectionFailedError("Connection failed - Modbus.")
             else:
                 return True
 
-    def read_registers(self, register_params, output_list):
+    def read_registers(self, register_params, print_mod):
         """
         Read server's registers values via Modbus TCP.
 
             Parameters:
                 register_params (dict): current register's parameters information
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
             Returns:
                 register_data (list): data that holds Modbus server's registers
         """
-        is_connected = self.try_to_reconnect(output_list)
+        is_connected = self.try_to_reconnect(print_mod)
         if is_connected:
             registers_data = self.client.read_holding_registers(register_params['address'], register_params['number'])
         self.client.close()

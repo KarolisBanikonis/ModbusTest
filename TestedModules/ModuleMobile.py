@@ -18,8 +18,8 @@ class ModuleMobile(Module):
                 report (ReportModule): module designed to write test results to report file
         """
         super().__init__(data, ssh, modbus, info, report, __class__.__name__)
-        self.dual_sim_status = ssh_get_uci_hwinfo(self.ssh, "dual_sim")
-        self.modem_id = get_modem_id(self.ssh, data['ModemId'])
+        # self.dual_sim_status = ssh_get_uci_hwinfo(self.ssh, "dual_sim")
+        # self.modem_id = get_modem_id(self.ssh, data['ModemId'], print_mod)
         self.change_data_with_modem_id()
 
     def change_data_with_modem_id(self):
@@ -27,17 +27,17 @@ class ModuleMobile(Module):
         Inserts found modem id to data's dictionary procedure parameter.
         """
         for data in self.data['SIM1']:
-            data['procedure'] = replace_modem_id(data['procedure'], self.modem_id)
-        if(self.dual_sim_status == 1):
+            data['procedure'] = replace_modem_id(data['procedure'], self.info.modem_id)
+        if(self.info.dual_sim_status == 1):
             for data in self.data['SIM2']:
-                data['procedure'] = replace_modem_id(data['procedure'], self.modem_id)
+                data['procedure'] = replace_modem_id(data['procedure'], self.info.modem_id)
 
-    def read_all_data(self, output_list, test_count):
+    def read_all_data(self, print_mod, test_count):
         """
         Performs all tests of ModuleMobile module.
 
             Parameters:
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
                 test_count (list): list that saves values of total tests number, correct tests number and last memory usage
             Returns:
                 unnamed (list): list that saves values of total tests number, correct tests number and last memory usage
@@ -47,81 +47,81 @@ class ModuleMobile(Module):
         self.total_number = test_count[0]
         self.correct_number = test_count[1]
         self.memory = test_count[2]
-        self.read_data(self.data['SIM1'], output_list)
-        if(self.dual_sim_status == 1):
-            self.read_data(self.data['SIM2'], output_list)
+        self.read_data(self.data['SIM1'], print_mod)
+        if(self.info.dual_sim_status == 1):
+            self.read_data(self.data['SIM2'], print_mod)
         self.report.close()
         log_msg(__name__, "info", f"Module - {self.module_name} tests are over!")
         return [self.total_number, self.correct_number, self.memory]
 
-    def read_data(self, data_area, output_list):
+    def read_data(self, data_area, print_mod):
         """
         Performs tests for specified data area(SIM1 or SIM2).
 
             Parameters:
                 data_area (dict): a part of data read from JSON format parameters file
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
         """
         for i in range(len(data_area)):
             param_values = data_area[i]
-            modbus_registers_data = self.modbus.read_registers(param_values, output_list)
+            modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
             function_name = f"get_modbus_and_device_data_register_count_{param_values['number']}"
-            modbus_data, device_data = getattr(self, function_name)(modbus_registers_data, param_values, output_list)
+            modbus_data, device_data = getattr(self, function_name)(modbus_registers_data, param_values, print_mod)
             results = self.check_if_results_match(modbus_data, device_data)
             self.change_test_count(results[2])
             past_memory = self.memory
-            self.memory = self.info.get_used_memory(output_list)
-            cpu_usage = self.info.get_cpu_usage(output_list)
+            self.memory = self.info.get_used_memory(print_mod)
+            cpu_usage = self.info.get_cpu_usage(print_mod)
             memory_difference = self.memory - past_memory
             total_mem_difference = self.info.mem_used_at_start - self.memory
             self.report.writer.writerow([self.total_number, self.module_name, param_values['name'], param_values['address'], results[0], results[1], results[2], '', cpu_usage, total_mem_difference, memory_difference])
-            self.print_test_results(output_list, param_values, results[0], results[1], cpu_usage, total_mem_difference)
+            self.print_test_results(print_mod, param_values, results[0], results[1], cpu_usage, total_mem_difference)
 
-    def get_modbus_and_device_data_register_count_16(self, modbus_registers_data, param_values, output_list):
+    def get_modbus_and_device_data_register_count_16(self, modbus_registers_data, param_values, print_mod):
         """
         Finds converted received data via Modbus TCP and device data when read register count is 16
 
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers
                 param_values (dict): current register's parameters information
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
             Returns:
                 modbus_data (str): converted data received via Modbus TCP
                 device_data (str): parsed data received via SSH
         """
-        modbus_data, parsed_data = self.convert_data_for_16_registers(modbus_registers_data, param_values, output_list)
+        modbus_data, parsed_data = self.convert_data_for_16_registers(modbus_registers_data, param_values, print_mod)
         device_data = parsed_data['mobile'][param_values['parse']]
         if(param_values['address'] == 119):
             device_data = get_value_in_parenthesis(device_data)
         return modbus_data, device_data
 
-    def get_modbus_and_device_data_register_count_1(self, modbus_registers_data, param_values, output_list):
+    def get_modbus_and_device_data_register_count_1(self, modbus_registers_data, param_values, print_mod):
         """
         Finds converted received data via Modbus TCP and device data when read register count is 1
 
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers
                 param_values (dict): current register's parameters information
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
             Returns:
                 modbus_data (int): converted data received via Modbus TCP
                 device_data (int): parsed data received via SSH
         """
-        modbus_data, parsed_data = self.convert_data_for_register(modbus_registers_data, param_values, output_list)
+        modbus_data, parsed_data = self.convert_data_for_register(modbus_registers_data, param_values, print_mod)
         device_data = parsed_data[param_values['parse']]
         return modbus_data, device_data
 
-    def get_modbus_and_device_data_register_count_2(self, modbus_registers_data, param_values, output_list):
+    def get_modbus_and_device_data_register_count_2(self, modbus_registers_data, param_values, print_mod):
         """
         Finds converted received data via Modbus TCP and device data when read register count is 2
 
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers
                 param_values (dict): current register's parameters information
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
             Returns:
                 modbus_data (int): converted data received via Modbus TCP
                 device_data (int): parsed data received via SSH
         """
-        modbus_data, device_data = self.convert_data_for_2_registers(modbus_registers_data, param_values, output_list)
+        modbus_data, device_data = self.convert_data_for_2_registers(modbus_registers_data, param_values, print_mod)
         return modbus_data, device_data

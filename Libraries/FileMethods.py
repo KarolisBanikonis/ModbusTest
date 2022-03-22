@@ -5,17 +5,18 @@ import os.path
 # Local imports
 from MainModules.Logger import log_msg
 
-def check_file_exists(path_to_file):
+def check_file_exists(path_to_file, print_mod):
     """
     Check if file at specified path exists.
 
         Parameters:
             path_to_file (str): at what path file should be checked
+            print_mod (PrintModule): module designed for printing to terminal
     """
     if(os.path.exists(path_to_file) == False or os.path.isfile(path_to_file) == False):
         error_text = f"File at path: {path_to_file} does not exist."
         log_msg(__name__, "critical", error_text)
-        print(error_text)
+        print_mod.error(error_text)
         quit()
     else:
         log_msg(__name__, "info", f"File at - {path_to_file} successfully found.")

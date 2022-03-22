@@ -9,15 +9,17 @@ class ModuleLoader:
 
     MODULES_DIRECTORY = "TestedModules."
 
-    def __init__(self, conf_module, conn : SSHClient):
+    def __init__(self, conf_module, conn : SSHClient, print_mod):
         """
         Initializes ModuleLoader object.
 
             Parameters:
                 conf_module (ConfigurationModule): module that holds configuration information
                 conn (SSHClient): module required to make connection to server
+                print_mod (PrintModule): module designed for printing to terminal
         """
         self.conn = conn
+        self.print_mod = print_mod
         self.modules_info = conf_module.get_data('MODULES')
         self.modules_to_load = []
         self.check_hw_info()
@@ -25,12 +27,15 @@ class ModuleLoader:
     def check_hw_info(self):
         """
         Finds which tested modules should be loaded by checking which device's subsystems are enabled.
+
+            Parameters:
+                print_mod (PrintModule): module designed for printing to terminal
         """
         for module_info in self.modules_info:
             if(module_info['name'] == "ModuleSystem"):
                 module_enabled = 1
             else:
-                module_enabled = ssh_get_uci_hwinfo(self.conn, module_info['hw_info'])
+                module_enabled = ssh_get_uci_hwinfo(self.conn, module_info['hw_info'], self.print_mod)
             if(module_enabled == 1):
                 self.modules_to_load.append(module_info['name'])
         
@@ -56,7 +61,7 @@ class ModuleLoader:
                     tested_modules.append(instance)
                     log_msg(__name__, "info", f"Class object {class_} was initialized!")
                 except AttributeError as err:
-                    print(f"Such attribute does not exist: {err}")
+                    self.print_mod.warning(f"Such attribute does not exist: {err}")
         return tested_modules
 
     def __load_module(self, module_name):
@@ -72,5 +77,5 @@ class ModuleLoader:
             log_msg(__name__, "info", f"Module {module.__name__} was loaded!")
             return module
         except ModuleNotFoundError:
-            print(f"Module {module_name} was not imported!")
+            self.print_mod.warning(f"Module {module_name} was not imported!")
             return None

@@ -9,22 +9,23 @@ class JsonFileModule:
     def __init__(self, path_to_file):
         self.read_json_file(path_to_file)
 
-    def read_json_file(self, path_to_file):
+    def read_json_file(self, path_to_file, print_mod):
         """
         Read file which follows JSON format.
 
             Parameters:
                 path_to_file (str): at what path file should be opened
+                print_mod (PrintModule): module designed for printing to terminal
             Returns:
                 json_data (dict): 
         """
-        check_file_exists(path_to_file)
+        check_file_exists(path_to_file, print_mod)
         with open(path_to_file) as file:
             try:
                 json_data = json.load(file)
                 return json_data
             except json.JSONDecodeError as err:
-                print(err)
+                print_mod.error(err, "RED")
                 quit()
 
     def get_param(self, data, key):

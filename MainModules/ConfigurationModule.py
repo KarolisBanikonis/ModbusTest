@@ -3,14 +3,15 @@ from MainModules.JsonFileModule import JsonFileModule
 
 class ConfigurationModule(JsonFileModule):
 
-    def __init__(self, path_to_file):
+    def __init__(self, path_to_file, print_mod):
         """
         Initializes ConfigurationModule object.
 
             Parameters:
-                file_path (str): path of configuration file
+                path_to_file (str): path of configuration file
+                print_mod (PrintModule): module designed for printing to terminal
         """
-        self.data = self.read_json_file(path_to_file)
+        self.data = self.read_json_file(path_to_file, print_mod)
 
     def get_data(self, request_data):
         """

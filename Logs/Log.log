@@ -1,1 +1,19 @@
-2022-03-22 08:29:39,413 - Libraries.FileMethods - INFO - File at - config.json successfully found.
+2022-03-22 12:56:37,644 - Libraries.FileMethods - INFO - File at - config.json successfully found.
+2022-03-22 12:56:37,644 - Libraries.FileMethods - INFO - File at - registers.json successfully found.
+2022-03-22 12:56:37,790 - Clients.SSHClient - INFO - SSH setup is successful!
+2022-03-22 12:56:37,941 - Clients.Modbus - INFO - Modbus setup is successful!
+2022-03-22 12:56:38,059 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleSystem was loaded!
+2022-03-22 12:56:38,059 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleSystem.ModuleSystem'> was initialized!
+2022-03-22 12:56:38,060 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleNetwork was loaded!
+2022-03-22 12:56:38,060 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleNetwork.ModuleNetwork'> was initialized!
+2022-03-22 12:56:38,061 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleMobile was loaded!
+2022-03-22 12:56:38,061 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleMobile.ModuleMobile'> was initialized!
+2022-03-22 12:56:38,068 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleGPS was loaded!
+2022-03-22 12:56:38,154 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleGPS.ModuleGPS'> was initialized!
+2022-03-22 12:56:38,163 - TestedModules.ModuleSystem - INFO - Started ModuleSystem testing!
+2022-03-22 12:56:39,763 - TestedModules.ModuleSystem - INFO - Module - ModuleSystem tests are over!
+2022-03-22 12:56:39,763 - TestedModules.ModuleNetwork - INFO - Started ModuleNetwork testing!
+2022-03-22 12:56:40,030 - TestedModules.ModuleNetwork - INFO - Module - ModuleNetwork tests are over!
+2022-03-22 12:56:40,030 - TestedModules.ModuleMobile - INFO - Started ModuleMobile testing!
+2022-03-22 12:56:40,942 - __main__ - CRITICAL - User stopped tests with KeyboardInterrupt.
+2022-03-22 12:56:40,942 - __main__ - CRITICAL - Program is terminated!

@@ -12,7 +12,13 @@
 			"service":"system",
 			"procedure":"info",
 			"parse":"memory"
-		}
+		},
+		"ModemId":{
+			"service": "vuci.network.mobile",
+			"procedure": "get_all_modems",
+			"parse1": "modems",
+			"parse2": "id"
+	   }
 	},
 	"ModuleSystem":[
 	   {
@@ -173,13 +179,6 @@
 	],
 	"ModuleMobile":
 	   {
-		   "ModemId":{
-				"source":"ubus",
-				"service": "vuci.network.mobile",
-				"procedure": "get_all_modems",
-				"parse1": "modems",
-				"parse2": "id"
-		   },
 		  	"SIM1":[
 			{
 				"name":"IMSI",

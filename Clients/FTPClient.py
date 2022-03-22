@@ -4,8 +4,6 @@ import socket
 
 # Local imports
 from MainModules.Logger import log_msg
-from Libraries.PrintMethods import print_error
-from Libraries.FileMethods import open_file
 
 class FTPClient:
 
@@ -26,12 +24,12 @@ class FTPClient:
         self.report_module = report
         self.ftp = ftplib.FTP()
 
-    def connect(self, output_list):
+    def connect(self, print_mod):
         """
         Try to connect and log in to the FTP server.
         
             Parameters:
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
         """
         try:
             self.ftp.connect(self.host, self.port)
@@ -46,21 +44,21 @@ class FTPClient:
                 error_text = f"FTP failed to login: {err}"
             self.allowed = False
             log_msg(__name__, "error", error_text)
-            print_error(error_text, output_list, "RED")
+            print_mod.warning(error_text)
 
     def disconnect(self):
         """Close the connection with FTP server."""
         self.ftp.quit()
 
-    def store_report(self, output_list):
+    def store_report(self, print_mod):
         """
         Try to store report to the FTP server.
 
             Parameters:
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
         """
         if(self.allowed):
-            self.connect(output_list)
+            self.connect(print_mod)
         if(self.allowed):
             report = self.report_module.open_report_for_ftp()
             if(report is not None):

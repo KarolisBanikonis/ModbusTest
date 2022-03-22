@@ -5,17 +5,17 @@ import paramiko
 
 # Local imports
 from MainModules.ConnectionFailedError import ConnectionFailedError
-from Libraries.PrintMethods import print_error
 from MainModules.Logger import log_msg
 
 class SSHClient:
 
-    def __init__(self, conf):
+    def __init__(self, conf, print_mod):
         """
         Initializes SSHClient object. Set settings required for establishing SSH connection.
 
             Parameters:
-                    conf (ConfigurationModule): module that holds configuration information
+                conf (ConfigurationModule): module that holds configuration information
+                print_mod (PrintModule): module designed for printing to terminal
         """
         self.ssh = paramiko.client.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -24,12 +24,15 @@ class SSHClient:
         self.password = conf['PASSWORD']
         self.connect_attempts = conf['RECONNECT_ATTEMPTS']
         self.timeout = conf['TIMEOUT']
-        self.init_ssh_setup()
+        self.init_ssh_setup(print_mod)
 
-    def init_ssh_setup(self):
+    def init_ssh_setup(self, print_mod):
         """
         Data validation for making connections via SSH.
         Trying to establish connection for the first time in program.
+
+            Parameters:
+                print_mod (PrintModule): module designed for printing to terminal
         """
         try:
             self.ssh.connect(self.host, username=self.username, password=self.password, timeout=self.timeout)
@@ -42,17 +45,17 @@ class SSHClient:
                 error_text = f"Not valid SSH connection: {err}"
             else: #OSError
                 error_text = f"SSH connection failed, check host value: {err}"
-            print(error_text)
+            print_mod.error(error_text)
             log_msg(__name__, "critical", error_text)
             quit()
 
-    def try_ssh_connect(self, output_list=None):
+    def try_ssh_connect(self, print_mod):
         """
         Try to establish connection via SSH with server.
         If connection is not made, try to establish connection set amount of times.
 
             Parameters:
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
         """
         state = self.ssh.get_transport().is_active()
         if(state):
@@ -61,14 +64,12 @@ class SSHClient:
             try_connect_nr = 0
             while(try_connect_nr < self.connect_attempts):
                 try_connect_nr += 1
-                if(output_list != None):
-                    error_text = f"Reconnecting SSH attempt nr. {try_connect_nr} out of {self.connect_attempts}!"
-                    log_msg(__name__, "critical", error_text)
-                    print_error(error_text, output_list, "YELLOW")
+                error_text = f"Reconnecting SSH attempt nr. {try_connect_nr} out of {self.connect_attempts}!"
+                log_msg(__name__, "critical", error_text)
+                print_mod.warning(error_text)
                 connected = self.ssh_connect()
                 if(connected):
-                    if(output_list != None):
-                        print_error("", output_list)
+                    print_mod.clear_error()
                     return
             raise ConnectionFailedError("Connection failed - SSH.")
 
@@ -80,22 +81,22 @@ class SSHClient:
         except OSError:
             return False
 
-    def ssh_issue_command(self, command, output_list=None):
+    def ssh_issue_command(self, command, print_mod):
         """
         Execute a command on the SSH server.
 
             Parameters:
                 command (str): command that should be executed on SSH server
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
             Returns:
                 output (str): what output command produces 
         """
         try:
-            self.try_ssh_connect(output_list)
+            self.try_ssh_connect(print_mod)
             _stdin, _stdout,_stderr = self.ssh.exec_command(command)
             output = _stdout.read().decode()
             if(output == None or output == ""):
-                output = self.ssh_issue_command(command, output_list)
+                output = self.ssh_issue_command(command, print_mod)
         except (ConnectionResetError, EOFError):
-            output = self.ssh_issue_command(command, output_list)
+            output = self.ssh_issue_command(command, print_mod)
         return output
