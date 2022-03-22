@@ -5,7 +5,8 @@
 		{
 			"service":"mnfinfo",
 			"procedure":"get",
-			"parse":"name"
+			"parse1": "mnfinfo",
+			"parse2":"name"
 		},
 		"Memory":
 		{

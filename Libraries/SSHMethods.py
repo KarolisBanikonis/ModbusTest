@@ -74,7 +74,7 @@ def get_concrete_ubus_data(ssh, register_params, print_mod):
             register_params (dict): current register's parameters information
             print_mod (PrintModule): module designed for printing to terminal
         Returns:
-            output (dict): exact parsed data about device
+            concrete_data (??*): exact parsed data about device
     """
     parsed_data = get_parsed_ubus_data(ssh, register_params, print_mod)
     concrete_data = parsed_data[register_params['parse']]
@@ -102,9 +102,6 @@ def enable_gps_service(ssh):
             ssh (SSHClient): module required to make connection to server via SSH
             print_mod (PrintModule): module designed for printing to terminal
     """
-    # ssh.ssh_issue_command("uci set gps.gpsd.enabled='1'", print_mod)
-    # ssh.ssh_issue_command("uci commit gps", print_mod)
-    # ssh.ssh_issue_command("/etc/init.d/gpsd restart", print_mod)
     ssh.ssh.exec_command("uci set gps.gpsd.enabled='1'")
     ssh.ssh.exec_command("uci commit gps")
     ssh.ssh.exec_command("/etc/init.d/gpsd restart")
@@ -119,8 +116,9 @@ def get_router_model(ssh, param_values, print_mod):
             print_mod (PrintModule): module designed for printing to terminal
     """
     parsed_data = get_parsed_ubus_data(ssh, param_values, print_mod)
-    modem_model = parsed_data['mnfinfo'][param_values['parse']]
-    return modem_model[0:6]
+    modem_model = parsed_data[param_values['parse1']][param_values['parse2']]
+    modem_model = modem_model[0:6]
+    return modem_model
 
 def get_df_used_memory(ssh, mounted_on, print_mod):
     """
@@ -136,6 +134,6 @@ def get_df_used_memory(ssh, mounted_on, print_mod):
     bytes = convert_string_to_bytes(string_data)
     return bytes
 
-def get_cpu_count(ssh, print_mod): #unused really
+def get_cpu_count(ssh, print_mod): #unused
     output = ssh.ssh_issue_command("grep 'model name' /proc/cpuinfo | wc -l", print_mod)
     return get_first_digit(output)

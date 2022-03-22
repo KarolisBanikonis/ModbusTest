@@ -7,6 +7,12 @@ from Libraries.FileMethods import check_file_exists
 class JsonFileModule:
 
     def __init__(self, path_to_file):
+        """
+        Initializes JsonFileModule object.
+
+            Parameters:
+                path_to_file (str): path of file that should be read
+        """
         self.read_json_file(path_to_file)
 
     def read_json_file(self, path_to_file, print_mod):
