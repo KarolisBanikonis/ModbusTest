@@ -10,12 +10,15 @@ def get_log_file_path():
     path_to_file = f"{REPORTS_DIRECTORY}{FILE_NAME}"
     return path_to_file
 
-def prepare_file(path_to_file): # used for log
+def prepare_file(path_to_file):
     """
     Delete file's content if it exists, otherwise create a new file.
 
         Parameters:
             path_to_file (str): at what path file's content should be deleted
+        Returns:
+            True, if path is correct
+            False if path is incorrect
     """
     try:
         open(path_to_file, 'w').close()
@@ -31,8 +34,8 @@ def init_logger(name):
         Parameters:
             name (str): name of Logger
         Returns:
-            logger (Logger): initialized Logger object
-            None, if log file was not found
+            logger (Logger): initialized Logger object, if log file exists
+            None, if log file does not exist
     """
     path_to_file = get_log_file_path()
     file_exists = prepare_file(path_to_file)
@@ -52,9 +55,20 @@ def init_logger(name):
 Logger = init_logger(__name__)
 
 def log_msg(name, severity, msg):
+    """
+    Logs a message.
+
+        Parameters:
+            name (str): write a name of a module, where logging happens
+            severity (str): level of importance
+            msg (str): message to be logged
+    """
     if(Logger is not None):
         try:
             Logger.name = name
-            getattr(Logger, severity)(msg)
+            function = getattr(Logger, severity)
+            is_function_callable = callable(function)
+            if(is_function_callable):
+                function(msg)
         except AttributeError as err:
             print(f"Such attribute does not exist: {err}")
