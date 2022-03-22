@@ -108,7 +108,7 @@ class ModuleMobile(Module):
         """
         modbus_data = self.convert_modbus_to_int_1(modbus_registers_data)
         device_data = self.get_device_data(param_values, print_mod)
-        return modbus_data, device_data
+        return f"{modbus_data}", f"{device_data}"
 
     def get_modbus_and_device_data_register_count_2(self, modbus_registers_data, param_values, print_mod):
         """

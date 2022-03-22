@@ -137,6 +137,4 @@ class ModuleNetwork(Module):
             else:
                 modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
                 modbus_data = self.convert_modbus_to_ip(modbus_registers_data)
-                # interfaces = get_concrete_ubus_data(self.ssh, param_values, print_mod)
-                # device_data = self.add_interfaces_ip_to_list(interfaces)
         return modbus_data, device_data

@@ -70,7 +70,6 @@ class ModuleGPS(Module):
             Returns:
                 modbus_data (datetime): converted data received via Modbus TCP
                 device_data (datetime): parsed data received via SSH
-
         """
         modbus_data = self.convert_modbus_to_text(modbus_registers_data)
         #modbus = timestamp x 1000
@@ -91,7 +90,6 @@ class ModuleGPS(Module):
             Returns:
                 modbus_data (datetime): converted data received via Modbus TCP
                 device_data (datetime): parsed data received via SSH
-
         """
         modbus_data = self.convert_modbus_to_text(modbus_registers_data)
         modbus_data = convert_string_to_date(modbus_data)
@@ -110,7 +108,6 @@ class ModuleGPS(Module):
             Returns:
                 modbus_data (int): converted data received via Modbus TCP
                 device_data (int): parsed data received via SSH
-
         """
         modbus_data = self.convert_modbus_to_int_2(modbus_registers_data)
         device_data = self.get_device_data(param_values, print_mod)
@@ -127,7 +124,6 @@ class ModuleGPS(Module):
             Returns:
                 modbus_data (float): converted data received via Modbus TCP
                 device_data (float): parsed data received via SSH
-
         """
         modbus_data = self.convert_modbus_to_float(modbus_registers_data)
         device_data = self.get_device_data(param_values, print_mod)

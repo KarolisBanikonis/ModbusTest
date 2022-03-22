@@ -59,6 +59,7 @@ class Modbus:
                 Raises ConnectionFailedError exception, if connection was not established
         """
         if not self.client.is_open():
+            time.sleep(0.3)
             if not self.client.open():
                 try_connect_nr = 0
                 while(try_connect_nr < self.connect_attempts):

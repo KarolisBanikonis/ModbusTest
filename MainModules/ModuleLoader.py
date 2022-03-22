@@ -68,8 +68,12 @@ class ModuleLoader:
         """
         Tries to load specified module.
 
-        Parameters:
+            Parameters:
                 module_name (str): module's that should be loaded name
+            Returns:
+                module (ModuleSystem|ModuleNetwork|ModuleMobile|ModuleGPS): loaded module, if load was successful
+                None, if load was not successful
+
         """
         module = None
         try:

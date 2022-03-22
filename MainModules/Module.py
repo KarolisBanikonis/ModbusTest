@@ -16,6 +16,8 @@ class Module:
     DEFAULT_ERROR_VALUE = 10
     MOBILE_ERROR_VALUE = 104857 #~0.1MB
     DATATIME_ERROR = 60
+    GPS_ERROR_VALUE_FLOAT = 0.1
+    GPS_ERROR_VALUE_INT = 1
     RESULT_PASSED = "Passed"
     RESULT_FAILED = "Failed"
 
@@ -137,6 +139,23 @@ class Module:
         data = re.sub(pattern, '', data)
         return data
 
+    def __check_if_list_pass(self, modbus_data, device_data):
+        """
+        Checks if test is successful when received data's type is string
+
+            Parameters:
+                modbus_data (str): converted data received via Modbus TCP
+                device_data (list): parsed data received via SSH
+            Returns:
+                result (str): result of test
+        """
+        result = self.RESULT_FAILED
+        for data in device_data:
+            if(modbus_data == data):
+                result = self.RESULT_PASSED
+                break
+        return result
+
     def __check_if_strings_pass(self, modbus_data, device_data):
         """
         Checks if test is successful when received data's type is string
@@ -145,26 +164,44 @@ class Module:
                 modbus_data (str): converted data received via Modbus TCP
                 device_data (str): parsed data received via SSH
             Returns:
-                unnamed (str): result of test
+                (str): result of test
         """
         if(modbus_data == device_data):
             return self.RESULT_PASSED
         else:
             return self.RESULT_FAILED
 
-    def __check_if_numbers_pass(self, modbus_data, device_data):
+    def __check_if_ints_pass(self, modbus_data, device_data):
+        """
+        Checks if test is successful when received data's type is integer or float
+
+            Parameters:
+                modbus_data (int): converted data received via Modbus TCP
+                device_data (int): parsed data received via SSH
+            Returns:
+                (str): result of test
+        """
+        used_error_value = self.DEFAULT_ERROR_VALUE
+        if(self.module_name == "ModuleMobile"):
+            used_error_value = self.MOBILE_ERROR_VALUE
+        elif(self.module_name == "ModuleGPS"):
+            used_error_value = self.GPS_ERROR_VALUE_INT
+        if(math.fabs(modbus_data - device_data) > used_error_value):
+            return self.RESULT_FAILED
+        else:
+            return self.RESULT_PASSED
+
+    def __check_if_floats_pass(self, modbus_data, device_data):
         """
         Checks if test is successful when received data's type is integer or float
 
             Parameters:
                 modbus_data (int|float): converted data received via Modbus TCP
-                device_data (int|float): parsed data received via SSH
+                device_data (float): parsed data received via SSH
             Returns:
-                unnamed (str): result of test
+                (str): result of test
         """
-        used_error_value = self.DEFAULT_ERROR_VALUE
-        if(self.module_name == "ModuleMobile"):
-            used_error_value = self.MOBILE_ERROR_VALUE
+        used_error_value = self.GPS_ERROR_VALUE_FLOAT
         if(math.fabs(modbus_data - device_data) > used_error_value):
             return self.RESULT_FAILED
         else:
@@ -178,7 +215,7 @@ class Module:
                 modbus_data (datetime): converted data received via Modbus TCP
                 device_data (datetime): parsed data received via SSH
             Returns:
-                unnamed (str): result of test
+                (str): result of test
         """
         difference = math.fabs((data1-data2).total_seconds())
         if(difference > self.DATATIME_ERROR):
@@ -195,7 +232,7 @@ class Module:
                 modbus_data (str): converted data received via Modbus TCP
                 device_data (str): parsed data received via SSH
             Returns:
-                unnamed (list): list that saves values of modbus_data, device_data and test result
+                (list): list that saves values of modbus_data, device_data and test result
         """
         modbus_data = self.__format_string_for_checking(modbus_data)
         device_data = self.__format_string_for_checking(device_data)
@@ -211,41 +248,37 @@ class Module:
                 modbus_data (str): converted data received via Modbus TCP
                 device_data (list): parsed data received via SSH
             Returns:
-                unnamed (list): list that saves values of modbus_data, device_data and test result
+                (list): list that saves values of modbus_data, device_data and test result
         """
-        for data in device_data:
-            is_data_equal = self.__check_if_strings_pass(modbus_data, data)
-            if(is_data_equal == self.RESULT_PASSED):
-                device_data = data
-                break
+        is_data_equal = self.__check_if_list_pass(modbus_data, device_data)
         return [modbus_data, device_data, is_data_equal]
 
-    @dispatch((int, int), (int, float))
+    @dispatch(int, int)
     def check_if_results_match(self, modbus_data, device_data):
         """
         Formats given modbus, device data and checks if test is successful
 
             Parameters:
                 modbus_data (int): converted data received via Modbus TCP
-                device_data (int|float): parsed data received via SSH
+                device_data (int): parsed data received via SSH
             Returns:
-                unnamed (list): list that saves values of modbus_data, device_data and test result
+                (list): list that saves values of modbus_data, device_data and test result
         """
-        is_data_equal = self.__check_if_numbers_pass(modbus_data, device_data)
+        is_data_equal = self.__check_if_ints_pass(modbus_data, device_data)
         return [modbus_data, device_data, is_data_equal]
 
-    @dispatch(float, float)
+    @dispatch((int, float), (float, float))
     def check_if_results_match(self, modbus_data, device_data):
         """
         Formats given modbus, device data and checks if test is successful
 
             Parameters:
-                modbus_data (float): converted data received via Modbus TCP
+                modbus_data (int|float): converted data received via Modbus TCP
                 device_data (float): parsed data received via SSH
             Returns:
-                unnamed (list): list that saves values of modbus_data, device_data and test result
+                (list): list that saves values of modbus_data, device_data and test result
         """
-        is_data_equal = self.__check_if_numbers_pass(modbus_data, device_data)
+        is_data_equal = self.__check_if_floats_pass(modbus_data, device_data)
         return [modbus_data, device_data, is_data_equal]
 
     @dispatch(int, str)
@@ -257,10 +290,10 @@ class Module:
                 modbus_data (int): converted data received via Modbus TCP
                 device_data (str): parsed data received via SSH
             Returns:
-                unnamed (list): list that saves values of modbus_data, device_data and test result
+                (list): list that saves values of modbus_data, device_data and test result
         """
         device_data = int(device_data)
-        is_data_equal = self.__check_if_numbers_pass(modbus_data, device_data)
+        is_data_equal = self.__check_if_ints_pass(modbus_data, device_data)
         return [modbus_data, device_data, is_data_equal]
 
     @dispatch(datetime, datetime)
@@ -272,7 +305,7 @@ class Module:
                 modbus_data (datetime): converted data received via Modbus TCP
                 device_data (datetime): parsed data received via SSH
             Returns:
-                unnamed (list): list that saves values of modbus_data, device_data and test result
+                (list): list that saves values of modbus_data, device_data and test result
         """
         is_data_equal = self.__check_if_datetime_pass(modbus_data, device_data)
         return [modbus_data, device_data, is_data_equal]
@@ -286,7 +319,7 @@ class Module:
                 modbus_data (object): converted data received via Modbus TCP
                 device_data (object): parsed data received via SSH
             Returns:
-                unnamed (list): list that saves values of modbus_data, device_data and test result
+                (list): list that saves values of modbus_data, device_data and test result
         """
         if(modbus_data is None and device_data is None):
             is_data_equal = self.RESULT_PASSED
@@ -297,8 +330,6 @@ class Module:
             return [modbus_data, device_data, is_data_equal]
         else:
             raise TypeError("Check results operation can not be performed with these arguments.")
-
-    #results: modbus_data, actual_data, is_data_equal
 
     def change_test_count(self, is_data_equal):
         """
@@ -328,6 +359,15 @@ class Module:
                 return False
 
     def get_device_data(self, param_values, print_mod):
+        """
+        Finds device data.
+
+            Parameters:
+                param_values (dict): current register's parameters information
+                print_mod (PrintModule): module designed for printing to terminal
+            Returns:
+                device_data (float): parsed data received via SSH
+        """
         parsed_data = get_parsed_ubus_data(self.ssh, param_values, print_mod)
         if(self.__check_if_value_exists(param_values, 'parse')):
             device_data = parsed_data[param_values['parse']]
@@ -335,7 +375,6 @@ class Module:
             device_data = parsed_data[param_values['parse1']][0][param_values['parse2']]
         elif(not self.__check_if_value_exists(param_values, 'parse')):
             device_data = parsed_data[param_values['parse1']][param_values['parse2']]
-            # device_data = parsed_data['mobile'][0][param_values['parse']]
         else:
             device_data = None
         return device_data
