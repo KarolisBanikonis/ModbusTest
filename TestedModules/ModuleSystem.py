@@ -1,6 +1,6 @@
 # Local imports
 from MainModules.Module import Module
-from Libraries.SSHMethods import gsmctl_call, get_parsed_ubus_data
+from Libraries.SSHMethods import gsmctl_call
 from Libraries.DataMethods import get_first_digit
 from MainModules.Logger import log_msg
 
@@ -19,7 +19,7 @@ class ModuleSystem(Module):
         """
         super().__init__(data, ssh, modbus, info, report, __class__.__name__)
 
-    def convert_reg_signal(self, read_data):
+    def convert_modbus_to_signal(self, read_data):
         """
         Converts via Modbus TCP received registers values to mobile signal strength
 
@@ -78,8 +78,8 @@ class ModuleSystem(Module):
                 modbus_data (int): converted data received via Modbus TCP
                 device_data (int): parsed data received via SSH
         """
-        modbus_data, parsed_data = self.convert_data_for_register(modbus_registers_data, param_values, print_mod)
-        device_data = get_first_digit(parsed_data[param_values['parse']])
+        modbus_data = self.convert_modbus_to_int_1(modbus_registers_data)
+        device_data = get_first_digit(self.get_device_data(param_values, print_mod))
         return modbus_data, device_data
 
     def get_modbus_and_device_data_register_count_2_ubus(self, modbus_registers_data, param_values, print_mod):
@@ -95,11 +95,10 @@ class ModuleSystem(Module):
                 device_data (int): parsed data received via SSH
         """
         if(param_values['address'] == 3):
-            modbus_data = self.convert_reg_signal(modbus_registers_data)
-            parsed_data = get_parsed_ubus_data(self.ssh, param_values, print_mod)
-            device_data = parsed_data['mobile'][0][param_values['parse']]
+            modbus_data = self.convert_modbus_to_signal(modbus_registers_data)
         else:
-            modbus_data, device_data = self.convert_data_for_2_registers(modbus_registers_data, param_values, print_mod)
+            modbus_data = self.convert_modbus_to_int_2(modbus_registers_data)
+        device_data = self.get_device_data(param_values, print_mod)
         return modbus_data, device_data
 
     def get_modbus_and_device_data_register_count_2_gsmctl(self, modbus_registers_data, param_values, print_mod):
@@ -114,7 +113,7 @@ class ModuleSystem(Module):
                 modbus_data (int): converted data received via Modbus TCP
                 device_data (int): parsed data received via SSH
         """
-        modbus_data = self.convert_reg_number(modbus_registers_data)
+        modbus_data = self.convert_modbus_to_int_2(modbus_registers_data)
         device_data = gsmctl_call(self.ssh, param_values['flag'], print_mod)
         return modbus_data, device_data
 
@@ -130,9 +129,6 @@ class ModuleSystem(Module):
                 modbus_data (str): converted data received via Modbus TCP
                 device_data (str): parsed data received via SSH
         """
-        modbus_data, parsed_data = self.convert_data_for_16_registers(modbus_registers_data, param_values, print_mod)
-        if(param_values['address'] == 39):
-            device_data = parsed_data['mnfinfo'][param_values['parse']]
-        else:
-            device_data = parsed_data[param_values['parse']]
+        modbus_data = self.convert_modbus_to_text(modbus_registers_data)
+        device_data = self.get_device_data(param_values, print_mod)
         return modbus_data, device_data

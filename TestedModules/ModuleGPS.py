@@ -7,7 +7,7 @@ from pymodbus.payload import BinaryPayloadDecoder
 # Local imports
 from MainModules.Module import Module
 from Libraries.ConversionMethods import convert_timestamp_to_date, convert_string_to_date
-from Libraries.SSHMethods import enable_gps_service, get_concrete_ubus_data
+from Libraries.SSHMethods import enable_gps_service
 from MainModules.Logger import log_msg
 
 class ModuleGPS(Module):
@@ -72,11 +72,11 @@ class ModuleGPS(Module):
                 device_data (datetime): parsed data received via SSH
 
         """
-        modbus_data, parsed_data = self.convert_data_for_16_registers(modbus_registers_data, param_values, print_mod)
+        modbus_data = self.convert_modbus_to_text(modbus_registers_data)
         #modbus = timestamp x 1000
         #ubus = datetime in string
         modbus_data = convert_timestamp_to_date(int(modbus_data)) # MIGHT NEED TO /= 1000?
-        device_data_str = parsed_data['coordinates'][param_values['parse']]
+        device_data_str = self.get_device_data(param_values, print_mod)
         device_data = convert_string_to_date(device_data_str)
         return modbus_data, device_data
 
@@ -93,9 +93,9 @@ class ModuleGPS(Module):
                 device_data (datetime): parsed data received via SSH
 
         """
-        modbus_data, parsed_data = self.convert_data_for_16_registers(modbus_registers_data, param_values, print_mod)
+        modbus_data = self.convert_modbus_to_text(modbus_registers_data)
         modbus_data = convert_string_to_date(modbus_data)
-        timestamp = parsed_data[param_values['parse']]
+        timestamp = self.get_device_data(param_values, print_mod)
         device_data = convert_timestamp_to_date(timestamp)
         return modbus_data, device_data
 
@@ -112,7 +112,8 @@ class ModuleGPS(Module):
                 device_data (int): parsed data received via SSH
 
         """
-        modbus_data, device_data = self.convert_data_for_2_registers(modbus_registers_data, param_values, print_mod)
+        modbus_data = self.convert_modbus_to_int_2(modbus_registers_data)
+        device_data = self.get_device_data(param_values, print_mod)
         return modbus_data, device_data
 
     def get_modbus_and_device_data_type_float(self, modbus_registers_data, param_values, print_mod):
@@ -128,20 +129,21 @@ class ModuleGPS(Module):
                 device_data (float): parsed data received via SSH
 
         """
-        if(modbus_registers_data is not None):
-            modbus_data = self.convert_float_number(modbus_registers_data)
-        device_data = get_concrete_ubus_data(self.ssh, param_values, print_mod)
+        modbus_data = self.convert_modbus_to_float(modbus_registers_data)
+        device_data = self.get_device_data(param_values, print_mod)
         return modbus_data, device_data
 
-    def convert_float_number(self, modbus_registers_data):
+    def convert_modbus_to_float(self, modbus_registers_data):
         """
-        Finds converted received data via Modbus TCP and device data when register holds timestamp type information
+        Converts received data via Modbus TCP to float type data
 
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers
             Returns:
                 decoded_value (float): converted data to float value
         """
+        if(modbus_registers_data is None):
+            return modbus_registers_data
         # [1, 2, 3, 4] bytes
         decoder = BinaryPayloadDecoder.fromRegisters(modbus_registers_data, byteorder=Endian.Little, wordorder=Endian.Little,)
         decoded_value = decoder.decode_32bit_float()

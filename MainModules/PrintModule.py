@@ -7,19 +7,20 @@ from colorama import Fore, Style
 class PrintModule:
 
     def __init__(self):
+        """Initializes PrintModule object."""
         self.output = output(output_type="list", initial_len=8, interval=0)
         self.print_list = self.output.warped_obj
 
     def print_at_row(self, row, text):
         """
-        Prints content to terminal.
+        Prints text to terminal at specified row.
 
             Parameters:
-                row (int): at what row of terminal content should be printed
+                row (int): at what row of terminal text should be printed
                 text (str): what content should be printed
         """
         if(row < 0 or row > len(self.print_list)):
-            self.error(f"Text could not be printed at row: {row}!")
+            self.warning(f"Text could not be printed at row: {row}!")
         else:
             self.print_list[row] = text
 
@@ -47,11 +48,18 @@ class PrintModule:
         self.__reset_print_line()
 
     def warning(self, text):
+        """
+        Prints warning to terminal.
+
+            Parameters:
+                text (str): what error text should be printed
+        """
         self.print_list[7] = self.colour_text(text, "YELLOW")
 
-    def clear_error(self):
+    def clear_warning(self):
+        """Clears the row where warnings are printed."""
         self.print_list[7] = ""
 
     def __reset_print_line(self):
+        """Sets a new line for printing new results."""
         self.output.__exit__("Error", "Critical", traceback)
-        # print('\n' * self.output.lines_of_content(self.warped_obj, self.output.columns), end="")

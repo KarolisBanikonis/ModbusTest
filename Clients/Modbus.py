@@ -70,7 +70,7 @@ class Modbus:
                     if not self.client.is_open():
                         self.client.open()
                     if self.client.is_open():
-                        print_mod.clear_error()
+                        print_mod.clear_warning()
                         return True
                 raise ConnectionFailedError("Connection failed - Modbus.")
             else:

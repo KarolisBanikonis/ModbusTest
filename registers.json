@@ -38,7 +38,9 @@
 		  "source":"ubus",
 		  "service": "vuci.network.mobile",
 		  "procedure": "mobile_status",
-		  "parse": "signal"
+		  "parse1": "mobile",
+		  "parse2": "signal",
+		  "index": true
 	   },
 	   {
 		  "name":"System temperature (in 0.1 °C)",
@@ -63,7 +65,8 @@
 		  "source":"ubus",
 		  "service": "mnfinfo",
 		  "procedure": "get",
-		  "parse": "serial"
+		  "parse1": "mnfinfo",
+		  "parse2": "serial"
 	   },
 	   {
 		  "name":"Router name",
@@ -138,7 +141,8 @@
 		  "number":16,
 		  "service": "vuci.services.gps",
 		  "procedure": "get_coordinates",
-		  "parse": "fix_time",
+		  "parse1": "coordinates",
+		  "parse2": "fix_time",
 		  "type": "timestamp"
 	   },
 	   {
@@ -188,7 +192,8 @@
 				"source":"ubus",
 				"service": "vuci.network.mobile",
 				"procedure": "mobile_info '{\"modem\":\"your_modem_id\"}'",
-				"parse": "imsi"
+				"parse1": "mobile",
+				"parse2": "imsi"
 			},
 			{
 				"name":"GSM operator name",
@@ -197,7 +202,8 @@
 				"source":"ubus",
 				"service": "vuci.network.mobile",
 				"procedure": "mobile_info '{\"modem\":\"your_modem_id\"}'",
-				"parse": "operator"
+				"parse1": "mobile",
+				"parse2": "operator"
 			},
 			{
 				"name":"Currently active SIM card slot",
@@ -206,7 +212,8 @@
 				"source":"ubus",
 				"service": "vuci.network.mobile",
 				"procedure": "mobile_info '{\"modem\":\"your_modem_id\"}'",
-				"parse": "slot"
+				"parse1": "mobile",
+				"parse2": "slot"
 			},
 			{
 				"name":"Network registration info",
@@ -215,7 +222,8 @@
 				"source":"ubus",
 				"service": "vuci.network.mobile",
 				"procedure": "mobile_info '{\"modem\":\"your_modem_id\"}'",
-				"parse": "netstate"
+				"parse1": "mobile",
+				"parse2": "netstate"
 			},
 			{
 				"name":"Network type",
@@ -224,7 +232,8 @@
 				"source":"ubus",
 				"service": "vuci.network.mobile",
 				"procedure": "mobile_info '{\"modem\":\"your_modem_id\"}'",
-				"parse": "conntype"
+				"parse1": "mobile",
+				"parse2": "conntype"
 			},
 			{
 				"name":"Mobile data received today (SIM1)",

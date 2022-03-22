@@ -1,7 +1,6 @@
 # Local imports
 from MainModules.Module import Module
 from Libraries.DataMethods import remove_char
-from Libraries.SSHMethods import get_concrete_ubus_data
 from MainModules.Logger import log_msg
 
 class ModuleNetwork(Module):
@@ -35,7 +34,7 @@ class ModuleNetwork(Module):
                 ip += "."
         return ip
     
-    def convert_reg_ip(self, modbus_registers_data):
+    def convert_modbus_to_ip(self, modbus_registers_data):
         """
         Converts via Modbus TCP received registers values to IP address
 
@@ -113,8 +112,8 @@ class ModuleNetwork(Module):
                 device_data (str): parsed data received via SSH
         """
         modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
-        modbus_data = self.convert_reg_text(modbus_registers_data)
-        device_data_with_colon = get_concrete_ubus_data(self.ssh, param_values, print_mod)# returns lower case
+        modbus_data = self.convert_modbus_to_text(modbus_registers_data)
+        device_data_with_colon = self.get_device_data(param_values, print_mod)# returns lower case
         device_data = remove_char(device_data_with_colon, ':')
         return modbus_data, device_data
 
@@ -129,14 +128,15 @@ class ModuleNetwork(Module):
                 modbus_data (str): converted data received via Modbus TCP
                 device_data (str): parsed data received via SSH
         """
-        ubus_data = get_concrete_ubus_data(self.ssh, param_values, print_mod)
-        device_data = self.add_interfaces_ip_to_list(ubus_data)
-        if(len(device_data) <= 2): #loopback and lan?
-            modbus_data = None
-            device_data = None
-        else:
-            modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
-            modbus_data = self.convert_reg_ip(modbus_registers_data)
-            ubus_data = get_concrete_ubus_data(self.ssh, param_values, print_mod)
-            device_data = self.add_interfaces_ip_to_list(ubus_data)
+        interfaces = self.get_device_data(param_values, print_mod)
+        device_data = self.add_interfaces_ip_to_list(interfaces)
+        if(device_data is not None):
+            if(len(device_data) <= 2): #loopback and lan?
+                modbus_data = None
+                device_data = None
+            else:
+                modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
+                modbus_data = self.convert_modbus_to_ip(modbus_registers_data)
+                # interfaces = get_concrete_ubus_data(self.ssh, param_values, print_mod)
+                # device_data = self.add_interfaces_ip_to_list(interfaces)
         return modbus_data, device_data

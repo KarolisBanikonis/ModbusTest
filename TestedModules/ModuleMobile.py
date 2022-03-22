@@ -1,7 +1,6 @@
 # Local imports
 from MainModules.Module import Module
 from Libraries.DataMethods import get_value_in_parenthesis, replace_modem_id
-from Libraries.SSHMethods import ssh_get_uci_hwinfo, get_modem_id
 from MainModules.Logger import log_msg
 
 class ModuleMobile(Module):
@@ -89,8 +88,8 @@ class ModuleMobile(Module):
                 modbus_data (str): converted data received via Modbus TCP
                 device_data (str): parsed data received via SSH
         """
-        modbus_data, parsed_data = self.convert_data_for_16_registers(modbus_registers_data, param_values, print_mod)
-        device_data = parsed_data['mobile'][param_values['parse']]
+        modbus_data = self.convert_modbus_to_text(modbus_registers_data)
+        device_data = self.get_device_data(param_values, print_mod)
         if(param_values['address'] == 119):
             device_data = get_value_in_parenthesis(device_data)
         return modbus_data, device_data
@@ -107,8 +106,8 @@ class ModuleMobile(Module):
                 modbus_data (int): converted data received via Modbus TCP
                 device_data (int): parsed data received via SSH
         """
-        modbus_data, parsed_data = self.convert_data_for_register(modbus_registers_data, param_values, print_mod)
-        device_data = parsed_data[param_values['parse']]
+        modbus_data = self.convert_modbus_to_int_1(modbus_registers_data)
+        device_data = self.get_device_data(param_values, print_mod)
         return modbus_data, device_data
 
     def get_modbus_and_device_data_register_count_2(self, modbus_registers_data, param_values, print_mod):
@@ -123,5 +122,6 @@ class ModuleMobile(Module):
                 modbus_data (int): converted data received via Modbus TCP
                 device_data (int): parsed data received via SSH
         """
-        modbus_data, device_data = self.convert_data_for_2_registers(modbus_registers_data, param_values, print_mod)
+        modbus_data = self.convert_modbus_to_int_2(modbus_registers_data)
+        device_data = self.get_device_data(param_values, print_mod)
         return modbus_data, device_data

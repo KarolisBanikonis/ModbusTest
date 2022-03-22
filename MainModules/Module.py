@@ -9,7 +9,7 @@ from multipledispatch import dispatch
 # Local imports
 # from Libraries.PrintMethods import print_with_colour
 from Libraries.DataMethods import remove_char
-from Libraries.SSHMethods import get_parsed_ubus_data, get_concrete_ubus_data
+from Libraries.SSHMethods import get_parsed_ubus_data
 
 class Module:
 
@@ -59,7 +59,21 @@ class Module:
         print_mod.print_at_row(5, f"Testing - {param_values['name']}. Address - {param_values['address']}.")
         print_mod.print_at_row(6, f"Value from Modbus - {modbus_data}. Value from router - {device_data}.")
 
-    def convert_reg_number(self, modbus_registers_data):
+    def convert_modbus_to_int_1(self, modbus_data):
+        """
+        Performs default data conversions when 1 register was read
+
+            Parameters:
+                modbus_registers_data (list): data that holds Modbus server's registers
+            Returns:
+                modbus_data (int): converted data received via Modbus TCP
+        """
+        if(modbus_data is None):
+            return modbus_data
+        modbus_data = modbus_data[0]
+        return modbus_data
+
+    def convert_modbus_to_int_2(self, modbus_registers_data):
         """
         Converts via Modbus TCP received registers values to integer number
 
@@ -68,7 +82,7 @@ class Module:
             Returns:
                 result (int): converted data to integer value
         """
-        if(modbus_registers_data == None):
+        if(modbus_registers_data is None):
             return modbus_registers_data
         bin_temp1 = format(modbus_registers_data[0], '08b')
         bin_temp2 = format(modbus_registers_data[1], '08b')
@@ -76,16 +90,16 @@ class Module:
         result = self.binary_to_decimal(bin_str)
         return result
 
-    def convert_reg_text(self, modbus_registers_data):
+    def convert_modbus_to_text(self, modbus_registers_data):
         """
         Converts via Modbus TCP received registers values to string format value
 
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers
             Returns:
-                text (str): converted data to string value
+                modbus_data (str): converted data to string value
         """
-        if(modbus_registers_data == None):
+        if(modbus_registers_data is None):
             return modbus_registers_data
         text = ""
         for i in range(len(modbus_registers_data)):
@@ -94,7 +108,8 @@ class Module:
                 text += two_symbols 
             else:
                 break
-        return text
+        modbus_data = remove_char(text, "\x00") # this step needed for 348, 103, 119(mobile), also gps
+        return modbus_data
 
     def binary_to_decimal(self, binary_number):
         """
@@ -273,17 +288,12 @@ class Module:
             Returns:
                 unnamed (list): list that saves values of modbus_data, device_data and test result
         """
-        if(modbus_data == None and device_data == None):
+        if(modbus_data is None and device_data is None):
             is_data_equal = self.RESULT_PASSED
             return [modbus_data, device_data, is_data_equal]
-        elif(modbus_data == None):
+        elif(modbus_data is None):
             modbus_data = "Error"
-            possible_pass_values = ["N/A", "-"]
             is_data_equal = self.RESULT_FAILED
-            for pass_value in possible_pass_values:
-                if(pass_value == device_data):
-                    is_data_equal = self.RESULT_PASSED
-                    break
             return [modbus_data, device_data, is_data_equal]
         else:
             raise TypeError("Check results operation can not be performed with these arguments.")
@@ -301,65 +311,31 @@ class Module:
         if(is_data_equal == self.RESULT_PASSED):
             self.correct_number += 1
 
-    def convert_data_for_16_registers(self, modbus_data, param_values, print_mod):
+    def __check_if_value_exists(self, data, key):
         """
-        Performs default data conversions when 16 registers were read
+        Check if specified key exists 
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
-                param_values (dict): current register's parameters information
-                print_mod (PrintModule): module designed for printing to terminal
+                key (str): what parameter value is requested
             Returns:
-                modbus_data (str): converted data received via Modbus TCP
-                device_data (str): parsed data received via SSH
+                True, if exists
+                False, if it is not
         """
-        if(modbus_data != None):
-            modbus_data = self.convert_reg_text(modbus_data)
-            modbus_data = remove_char(modbus_data, "\x00") # this step needed for 348, 103, 119(mobile), also gps
-        parsed_data = get_parsed_ubus_data(self.ssh, param_values, print_mod)
-        return modbus_data, parsed_data
-
-    def convert_data_for_2_registers(self, modbus_data, param_values, print_mod):
-        """
-        Performs default data conversions when 2 registers were read
-
-            Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
-                param_values (dict): current register's parameters information
-                print_mod (PrintModule): module designed for printing to terminal
-            Returns:
-                modbus_data (int): converted data received via Modbus TCP
-                device_data (int): parsed data received via SSH
-        """
-        if(modbus_data != None):
-            modbus_data = self.convert_reg_number(modbus_data)
-        final_data = get_concrete_ubus_data(self.ssh, param_values, print_mod)
-        return modbus_data, final_data
-
-    def convert_data_for_register(self, modbus_data, param_values, print_mod):
-        """
-        Performs default data conversions when 1 register was read
-
-            Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
-                param_values (dict): current register's parameters information
-                print_mod (PrintModule): module designed for printing to terminal
-            Returns:
-                modbus_data (int): converted data received via Modbus TCP
-                device_data (int): parsed data received via SSH
-        """
-        if(modbus_data != None):
-            modbus_data = modbus_data[0]
-        parsed_data = get_parsed_ubus_data(self.ssh, param_values, print_mod)
-        return modbus_data, parsed_data
+        if(type(data) == dict):
+            if(key in data.keys()):
+                return True
+            else:
+                return False
 
     def get_device_data(self, param_values, print_mod):
         parsed_data = get_parsed_ubus_data(self.ssh, param_values, print_mod)
-        if(param_values['parse'] is not None):
+        if(self.__check_if_value_exists(param_values, 'parse')):
             device_data = parsed_data[param_values['parse']]
-        elif(param_values['parse'] is None):
-            device_data = parsed_data[param_values['parse1']][param_values['parse2']]
-        elif(param_values['parse'] is None and param_values['index'] is not None):
+        elif(self.__check_if_value_exists(param_values, 'index')):
             device_data = parsed_data[param_values['parse1']][0][param_values['parse2']]
+        elif(not self.__check_if_value_exists(param_values, 'parse')):
+            device_data = parsed_data[param_values['parse1']][param_values['parse2']]
             # device_data = parsed_data['mobile'][0][param_values['parse']]
+        else:
+            device_data = None
         return device_data

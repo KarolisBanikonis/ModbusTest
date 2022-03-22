@@ -69,7 +69,7 @@ class SSHClient:
                 print_mod.warning(error_text)
                 connected = self.ssh_connect()
                 if(connected):
-                    print_mod.clear_error()
+                    print_mod.clear_warning()
                     return
             raise ConnectionFailedError("Connection failed - SSH.")
 
