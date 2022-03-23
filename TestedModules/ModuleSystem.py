@@ -79,7 +79,7 @@ class ModuleSystem(Module):
                 device_data (int): parsed data received via SSH
         """
         modbus_data = self.convert_modbus_to_int_1(modbus_registers_data)
-        device_data = get_first_digit(self.get_device_data(param_values, print_mod))
+        device_data = self.get_device_data(param_values, print_mod)
         return f"{modbus_data}", f"{device_data}"
 
     def get_modbus_and_device_data_register_count_2_ubus(self, modbus_registers_data, param_values, print_mod):

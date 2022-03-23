@@ -133,3 +133,9 @@ dmypy.json
 
 # vscode settings
 .vscode/* 
+
+#codecounter
+.VSCodeCounter*
+
+#Tests directory
+Tests/*

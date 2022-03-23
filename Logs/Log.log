@@ -1,13 +1,20 @@
-2022-03-22 16:30:42,316 - Libraries.FileMethods - INFO - File at - config.json successfully found.
-2022-03-22 16:30:42,318 - Libraries.FileMethods - INFO - File at - registers.json successfully found.
-2022-03-22 16:30:42,496 - Clients.SSHClient - INFO - SSH setup is successful!
-2022-03-22 16:30:42,629 - Clients.Modbus - INFO - Modbus setup is successful!
-2022-03-22 16:30:42,694 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleSystem was loaded!
-2022-03-22 16:30:42,694 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleSystem.ModuleSystem'> was initialized!
-2022-03-22 16:30:42,695 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleNetwork was loaded!
-2022-03-22 16:30:42,696 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleNetwork.ModuleNetwork'> was initialized!
-2022-03-22 16:30:42,697 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleMobile was loaded!
-2022-03-22 16:30:42,697 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleMobile.ModuleMobile'> was initialized!
-2022-03-22 16:30:42,707 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleGPS was loaded!
-2022-03-22 16:30:42,718 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleGPS.ModuleGPS'> was initialized!
-2022-03-22 16:30:42,734 - TestedModules.ModuleSystem - INFO - Started ModuleSystem testing!
+2022-03-23 10:41:53,911 - Libraries.FileMethods - INFO - File at - config.json successfully found.
+2022-03-23 10:41:53,912 - Libraries.FileMethods - INFO - File at - registers.json successfully found.
+2022-03-23 10:41:54,074 - Clients.SSHClient - INFO - SSH setup is successful!
+2022-03-23 10:41:54,189 - Clients.Modbus - INFO - Modbus setup is successful!
+2022-03-23 10:41:54,249 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleSystem was loaded!
+2022-03-23 10:41:54,249 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleSystem.ModuleSystem'> was initialized!
+2022-03-23 10:41:54,250 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleNetwork was loaded!
+2022-03-23 10:41:54,250 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleNetwork.ModuleNetwork'> was initialized!
+2022-03-23 10:41:54,251 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleMobile was loaded!
+2022-03-23 10:41:54,252 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleMobile.ModuleMobile'> was initialized!
+2022-03-23 10:41:54,253 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleGPS was loaded!
+2022-03-23 10:41:54,263 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleGPS.ModuleGPS'> was initialized!
+2022-03-23 10:41:54,391 - TestedModules.ModuleSystem - INFO - Started ModuleSystem testing!
+2022-03-23 10:41:58,052 - TestedModules.ModuleSystem - INFO - Module - ModuleSystem tests are over!
+2022-03-23 10:41:58,053 - TestedModules.ModuleNetwork - INFO - Started ModuleNetwork testing!
+2022-03-23 10:41:58,575 - TestedModules.ModuleNetwork - INFO - Module - ModuleNetwork tests are over!
+2022-03-23 10:41:58,575 - TestedModules.ModuleMobile - INFO - Started ModuleMobile testing!
+2022-03-23 10:42:12,473 - Clients.EmailClient - INFO - Email was sent!
+2022-03-23 10:42:14,038 - TestedModules.ModuleMobile - INFO - Module - ModuleMobile tests are over!
+2022-03-23 10:42:14,038 - TestedModules.ModuleGPS - INFO - Started ModuleGPS testing!

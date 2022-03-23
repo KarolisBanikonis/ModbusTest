@@ -1,8 +1,7 @@
 # Standard library imports
+import struct
 
 # Third party imports
-from pymodbus.constants import Endian
-from pymodbus.payload import BinaryPayloadDecoder
 
 # Local imports
 from MainModules.Module import Module
@@ -136,12 +135,29 @@ class ModuleGPS(Module):
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers
             Returns:
-                decoded_value (float): converted data to float value
+                result (float): converted data to float value
+                None, if modbus_registers_data is None
         """
         if(modbus_registers_data is None):
-            return modbus_registers_data
-        # [1, 2, 3, 4] bytes
-        decoder = BinaryPayloadDecoder.fromRegisters(modbus_registers_data, byteorder=Endian.Little, wordorder=Endian.Little,)
-        decoded_value = decoder.decode_32bit_float()
-        decoded_value = round(decoded_value, 6)
-        return decoded_value
+            return None
+        hex_bytes = []
+        for register_data in modbus_registers_data:
+            hex_data = hex(register_data)
+            hex_bytes.append(hex_data[2:4])
+            hex_bytes.append(hex_data[4:6])
+        hex_bytes.reverse()
+        hex_result = ""
+        for hex_byte in hex_bytes:
+            hex_result += hex_byte
+        result = struct.unpack('!f', bytes.fromhex(hex_result))[0]
+        result = round(result, 6)
+        return result
+
+    # def convert_modbus_to_float(self, modbus_registers_data):
+    #     if(modbus_registers_data is None):
+    #         return modbus_registers_data
+    #     # [1, 2, 3, 4] bytes
+    #     decoder = BinaryPayloadDecoder.fromRegisters(modbus_registers_data, byteorder=Endian.Little, wordorder=Endian.Little,)
+    #     decoded_value = decoder.decode_32bit_float()
+    #     decoded_value = round(decoded_value, 6)
+    #     return decoded_value
