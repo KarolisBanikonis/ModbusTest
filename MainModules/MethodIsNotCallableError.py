@@ -1,0 +1,3 @@
+class MethodIsNotCallableError(Exception):
+
+    pass

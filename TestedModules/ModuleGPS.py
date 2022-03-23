@@ -8,6 +8,7 @@ from MainModules.Module import Module
 from Libraries.ConversionMethods import convert_timestamp_to_date, convert_string_to_date
 from Libraries.SSHMethods import enable_gps_service
 from MainModules.Logger import log_msg
+from MainModules.MethodIsNotCallableError import MethodIsNotCallableError
 
 class ModuleGPS(Module):
 
@@ -43,8 +44,23 @@ class ModuleGPS(Module):
         for i in range(len(self.data)):
             param_values = self.data[i]
             modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
-            function_name = f"get_modbus_and_device_data_type_{param_values['type']}"
-            modbus_data, device_data = getattr(self, function_name)(modbus_registers_data, param_values, print_mod)
+            method_name = f"get_modbus_and_device_data_type_{param_values['type']}"
+            try:
+                method = getattr(self, method_name)
+                is_callable = callable(method)
+                if(is_callable):
+                    modbus_data, device_data = method(modbus_registers_data, param_values, print_mod)
+                else:
+                    raise MethodIsNotCallableError(f"Method '{str(method)}' is not callable!")
+            except (AttributeError, MethodIsNotCallableError) as err:
+                if(isinstance(err, AttributeError)):
+                    warning_text = f"Such attribute does not exist: {err}"
+                elif(isinstance(err, MethodIsNotCallableError)):
+                    warning_text = err
+                print_mod.warning(warning_text)
+                log_msg(__name__, "warning", warning_text)
+                continue
+            # modbus_data, device_data = getattr(self, method_name)(modbus_registers_data, param_values, print_mod)
             results = self.check_if_results_match(modbus_data, device_data)
             self.change_test_count(results[2])
             past_memory = memory
@@ -143,6 +159,7 @@ class ModuleGPS(Module):
         hex_bytes = []
         for register_data in modbus_registers_data:
             hex_data = hex(register_data)
+            hex_data = self.__format_hex_data(hex_data)
             hex_bytes.append(hex_data[2:4])
             hex_bytes.append(hex_data[4:6])
         hex_bytes.reverse()
@@ -153,6 +170,24 @@ class ModuleGPS(Module):
         result = round(result, 6)
         return result
 
+    def __format_hex_data(self, hex_data):
+        """
+        Formats hexcadecimal data to 4 byte length
+
+            Parameters:
+                hex_data (str): hexadecimal data
+            Returns:
+                hex_data (str): formmated to 4 byte length hexadecimal data
+        """
+        length = len(hex_data)
+        if(length == 6):
+            return hex_data
+        else:
+            add_count = 6 - length
+            add = '0' * add_count
+            hex_data = hex_data[:2] + add + hex_data[2:]
+            return hex_data
+            
     # def convert_modbus_to_float(self, modbus_registers_data):
     #     if(modbus_registers_data is None):
     #         return modbus_registers_data

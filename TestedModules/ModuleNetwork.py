@@ -2,6 +2,7 @@
 from MainModules.Module import Module
 from Libraries.DataMethods import remove_char
 from MainModules.Logger import log_msg
+from MainModules.MethodIsNotCallableError import MethodIsNotCallableError
 
 class ModuleNetwork(Module):
 
@@ -85,8 +86,23 @@ class ModuleNetwork(Module):
         for i in range(len(self.data)):
             param_values = self.data[i]
             # Specific function for every register address
-            function_name = f"get_modbus_and_device_data_register_nr_{param_values['address']}"
-            modbus_data, device_data = getattr(self, function_name)(param_values, print_mod)
+            method_name = f"get_modbus_and_device_data_register_nr_{param_values['address']}"
+            try:
+                method = getattr(self, method_name)
+                is_callable = callable(method)
+                if(is_callable):
+                    modbus_data, device_data = method(param_values, print_mod)
+                else:
+                    raise MethodIsNotCallableError(f"Method '{str(method)}' is not callable!")
+            except (AttributeError, MethodIsNotCallableError) as err:
+                if(isinstance(err, AttributeError)):
+                    warning_text = f"Such attribute does not exist: {err}"
+                elif(isinstance(err, MethodIsNotCallableError)):
+                    warning_text = err
+                print_mod.warning(warning_text)
+                log_msg(__name__, "warning", warning_text)
+                continue
+            # modbus_data, device_data = getattr(self, method_name)(param_values, print_mod)
             results = self.check_if_results_match(modbus_data, device_data)
             self.change_test_count(results[2])
             past_memory = memory

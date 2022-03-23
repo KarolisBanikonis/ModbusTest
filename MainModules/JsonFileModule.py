@@ -3,6 +3,7 @@ import json
 
 # Local imports
 from Libraries.FileMethods import check_file_exists
+from MainModules.Logger import log_msg
 
 class JsonFileModule:
 
@@ -23,14 +24,21 @@ class JsonFileModule:
                 path_to_file (str): at what path file should be opened
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
-                json_data (dict): 
+                json_data (dict): dictionary which stores information read from json file
         """
-        check_file_exists(path_to_file, print_mod)
+        try:
+            check_file_exists(path_to_file)
+        except FileNotFoundError as err:
+            error_text = f"File at path: {path_to_file} does not exist."
+            log_msg(__name__, "critical", error_text)
+            print_mod.error(error_text)
+            quit()
         with open(path_to_file) as file:
             try:
                 json_data = json.load(file)
                 return json_data
             except json.JSONDecodeError as err:
+                log_msg(__name__, "critical", err)
                 print_mod.error(err, "RED")
                 quit()
 

@@ -3,7 +3,8 @@ import csv
 
 # Local imports
 from Libraries.DataMethods import get_current_data_as_string
-from Libraries.FileMethods import open_file
+from Libraries.FileMethods import open_file, check_file_exists
+from MainModules.Logger import log_msg
 
 class ReportModule:
 
@@ -37,20 +38,29 @@ class ReportModule:
         self.report = open_file(self.report_file_path, 'a')
         self.writer = csv.writer(self.report)
 
-    def open_report_for_ftp(self):
+    def open_report_for_ftp(self, print_mod):
         """
         Opens report's file for FTPClient.
 
+            Parameters:
+                print_mod (PrintModule): module designed for printing to terminal
             Returns:
                 report (_io.TextIOWrapper): opened report file
-                None, if file could not be opened
+                None, if file could not be opened or it does not exist
         """
         try:
-            #Need to check if it exists.
+            check_file_exists(self.report_file_path)
             report = open(self.report_file_path, 'rb')
             return report
-        except IOError:
+        except (IOError, FileNotFoundError) as err:
+            if(isinstance(err, IOError)):
+                error_text = f"File at path: {self.report_file_path} could not be opened"
+            elif(isinstance(err, FileNotFoundError)):
+                error_text = f"File at path: {self.report_file_path} does not exist."
+            log_msg(__name__, "warning", error_text)
+            print_mod.warning(error_text)
             return None
+
 
     def close(self):
         """Closes report's file."""

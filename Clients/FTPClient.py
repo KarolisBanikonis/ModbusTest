@@ -60,7 +60,7 @@ class FTPClient:
         if(self.allowed):
             self.connect(print_mod)
         if(self.allowed):
-            report = self.report_module.open_report_for_ftp()
+            report = self.report_module.open_report_for_ftp(print_mod)
             if(report is not None):
                 command = f'STOR {self.report_module.report_file}'
                 self.ftp.storbinary(command, report)

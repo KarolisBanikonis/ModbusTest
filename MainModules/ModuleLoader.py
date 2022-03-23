@@ -61,7 +61,9 @@ class ModuleLoader:
                     tested_modules.append(instance)
                     log_msg(__name__, "info", f"Class object {class_} was initialized!")
                 except AttributeError as err:
-                    self.print_mod.warning(f"Such attribute does not exist: {err}")
+                    warning_text = f"Such attribute does not exist: {err}"
+                    self.print_mod.warning(warning_text)
+                    log_msg(__name__, "warning", warning_text)
         return tested_modules
 
     def __load_module(self, module_name):
@@ -81,5 +83,7 @@ class ModuleLoader:
             log_msg(__name__, "info", f"Module {module.__name__} was loaded!")
             return module
         except ModuleNotFoundError:
-            self.print_mod.warning(f"Module {module_name} was not imported!")
+            warning_text = f"Module {module_name} was not imported!"
+            self.print_mod.warning(warning_text)
+            log_msg(__name__, "warning", warning_text)
             return None

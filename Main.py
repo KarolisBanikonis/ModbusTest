@@ -43,7 +43,7 @@ def main():
         ftp_client = FTPClient(conf.get_ftp_settings(), report)
     email = EmailClient(conf.get_email_settings())
     scheduler = Scheduler(ftp_client, email)
-    scheduler.send_email_periodically([print_mod])
+    # scheduler.send_email_periodically([print_mod])
     scheduler.store_ftp_periodically([print_mod])
     scheduler.start()
     terminal_header = f"Model - {info.router_model}. Start time: {get_current_data_as_string('%Y-%m-%d-%H-%M')}."
@@ -54,13 +54,11 @@ def main():
             for module in module_instances:
                 test_count = module.read_all_data(print_mod, test_count)
             time.sleep(2)
-    except (ConnectionFailedError, KeyboardInterrupt, AttributeError, TypeError) as err:
+    except (ConnectionFailedError, KeyboardInterrupt, TypeError) as err:
         if(isinstance(err, ConnectionFailedError)):
             error_text = f"Connection stopped: {err}"
         elif(isinstance(err, KeyboardInterrupt)):
             error_text = "User stopped tests with KeyboardInterrupt."
-        elif(isinstance(err, AttributeError)):
-            error_text = f"Such attribute does not exist: {err}"
         elif(isinstance(err, TypeError)):
             error_text = f"Type error: {err}"
         print_mod.error(error_text)
