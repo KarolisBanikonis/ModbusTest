@@ -21,6 +21,7 @@ from Libraries.DataMethods import get_current_data_as_string
 from MainModules.Scheduler import Scheduler
 from MainModules.Logger import log_msg
 from MainModules.PrintModule import PrintModule
+from TestedModules.ModuleWrite import ModuleWrite #nutrint paskui
 
 CONFIGURATION_FILE = "config.json"
 REGISTERS_FILE = "registers.json"
@@ -34,6 +35,23 @@ def main():
     report = ReportModule(info)
     modbus = Modbus(conf.get_main_settings())
     modbus_is_setup_valid = modbus.setup_modbus(print_mod)
+    # apn1 = modbus.write_many(print_mod, 207, [1]) # default - bangapro
+    # apn2 = modbus.write_many(print_mod, 207, [1, 119, 97, 112]) # wap
+    # apn3 = modbus.write_many(print_mod, 207, [1, 98, 97, 110, 103, 97, 112, 114, 111]) # bangapro
+
+    test_count = [0, 0, info.mem_used_at_start]
+    write_module = ModuleWrite(registers.get_param(registers.data, 'ModuleWrite'), ssh_client, modbus, info, report)
+    while(True):
+        test_count = write_module.read_all_data(print_mod, test_count)
+    # host = modbus.write_many(print_mod, 7, [108, 97, 98, 97, 115])
+    # apn = modbus.write_many(print_mod, 207, [1, 119, 97, 112]) # wap
+    # apn = modbus.write_many(print_mod, 207, [1, 98, 97, 110, 103, 97, 112, 114, 111]) # bangapro
+    # wifi = modbus.write_one(print_mod, 203, 1)
+    # pin4 = modbus.write_one(print_mod, 325, 1)
+    # out4 = modbus.read(print_mod, 325, 1)
+    # sim_card = modbus.write_one(print_mod, 205, 1)
+    # sim = modbus.read(print_mod, 205, 1)
+    # mobile_data = modbus.write_one(print_mod, 204, 1)
     if(modbus_is_setup_valid == False):
         close_all_instances([ssh_client.ssh])
     module_loader = ModuleLoader(conf, ssh_client, print_mod)

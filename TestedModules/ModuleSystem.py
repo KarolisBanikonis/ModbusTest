@@ -43,8 +43,6 @@ class ModuleSystem(Module):
             Returns:
                 unnamed (list): list that saves values of total tests number, correct tests number and last memory usage
         """
-        # function = getattr(self, function_name)
-        # is_function_callable = callable(function)
         log_msg(__name__, "info", f"Started {self.module_name} testing!")
         self.total_number = test_count[0]
         self.correct_number = test_count[1]

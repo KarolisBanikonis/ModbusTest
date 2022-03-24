@@ -19,7 +19,15 @@
 			"procedure": "get_all_modems",
 			"parse1": "modems",
 			"parse2": "id"
-	   }
+	   },
+	   "ApnList":[
+		   {
+				"apn":"wap"	
+		   },
+		   {
+				"apn":"bangapro"	
+		   }
+	   ]
 	},
 	"ModuleSystem":[
 	   {
@@ -463,5 +471,35 @@
 				"parse": "tx"
 			}
 		]
-	}
+	},
+	"ModuleWrite":[
+		{
+		   "name":"Switch mobile data connection",
+		   "address":204,
+		   "service": "network.interface.mob1s1a1",
+		   "procedure": "status",
+		   "parse": "up"
+		},
+		{
+		   "name":"Switch SIM card",
+		   "address":205,
+		   "service": "sim",
+		   "procedure": "get",
+		   "parse": "sim"
+		},
+		{
+			"name":"Switch PIN4 state",
+			"address":325,
+			"service": "ioman.gpio.dout1",
+		    "procedure": "status",
+		    "parse": "value"
+		},
+		{
+			"name":"Change APN",
+			"address":207,
+			"service": "network.interface.mob1s1a1",
+			"procedure": "dump",
+			"parse": "interface"
+		}
+	 ]
 }

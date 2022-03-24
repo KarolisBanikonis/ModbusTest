@@ -92,3 +92,26 @@ class Modbus:
             registers_data = self.client.read_holding_registers(register_params['address'], register_params['number'])
         self.client.close()
         return registers_data
+
+    def read(self, print_mod, address, number):
+        is_connected = self.try_to_reconnect(print_mod)
+        if is_connected:
+            registers_data = self.client.read_holding_registers(address, number)
+        self.client.close()
+        return registers_data
+
+    def write_many(self, print_mod, address, value):
+        writed = None
+        is_connected = self.try_to_reconnect(print_mod)
+        if is_connected:
+            writed = self.client.write_multiple_registers(address, value)
+        self.client.close()
+        return writed
+
+    def write_one(self, print_mod, address, value):
+        writed = None
+        is_connected = self.try_to_reconnect(print_mod)
+        if is_connected:
+            writed = self.client.write_single_register(address, value)
+        self.client.close()
+        return writed

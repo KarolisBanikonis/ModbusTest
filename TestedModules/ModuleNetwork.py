@@ -102,7 +102,6 @@ class ModuleNetwork(Module):
                 print_mod.warning(warning_text)
                 log_msg(__name__, "warning", warning_text)
                 continue
-            # modbus_data, device_data = getattr(self, method_name)(param_values, print_mod)
             results = self.check_if_results_match(modbus_data, device_data)
             self.change_test_count(results[2])
             past_memory = memory

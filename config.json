@@ -2,7 +2,7 @@
     "Settings":
     {
         "SERVER_HOST": "192.168.1.1",
-        "MODBUS_PORT": 513,
+        "MODBUS_PORT": 518,
         "USERNAME": "root",
         "PASSWORD": "Admin123",
         "RECONNECT_ATTEMPTS": 7,

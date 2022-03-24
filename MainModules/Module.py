@@ -328,6 +328,9 @@ class Module:
             modbus_data = "Error"
             is_data_equal = self.RESULT_FAILED
             return [modbus_data, device_data, is_data_equal]
+        elif(modbus_data == "Write error"):
+            is_data_equal = self.RESULT_FAILED
+            return [modbus_data, device_data, is_data_equal]
         else:
             raise TypeError("Check results operation can not be performed with these arguments.")
 

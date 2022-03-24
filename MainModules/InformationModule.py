@@ -23,6 +23,13 @@ class InformationModule:
         #Required for ModuleMobile
         self.dual_sim_status = ssh_get_uci_hwinfo(self.conn, "dual_sim", print_mod)
         self.modem_id = get_modem_id(self.conn, data['ModemId'], print_mod)
+        self.apn_list = self.get_mobile_apn_list()
+
+    def get_mobile_apn_list(self):
+        apn_list = []
+        for apn in self.data['ApnList']:
+            apn_list.append(apn['apn'])
+        return apn_list
 
     def get_used_memory(self, print_mod):
         """
