@@ -35,23 +35,14 @@ def main():
     report = ReportModule(info)
     modbus = Modbus(conf.get_main_settings())
     modbus_is_setup_valid = modbus.setup_modbus(print_mod)
+    # apn0 = modbus.write_many(print_mod, 207, [1, 110, 117, 115, 116, 97, 116, 121, 116, 97, 115])
     # apn1 = modbus.write_many(print_mod, 207, [1]) # default - bangapro
     # apn2 = modbus.write_many(print_mod, 207, [1, 119, 97, 112]) # wap
     # apn3 = modbus.write_many(print_mod, 207, [1, 98, 97, 110, 103, 97, 112, 114, 111]) # bangapro
-
-    test_count = [0, 0, info.mem_used_at_start]
-    write_module = ModuleWrite(registers.get_param(registers.data, 'ModuleWrite'), ssh_client, modbus, info, report)
-    while(True):
-        test_count = write_module.read_all_data(print_mod, test_count)
-    # host = modbus.write_many(print_mod, 7, [108, 97, 98, 97, 115])
-    # apn = modbus.write_many(print_mod, 207, [1, 119, 97, 112]) # wap
-    # apn = modbus.write_many(print_mod, 207, [1, 98, 97, 110, 103, 97, 112, 114, 111]) # bangapro
-    # wifi = modbus.write_one(print_mod, 203, 1)
-    # pin4 = modbus.write_one(print_mod, 325, 1)
-    # out4 = modbus.read(print_mod, 325, 1)
-    # sim_card = modbus.write_one(print_mod, 205, 1)
-    # sim = modbus.read(print_mod, 205, 1)
-    # mobile_data = modbus.write_one(print_mod, 204, 1)
+    # test_count = [0, 0, info.mem_used_at_start]
+    # write_module = ModuleWrite(registers.get_param(registers.data, 'ModuleWrite'), ssh_client, modbus, info, report)
+    # while(True):
+    #     test_count = write_module.read_all_data(print_mod, test_count)
     if(modbus_is_setup_valid == False):
         close_all_instances([ssh_client.ssh])
     module_loader = ModuleLoader(conf, ssh_client, print_mod)
@@ -68,7 +59,7 @@ def main():
     print_mod.print_at_row(0, terminal_header)
     try:
         while True:
-            # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS
+            # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS, 4 - Write
             for module in module_instances:
                 test_count = module.read_all_data(print_mod, test_count)
             time.sleep(2)

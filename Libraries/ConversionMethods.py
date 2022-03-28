@@ -11,7 +11,6 @@ def convert_timestamp_to_date(timestamp):
         Returns:
             date (datetime): timestamp converted to datetime format
     """
-    a = type(timestamp)
     date = datetime.utcfromtimestamp(timestamp)
     return date
 
@@ -50,4 +49,10 @@ def convert_string_to_bytes(string_data):
             break
     bytes = int(float(size) * math.pow(1024, i))
     return bytes
+
+def convert_text_to_decimal(text):
+    decimal_list = []
+    for symbol in text:
+        decimal_list.append(ord(symbol))
+    return decimal_list
     

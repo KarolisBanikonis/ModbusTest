@@ -49,6 +49,10 @@ class SSHClient:
             log_msg(__name__, "critical", error_text)
             quit()
 
+    def close(self):
+        """Closes SSH connection."""
+        self.ssh.close()
+
     def try_ssh_connect(self, print_mod):
         """
         Try to establish connection via SSH with server.

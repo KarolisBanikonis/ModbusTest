@@ -5,6 +5,7 @@ import struct
 
 # Local imports
 from MainModules.Module import Module
+from Libraries.DataMethods import get_current_data_as_string
 from Libraries.ConversionMethods import convert_timestamp_to_date, convert_string_to_date
 from Libraries.SSHMethods import enable_gps_service
 from MainModules.Logger import log_msg
@@ -42,6 +43,7 @@ class ModuleGPS(Module):
         self.report.open_report()
         memory = test_count[2]
         for i in range(len(self.data)):
+            date = get_current_data_as_string()
             param_values = self.data[i]
             modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
             method_name = f"get_modbus_and_device_data_type_{param_values['type']}"
@@ -67,7 +69,8 @@ class ModuleGPS(Module):
             cpu_usage = self.info.get_cpu_usage(print_mod)
             memory_difference = memory - past_memory
             total_mem_difference = self.info.mem_used_at_start - memory
-            self.report.writer.writerow([self.total_number, self.module_name, param_values['name'], param_values['address'], results[0], results[1], results[2], '', cpu_usage, total_mem_difference, memory_difference])
+            self.report.writer.writerow([date, self.total_number, self.module_name, param_values['name'], param_values['address'],
+            results[0], results[1], results[2], self.READ_ACTION, cpu_usage, total_mem_difference, memory_difference])
             self.print_test_results(print_mod, param_values, results[0], results[1], cpu_usage, total_mem_difference)
         self.report.close()
         log_msg(__name__, "info", f"Module - {self.module_name} tests are over!")

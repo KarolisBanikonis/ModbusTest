@@ -4,7 +4,7 @@ import re
 
 def get_first_digit(input):
     """
-    Find first digit occurrence in string input.
+    Finds first digit occurrence in string input.
 
         Parameters:
             input (str): data
@@ -17,7 +17,7 @@ def get_first_digit(input):
 
 def get_numbers_in_string(input):
     """
-    Find all number occurences in string input.
+    Finds all number occurences in string input.
 
         Parameters:
             input (str): data
@@ -32,7 +32,7 @@ def get_numbers_in_string(input):
 
 def remove_char(input, characters):
     """
-    Remove chosen characters from string input.
+    Removes chosen characters from string input.
 
         Parameters:
             input (str): data
@@ -44,9 +44,9 @@ def remove_char(input, characters):
     data = input.translate(remove_table)
     return data
 
-def get_value_in_parenthesis(data):
+def get_first_value_in_parenthesis(data):
     """
-    Find value between parenthesis in string input.
+    Finds first value between parenthesis in string input.
 
         Parameters:
             input (str): data
@@ -59,7 +59,7 @@ def get_value_in_parenthesis(data):
 
 def get_used_memory_from_string(input):
     """
-    Find information unit's string representation in string input.
+    Finds information unit's string representation in string input.
 
         Parameters:
             input (str): data
@@ -72,19 +72,19 @@ def get_used_memory_from_string(input):
 
 def remove_colour_tags(input):
     """
-    Find and remove colour tags from string input.
+    Finds and removes colour tags from string input.
 
         Parameters:
             input (str): data
         Returns:
             (str): data without colour tags
     """
-    pattern = '.\[.*?m'
+    pattern = '\[.*?m'
     return re.sub(pattern, '', input)
 
-def get_current_data_as_string(format):
+def get_current_data_as_string(format="%Y-%m-%d-%H-%M-%S.%f"):
     """
-    Get current data in string with specified format.
+    Gets current data in string with specified format.
 
         Parameters:
             format (str): format in which date should be displayed
@@ -96,7 +96,7 @@ def get_current_data_as_string(format):
 
 def replace_modem_id(input, modem_id):
     """
-    Find and replace certain pattern with specified modem id.
+    Finds and replaces certain pattern with specified modem id.
 
         Parameters:
             input (str): data which should have modem id replaced
@@ -106,3 +106,16 @@ def replace_modem_id(input, modem_id):
     """
     pattern = 'your_modem_id'
     return re.sub(pattern, modem_id, input)
+
+def get_first_value_in_quotes(data):
+    """
+    Finds first value between single quotes in string input.
+
+        Parameters:
+            input (str): data
+        Returns:
+            result (str): valus found between quotes in input
+    """
+    pattern = '\'(.*?)\''
+    result = re.search(pattern, data).group(1)
+    return result

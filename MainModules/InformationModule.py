@@ -1,5 +1,5 @@
 # Local imports
-from Libraries.SSHMethods import get_df_used_memory, get_router_model, get_cpu_count, get_concrete_ubus_data, ssh_get_uci_hwinfo, get_modem_id
+from Libraries.SSHMethods import get_df_used_memory, get_device_model, get_cpu_count, get_device_json_ubus_data, ssh_get_uci_hwinfo, get_modem_id
 from Clients.SSHClient import SSHClient
 from Libraries.DataMethods import get_numbers_in_string
 
@@ -17,19 +17,15 @@ class InformationModule:
         self.data = data
         self.conn = conn
         self.tmp_used_memory = get_df_used_memory(self.conn, "/tmp", print_mod)
-        self.router_model = get_router_model(self.conn, self.data['Model'], print_mod)
+        self.router_model = get_device_model(self.conn, self.data['Model'], print_mod)
         self.cpu_count = get_cpu_count(self.conn, print_mod)
         self.mem_used_at_start = self.get_used_memory(print_mod)
         #Required for ModuleMobile
         self.dual_sim_status = ssh_get_uci_hwinfo(self.conn, "dual_sim", print_mod)
         self.modem_id = get_modem_id(self.conn, data['ModemId'], print_mod)
-        self.apn_list = self.get_mobile_apn_list()
-
-    def get_mobile_apn_list(self):
-        apn_list = []
-        for apn in self.data['ApnList']:
-            apn_list.append(apn['apn'])
-        return apn_list
+        #Required for ModuleWrite
+        self.modbus_write_data = data['ModbusWrite']
+        self.mobile_status = ssh_get_uci_hwinfo(self.conn, "mobile", print_mod)
 
     def get_used_memory(self, print_mod):
         """
@@ -40,7 +36,8 @@ class InformationModule:
             Returns:
                 used (int): amount of used memory
         """
-        all_memories = get_concrete_ubus_data(self.conn, self.data['Memory'], print_mod)
+        json_data = get_device_json_ubus_data(self.conn, self.data['Memory'], print_mod)
+        all_memories = json_data[self.data['Memory']['parse']]
         total = all_memories['total'] - self.tmp_used_memory
         free = all_memories['free']
         used = total - free

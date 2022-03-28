@@ -93,25 +93,38 @@ class Modbus:
         self.client.close()
         return registers_data
 
-    def read(self, print_mod, address, number):
-        is_connected = self.try_to_reconnect(print_mod)
-        if is_connected:
-            registers_data = self.client.read_holding_registers(address, number)
-        self.client.close()
-        return registers_data
-
     def write_many(self, print_mod, address, value):
-        writed = None
+        """
+        Write values to many registers via Modbus TCP.
+
+            Parameters:
+                print_mod (PrintModule): module designed for printing to terminal
+                address (int): server's registers address start value
+                value (list): list of values to write to the server
+            Returns:
+                written (bool|None): result of writing operation
+        """
+        written = None
         is_connected = self.try_to_reconnect(print_mod)
         if is_connected:
-            writed = self.client.write_multiple_registers(address, value)
+            written = self.client.write_multiple_registers(address, value)
         self.client.close()
-        return writed
+        return written
 
     def write_one(self, print_mod, address, value):
-        writed = None
+        """
+        Write value to one register via Modbus TCP.
+
+            Parameters:
+                print_mod (PrintModule): module designed for printing to terminal
+                address (int): server's register address value
+                value (int): value to write to the server
+            Returns:
+                written (bool|None): result of writing operation
+        """
+        written = None
         is_connected = self.try_to_reconnect(print_mod)
         if is_connected:
-            writed = self.client.write_single_register(address, value)
+            written = self.client.write_single_register(address, value)
         self.client.close()
-        return writed
+        return written

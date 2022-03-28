@@ -22,6 +22,10 @@
             {
                 "name": "ModuleGPS",
                 "hw_info": "gps"
+            },
+            {
+                "name": "ModuleWrite",
+                "hw_info": "gps"
             }
         ]
     },
@@ -39,7 +43,7 @@
         "SMTP": "smtp.gmail.com",
         "USER": "labas0113@gmail.com",
         "PASSWORD": "belekas111",
-        "RECEIVER": "labas01139999999@gmail.com",
+        "RECEIVER": "labas0113@gmail.com",
         "INTERVAL_HOURS": 15
     }
 }

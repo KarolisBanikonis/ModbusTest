@@ -1,6 +1,6 @@
 # Local imports
 from MainModules.Module import Module
-from Libraries.DataMethods import remove_char
+from Libraries.DataMethods import remove_char, get_current_data_as_string
 from MainModules.Logger import log_msg
 from MainModules.MethodIsNotCallableError import MethodIsNotCallableError
 
@@ -84,6 +84,7 @@ class ModuleNetwork(Module):
         self.report.open_report()
         memory = test_count[2]
         for i in range(len(self.data)):
+            date = get_current_data_as_string()
             param_values = self.data[i]
             # Specific function for every register address
             method_name = f"get_modbus_and_device_data_register_nr_{param_values['address']}"
@@ -109,7 +110,8 @@ class ModuleNetwork(Module):
             cpu_usage = self.info.get_cpu_usage(print_mod)
             memory_difference = memory - past_memory
             total_mem_difference = self.info.mem_used_at_start - memory
-            self.report.writer.writerow([self.total_number, self.module_name, param_values['name'], param_values['address'], results[0], results[1], results[2], '', cpu_usage, total_mem_difference, memory_difference])
+            self.report.writer.writerow([date, self.total_number, self.module_name, param_values['name'], param_values['address'],
+            results[0], results[1], results[2], self.READ_ACTION, cpu_usage, total_mem_difference, memory_difference])
             self.print_test_results(print_mod, param_values, results[0], results[1], cpu_usage, total_mem_difference)
         self.report.close()
         log_msg(__name__, "info", f"Module - {self.module_name} tests are over!")

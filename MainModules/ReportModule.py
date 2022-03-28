@@ -76,4 +76,4 @@ class ReportModule:
 
     def write_header(self):
         """Writes the column names of tests results to report's file."""
-        self.writer.writerow(['Iteration nr.', 'Module name','Register name', 'Register number', 'Modbus value', 'Router value', 'Result','','CPU usage','Total Used RAM','Used RAM difference'])
+        self.writer.writerow(['Test date','Iteration nr.', 'Module name','Register name', 'Register number', 'Modbus value', 'Router value', 'Result','Action','CPU usage','Total Used RAM','Used RAM difference'])

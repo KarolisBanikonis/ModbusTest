@@ -9,7 +9,7 @@ from multipledispatch import dispatch
 # Local imports
 # from Libraries.PrintMethods import print_with_colour
 from Libraries.DataMethods import remove_char
-from Libraries.SSHMethods import get_parsed_ubus_data
+from Libraries.SSHMethods import get_device_json_ubus_data
 
 class Module:
 
@@ -20,6 +20,9 @@ class Module:
     GPS_ERROR_VALUE_INT = 1
     RESULT_PASSED = "Passed"
     RESULT_FAILED = "Failed"
+    MODBUS_WRITE_ERROR = "Write error"
+    READ_ACTION = "Read"
+    WRITE_ACTION = "Write"
 
     def __init__(self, data, ssh, modbus, info, report, module_name):
         """
@@ -153,8 +156,9 @@ class Module:
         for data in device_data:
             if(modbus_data == data):
                 result = self.RESULT_PASSED
+                device_data = modbus_data
                 break
-        return result
+        return result, device_data
 
     def __check_if_strings_pass(self, modbus_data, device_data):
         """
@@ -250,7 +254,7 @@ class Module:
             Returns:
                 (list): list that saves values of modbus_data, device_data and test result
         """
-        is_data_equal = self.__check_if_list_pass(modbus_data, device_data)
+        is_data_equal, device_data = self.__check_if_list_pass(modbus_data, device_data)
         return [modbus_data, device_data, is_data_equal]
 
     @dispatch(int, int)
@@ -328,7 +332,7 @@ class Module:
             modbus_data = "Error"
             is_data_equal = self.RESULT_FAILED
             return [modbus_data, device_data, is_data_equal]
-        elif(modbus_data == "Write error"):
+        elif(modbus_data == self.MODBUS_WRITE_ERROR):
             is_data_equal = self.RESULT_FAILED
             return [modbus_data, device_data, is_data_equal]
         else:
@@ -369,15 +373,15 @@ class Module:
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
-                device_data (float): parsed data received via SSH
+                device_data (int|str|float): parsed data received via SSH
         """
-        parsed_data = get_parsed_ubus_data(self.ssh, param_values, print_mod)
+        json_data = get_device_json_ubus_data(self.ssh, param_values, print_mod)
         if(self.__check_if_value_exists(param_values, 'parse')):
-            device_data = parsed_data[param_values['parse']]
+            device_data = json_data[param_values['parse']]
         elif(self.__check_if_value_exists(param_values, 'index')):
-            device_data = parsed_data[param_values['parse1']][0][param_values['parse2']]
+            device_data = json_data[param_values['parse1']][0][param_values['parse2']]
         elif(not self.__check_if_value_exists(param_values, 'parse')):
-            device_data = parsed_data[param_values['parse1']][param_values['parse2']]
+            device_data = json_data[param_values['parse1']][param_values['parse2']]
         else:
             device_data = None
         return device_data

@@ -4,7 +4,7 @@ import smtplib, ssl
 import socket
 
 # Local imports
-from Libraries.DataMethods import remove_colour_tags
+from Libraries.DataMethods import remove_colour_tags, remove_char
 from MainModules.Logger import log_msg
 
 class EmailClient:
@@ -23,7 +23,7 @@ class EmailClient:
         self.password = conf['PASSWORD']
         self.receiver = conf['RECEIVER']
         self.interval = conf['INTERVAL_HOURS']
-        self.message = "Subject: Tests summary\n\n Tests summary:\n\n"
+        self.message = "Subject: Tests summary\n\nTests summary:\n\n"
 
     def send_email(self, print_mod):
         """
@@ -35,7 +35,8 @@ class EmailClient:
         if(self.allowed):
             text = self.message
             for i in range(4):
-                text += remove_colour_tags(f"{print_mod.print_list[i]}\n")
+                colourless_text = remove_colour_tags(f"{print_mod.print_list[i]}\n")
+                text += remove_char(colourless_text, "\x1b")
 
             context = ssl.create_default_context()
             try:

@@ -1,6 +1,6 @@
 # Local imports
 from MainModules.Module import Module
-from Libraries.DataMethods import get_value_in_parenthesis, replace_modem_id
+from Libraries.DataMethods import get_first_value_in_parenthesis, replace_modem_id, get_current_data_as_string
 from MainModules.Logger import log_msg
 from MainModules.MethodIsNotCallableError import MethodIsNotCallableError
 
@@ -63,6 +63,7 @@ class ModuleMobile(Module):
                 print_mod (PrintModule): module designed for printing to terminal
         """
         for i in range(len(data_area)):
+            date = get_current_data_as_string()
             param_values = data_area[i]
             modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
             method_name = f"get_modbus_and_device_data_register_count_{param_values['number']}"
@@ -88,7 +89,8 @@ class ModuleMobile(Module):
             cpu_usage = self.info.get_cpu_usage(print_mod)
             memory_difference = self.memory - past_memory
             total_mem_difference = self.info.mem_used_at_start - self.memory
-            self.report.writer.writerow([self.total_number, self.module_name, param_values['name'], param_values['address'], results[0], results[1], results[2], '', cpu_usage, total_mem_difference, memory_difference])
+            self.report.writer.writerow([date, self.total_number, self.module_name, param_values['name'], param_values['address'],
+            results[0], results[1], results[2], self.READ_ACTION, cpu_usage, total_mem_difference, memory_difference])
             self.print_test_results(print_mod, param_values, results[0], results[1], cpu_usage, total_mem_difference)
 
     def get_modbus_and_device_data_register_count_16(self, modbus_registers_data, param_values, print_mod):
@@ -106,7 +108,7 @@ class ModuleMobile(Module):
         modbus_data = self.convert_modbus_to_text(modbus_registers_data)
         device_data = self.get_device_data(param_values, print_mod)
         if(param_values['address'] == 119):
-            device_data = get_value_in_parenthesis(device_data)
+            device_data = get_first_value_in_parenthesis(device_data)
         return modbus_data, device_data
 
     def get_modbus_and_device_data_register_count_1(self, modbus_registers_data, param_values, print_mod):
