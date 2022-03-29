@@ -1,5 +1,4 @@
 # Standard library imports
-from cmath import log
 import smtplib, ssl
 import socket
 

@@ -10,18 +10,20 @@ from MainModules.Logger import log_msg
 
 class Modbus:
 
-    def __init__(self, conf):
+    def __init__(self, conf, print_mod):
         """
         Initializes Modbus object. Set settings required for establishing Modbus connection.
 
             Parameters:
                 conf (ConfigurationModule): module that holds configuration information
+                print_mod (PrintModule): module designed for printing to terminal
         """
         self.host = conf['SERVER_HOST']
         self.port = conf['MODBUS_PORT']
         self.connect_attempts = conf['RECONNECT_ATTEMPTS']
         self.timeout = conf['TIMEOUT']
         self.client = ModbusClient(timeout=0.5)
+        self.setup_error = self.setup_modbus(print_mod)
 
     def setup_modbus(self, print_mod):
         """
@@ -30,8 +32,8 @@ class Modbus:
             Parameters:
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
-                True, if configuration was successful
-                False, if configuration was not successful
+                None, if setup was successful
+                error_text (str): occurred error's text, if setup was not successful
         """
         self.client.host(self.host)
         error_text = ""
@@ -42,10 +44,14 @@ class Modbus:
         if(error_text != ""):
             print_mod.error(error_text)
             log_msg(__name__, "critical", error_text)
-            return False
+            return error_text
         self.client.port(self.port)
         log_msg(__name__, "info", "Modbus setup is successful!")
-        return True
+        return None
+
+    def close(self):
+        """Closes Modbus TCP connection."""
+        self.client.close()
 
     def try_to_reconnect(self, print_mod):
         """

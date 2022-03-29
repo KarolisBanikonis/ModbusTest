@@ -24,7 +24,7 @@ class SSHClient:
         self.password = conf['PASSWORD']
         self.connect_attempts = conf['RECONNECT_ATTEMPTS']
         self.timeout = conf['TIMEOUT']
-        self.init_ssh_setup(print_mod)
+        self.setup_error = self.init_ssh_setup(print_mod)
 
     def init_ssh_setup(self, print_mod):
         """
@@ -33,10 +33,14 @@ class SSHClient:
 
             Parameters:
                 print_mod (PrintModule): module designed for printing to terminal
+            Returns:
+                None, if setup was successful
+                error_text (str): occurred error's text, if setup was not successful
         """
         try:
             self.ssh.connect(self.host, username=self.username, password=self.password, timeout=self.timeout)
             log_msg(__name__, "info", "SSH setup is successful!")
+            return None
         except (paramiko.AuthenticationException, paramiko.ssh_exception.NoValidConnectionsError, OSError) as err:
             error_text = ""
             if(isinstance(err, paramiko.AuthenticationException)):
@@ -47,7 +51,7 @@ class SSHClient:
                 error_text = f"SSH connection failed, check host value: {err}"
             print_mod.error(error_text)
             log_msg(__name__, "critical", error_text)
-            quit()
+            return error_text
 
     def close(self):
         """Closes SSH connection."""

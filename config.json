@@ -43,7 +43,7 @@
         "SMTP": "smtp.gmail.com",
         "USER": "labas0113@gmail.com",
         "PASSWORD": "belekas111",
-        "RECEIVER": "labas0113@gmail.com",
+        "RECEIVER": "labas0113@gmail",
         "INTERVAL_HOURS": 15
     }
 }

@@ -178,7 +178,7 @@ class ModuleWrite(Module):
                 print_mod.warning("Waiting for mobile interface to change status.")
                 time.sleep(15)
                 print_mod.clear_warning()
-            device_data = self.get_device_data(param_values, print_mod)
+            device_data = self.get_device_data(param_values, print_mod) # if None?
             device_data = f"{int(device_data)}"
         return modbus_data, device_data
         
@@ -202,10 +202,10 @@ class ModuleWrite(Module):
             write_value = self.sim
         # time.sleep(5)
         written = self.modbus.write_one(print_mod, param_values['address'], write_value)
+        # device_data = f"{self.get_device_data(param_values, print_mod)}"
+        # if(written):
+        modbus_data = f"{write_value}" # check modbus value?
         device_data = f"{self.get_device_data(param_values, print_mod)}"
-        if(written):
-            modbus_data = f"{write_value}"
-            device_data = f"{self.get_device_data(param_values, print_mod)}"
         if(not first_time_change):
             print_mod.warning("Switching back to default SIM card!")
             time.sleep(15)

@@ -89,8 +89,8 @@ class Module:
         """
         if(modbus_registers_data is None):
             return modbus_registers_data
-        bin_temp1 = format(modbus_registers_data[0], '08b')
-        bin_temp2 = format(modbus_registers_data[1], '08b')
+        bin_temp1 = format(modbus_registers_data[0], '016b') #08b buvo
+        bin_temp2 = format(modbus_registers_data[1], '016b') #08b buvo
         bin_str = (f"{bin_temp1}{bin_temp2}")
         result = self.binary_to_decimal(bin_str)
         return result
@@ -109,6 +109,10 @@ class Module:
         text = ""
         for i in range(len(modbus_registers_data)):
             if(modbus_registers_data[i] != 0):
+                a = modbus_registers_data[i].bit_length() + 7
+                b = (modbus_registers_data[i].bit_length() + 7) // 8
+                c = modbus_registers_data[i].to_bytes((modbus_registers_data[i].bit_length() + 7) // 8, 'big')
+
                 two_symbols = modbus_registers_data[i].to_bytes((modbus_registers_data[i].bit_length() + 7) // 8, 'big').decode()
                 text += two_symbols 
             else:

@@ -20,7 +20,7 @@ def ssh_get_uci_hwinfo(ssh, subsystem, print_mod):
     state = get_first_digit(output)
     return state
 
-def __ubus_call(ssh, service, procedure, print_mod):
+def ubus_call(ssh, service, procedure, print_mod):
     """
     Call specified procedure with ubus tool via SSH to get information about device.
 
@@ -61,7 +61,7 @@ def get_device_json_ubus_data(ssh, register_params, print_mod):
         Returns:
             output (dict): information about device
     """
-    actual_data = __ubus_call(ssh, register_params['service'], register_params['procedure'], print_mod)
+    actual_data = ubus_call(ssh, register_params['service'], register_params['procedure'], print_mod)
     parsed_data = json.loads(actual_data) # CIA NULUZTA
     return parsed_data
 
