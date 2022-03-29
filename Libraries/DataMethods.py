@@ -82,7 +82,7 @@ def remove_colour_tags(input):
     pattern = '\[.*?m'
     return re.sub(pattern, '', input)
 
-def get_current_data_as_string(format="%Y-%m-%d-%H-%M-%S.%f"):
+def get_current_data_as_string(format="%Y-%m-%d-%H:%M:%S"):
     """
     Gets current data in string with specified format.
 

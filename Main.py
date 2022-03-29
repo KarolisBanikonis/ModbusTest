@@ -38,14 +38,6 @@ def main():
     modbus = Modbus(conf.get_main_settings(), print_mod)
     if(modbus.setup_error is not None):
         close_all_instances([ssh_client])
-    # apn0 = modbus.write_many(print_mod, 207, [1, 110, 117, 115, 116, 97, 116, 121, 116, 97, 115])
-    # apn1 = modbus.write_many(print_mod, 207, [1]) # default - bangapro
-    # apn2 = modbus.write_many(print_mod, 207, [1, 119, 97, 112]) # wap
-    # apn3 = modbus.write_many(print_mod, 207, [1, 98, 97, 110, 103, 97, 112, 114, 111]) # bangapro
-    # test_count = [0, 0, info.mem_used_at_start]
-    # write_module = ModuleWrite(registers.get_param(registers.data, 'ModuleWrite'), ssh_client, modbus, info, report)
-    # while(True):
-    #     test_count = write_module.read_all_data(print_mod, test_count)
     module_loader = ModuleLoader(conf, ssh_client, print_mod)
     module_instances = module_loader.init_modules(registers.data, modbus, info, report)
     test_count = [0, 0, info.mem_used_at_start] # test_number, correct_number, used_ram
