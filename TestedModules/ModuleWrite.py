@@ -6,7 +6,7 @@ from MainModules.Module import Module
 from Libraries.DataMethods import get_current_data_as_string
 from MainModules.Logger import log_msg
 from MainModules.MethodIsNotCallableError import MethodIsNotCallableError
-from Libraries.SSHMethods import get_mobile_apn
+from Libraries.SSHMethods import get_mobile_apn, check_if_service_exists
 from Libraries.ConversionMethods import convert_text_to_decimal
 
 class ModuleWrite(Module):
@@ -173,10 +173,11 @@ class ModuleWrite(Module):
             write_value = 1
         written = self.modbus.write_one(print_mod, param_values['address'], write_value)
         if(written):
+            # output = check_if_service_exists(self.ssh, "mob1s1a1", print_mod)
             modbus_data = f"{write_value}"
             if(not first_time_change):
                 print_mod.warning("Waiting for mobile interface to change status.")
-                time.sleep(15)
+                # time.sleep(15)
                 print_mod.clear_warning()
             device_data = self.get_device_data(param_values, print_mod) # if None?
             device_data = f"{int(device_data)}"
@@ -208,7 +209,7 @@ class ModuleWrite(Module):
         device_data = f"{self.get_device_data(param_values, print_mod)}"
         if(not first_time_change):
             print_mod.warning("Switching back to default SIM card!")
-            time.sleep(15)
+            # time.sleep(15)
             print_mod.clear_warning()
         return modbus_data, device_data
 
@@ -262,7 +263,7 @@ class ModuleWrite(Module):
         if(written):
             modbus_data = apn
             print_mod.warning(warning_text)
-            time.sleep(40)
+            # time.sleep(40)
             print_mod.clear_warning()
             device_data = get_mobile_apn(self.ssh, print_mod, f"mob1s{self.sim}a1")
         return modbus_data, device_data

@@ -44,7 +44,6 @@ def main():
     if(conf.get_param(conf.get_ftp_settings(), 'FTP_USE')):
         ftp_client = FTPClient(conf.get_ftp_settings(), report)
     email = EmailClient(conf.get_email_settings())
-    email.send_email(print_mod)
     scheduler = Scheduler(ftp_client, email)
     # scheduler.send_email_periodically([print_mod])
     scheduler.store_ftp_periodically([print_mod])

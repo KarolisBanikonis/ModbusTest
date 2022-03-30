@@ -139,6 +139,13 @@ def get_df_used_memory(ssh, mounted_on, print_mod):
     bytes = convert_string_to_bytes(string_data)
     return bytes
 
+# def check_if_service_exists(ssh, service, print_mod):
+#     output = ssh.ssh_issue_command(f"ubus list | grep network.interface.{service}", print_mod)
+#     if(output == ""):
+#         return False
+#     else:
+#         return True
+
 def get_cpu_count(ssh, print_mod): #unused
     output = ssh.ssh_issue_command("grep 'model name' /proc/cpuinfo | wc -l", print_mod)
     return get_first_digit(output)

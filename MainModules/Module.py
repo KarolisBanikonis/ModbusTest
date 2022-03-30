@@ -7,9 +7,11 @@ import re
 from multipledispatch import dispatch
 
 # Local imports
-# from Libraries.PrintMethods import print_with_colour
 from Libraries.DataMethods import remove_char
 from Libraries.SSHMethods import get_device_json_ubus_data
+from MainModules.Logger import log_msg
+from MainModules.MethodIsNotCallableError import MethodIsNotCallableError
+from Libraries.DataMethods import get_current_data_as_string
 
 class Module:
 
@@ -23,6 +25,7 @@ class Module:
     MODBUS_WRITE_ERROR = "Write error"
     READ_ACTION = "Read"
     WRITE_ACTION = "Write"
+    DATA_COLLECT_FAIL = "Collect fail"
 
     def __init__(self, data, ssh, modbus, info, report, module_name):
         """
@@ -63,6 +66,37 @@ class Module:
         print_mod.print_at_row(4, f"Module being tested - {self.module_name}.")
         print_mod.print_at_row(5, f"Testing - {param_values['name']}. Address - {param_values['address']}.")
         print_mod.print_at_row(6, f"Value from Modbus - {modbus_data}. Value from router - {device_data}.")
+
+    def call_data_collect_method(self, method_name, print_mod, modbus_registers_data, param_values):
+        try:
+            method = getattr(self, method_name)
+            is_callable = callable(method)
+            if(is_callable):
+                modbus_data, device_data = method(modbus_registers_data, param_values, print_mod)
+                return modbus_data, device_data
+            else:
+                raise MethodIsNotCallableError(f"Method '{str(method)}' is not callable!")
+        except (AttributeError, MethodIsNotCallableError) as err:
+            if(isinstance(err, AttributeError)):
+                warning_text = f"Such attribute does not exist: {err}"
+            elif(isinstance(err, MethodIsNotCallableError)):
+                warning_text = err
+            print_mod.warning(warning_text)
+            log_msg(__name__, "warning", warning_text)
+            return self.DATA_COLLECT_FAIL, self.DATA_COLLECT_FAIL
+
+    def check_and_write_test_results(self, modbus_data, device_data, print_mod, param_values):
+        results = self.check_if_results_match(modbus_data, device_data)
+        self.change_test_count(results[2])
+        past_memory = memory
+        memory = self.info.get_used_memory(print_mod)
+        cpu_usage = self.info.get_cpu_usage(print_mod)
+        memory_difference = memory - past_memory
+        total_mem_difference = self.info.mem_used_at_start - memory
+        date = get_current_data_as_string()
+        self.report.writer.writerow([date, self.total_number, self.module_name, param_values['name'], param_values['address'],
+        results[0], results[1], results[2], self.READ_ACTION, cpu_usage, total_mem_difference, memory_difference])
+        self.print_test_results(print_mod, param_values, results[0], results[1], cpu_usage, total_mem_difference)
 
     def convert_modbus_to_int_1(self, modbus_data):
         """
@@ -109,10 +143,6 @@ class Module:
         text = ""
         for i in range(len(modbus_registers_data)):
             if(modbus_registers_data[i] != 0):
-                a = modbus_registers_data[i].bit_length() + 7
-                b = (modbus_registers_data[i].bit_length() + 7) // 8
-                c = modbus_registers_data[i].to_bytes((modbus_registers_data[i].bit_length() + 7) // 8, 'big')
-
                 two_symbols = modbus_registers_data[i].to_bytes((modbus_registers_data[i].bit_length() + 7) // 8, 'big').decode()
                 text += two_symbols 
             else:

@@ -107,7 +107,7 @@ class ModuleMobile(Module):
         """
         modbus_data = self.convert_modbus_to_text(modbus_registers_data)
         device_data = self.get_device_data(param_values, print_mod)
-        if(param_values['address'] == 119):
+        if(param_values['address'] == 119 and device_data != ""):
             device_data = get_first_value_in_parenthesis(device_data)
         return modbus_data, device_data
 
