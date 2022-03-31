@@ -53,7 +53,7 @@ class ModuleSystem(Module):
             date = get_current_data_as_string()
             param_values = self.data[i]
             modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
-            method_name = f"1get_modbus_and_device_data_register_count_{param_values['number']}_{param_values['source']}"
+            method_name = f"get_modbus_and_device_data_register_count_{param_values['number']}_{param_values['source']}"
             modbus_data, device_data = self.call_data_collect_method(method_name, print_mod, modbus_registers_data, param_values)
             if(modbus_data == self.DATA_COLLECT_FAIL):
                 continue

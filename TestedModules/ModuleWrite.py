@@ -6,7 +6,7 @@ from MainModules.Module import Module
 from Libraries.DataMethods import get_current_data_as_string
 from MainModules.Logger import log_msg
 from MainModules.MethodIsNotCallableError import MethodIsNotCallableError
-from Libraries.SSHMethods import get_mobile_apn, check_if_service_exists
+from Libraries.SSHMethods import get_mobile_apn
 from Libraries.ConversionMethods import convert_text_to_decimal
 
 class ModuleWrite(Module):
@@ -164,7 +164,7 @@ class ModuleWrite(Module):
                 modbus_data (str): what data was written with Modbus TCP
                 device_data (str): parsed data received via SSH
         """
-        # Test will fail if atlest one mobile interface is disabled
+        # Test will fail if atleast one mobile interface is disabled
         modbus_data = self.MODBUS_WRITE_ERROR
         device_data = None
         if(first_time_change):
@@ -173,7 +173,6 @@ class ModuleWrite(Module):
             write_value = 1
         written = self.modbus.write_one(print_mod, param_values['address'], write_value)
         if(written):
-            # output = check_if_service_exists(self.ssh, "mob1s1a1", print_mod)
             modbus_data = f"{write_value}"
             if(not first_time_change):
                 print_mod.warning("Waiting for mobile interface to change status.")
