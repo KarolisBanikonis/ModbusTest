@@ -139,27 +139,6 @@ def get_df_used_memory(ssh, mounted_on, print_mod):
     bytes = convert_string_to_bytes(string_data)
     return bytes
 
-def check_if_mobile_interace_is_connected(ssh, service, print_mod):
-    output = ssh.ssh_issue_command(f"ubus call  network.interface.{service} status", print_mod)
-    json_data = json.loads(output)
-    status = json_data['up']
-    return status
-
-# def check_if_mobile_interace_is_enabled(ssh, interface, print_mod):
-#     _stdin, _stdout,_stderr = ssh.ssh.exec_command(f"uci show network.{interface}.disabled")
-#     output = _stdout.read().decode()
-#     if(output == ""):
-#         return False
-#     else:
-#         return True
-
-# def check_if_service_exists(ssh, service, print_mod):
-#     output = ssh.ssh_issue_command(f"ubus list | grep network.interface.{service}", print_mod)
-#     if(output == ""):
-#         return False
-#     else:
-#         return True
-
 def get_cpu_count(ssh, print_mod): #unused
     output = ssh.ssh_issue_command("grep 'model name' /proc/cpuinfo | wc -l", print_mod)
     return get_first_digit(output)

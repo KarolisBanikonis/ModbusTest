@@ -30,6 +30,7 @@ class ModuleWrite(Module):
         self.default_apn = self.info.modbus_write_data['default']
         self.converted_specified_apn = self.convert_text_to_apn_command(self.specified_apn)
         self.converted_default_apn = self.convert_text_to_apn_command(self.default_apn)
+        self.skip_interfaces = False
 
     def __get_possible_sim_values(self):
         """
@@ -122,6 +123,7 @@ class ModuleWrite(Module):
                 continue
             method_name = f"write_modbus_register_{param_values['address']}"
             first_time_changing_values = [True, False]
+            self.skip_interfaces = False
             for first_time_change in first_time_changing_values:
                 try:
                     method = getattr(self, method_name)
@@ -165,20 +167,27 @@ class ModuleWrite(Module):
                 device_data (str): parsed data received via SSH
         """
         # Test will fail if atleast one mobile interface is disabled
+        # To perform test both mobile interfaces must be enabled and default one have established connection
         modbus_data = self.MODBUS_WRITE_ERROR
         device_data = None
         if(first_time_change):
+            connected = self.get_device_data(param_values, print_mod)
+            if(not connected):
+                self.skip_interfaces = True
+                return modbus_data, device_data
             write_value = 0
         else:
+            if(self.skip_interfaces):
+                return modbus_data, device_data
             write_value = 1
         written = self.modbus.write_one(print_mod, param_values['address'], write_value)
         if(written):
             modbus_data = f"{write_value}"
             if(not first_time_change):
                 print_mod.warning("Waiting for mobile interface to change status.")
-                # time.sleep(15)
+                time.sleep(15)
                 print_mod.clear_warning()
-            device_data = self.get_device_data(param_values, print_mod) # if None?
+            device_data = self.get_device_data(param_values, print_mod)
             device_data = f"{int(device_data)}"
         return modbus_data, device_data
         
@@ -200,7 +209,6 @@ class ModuleWrite(Module):
             write_value = self.get_opposite_sim()
         else:
             write_value = self.sim
-        # time.sleep(5)
         written = self.modbus.write_one(print_mod, param_values['address'], write_value)
         # device_data = f"{self.get_device_data(param_values, print_mod)}"
         # if(written):
@@ -259,10 +267,12 @@ class ModuleWrite(Module):
             apn = self.default_apn
             warning_text = "Configuring mobile connection with default APN!"
         written = self.modbus.write_many(print_mod, param_values['address'], converted_apn)
-        if(written):
-            modbus_data = apn
-            print_mod.warning(warning_text)
-            # time.sleep(40)
-            print_mod.clear_warning()
-            device_data = get_mobile_apn(self.ssh, print_mod, f"mob1s{self.sim}a1")
+        # if(written):
+        modbus_data = apn
+        print_mod.warning(warning_text)
+        # time.sleep(40)
+        print_mod.clear_warning()
+        device_data = get_mobile_apn(self.ssh, print_mod, f"mob1s{self.sim}a1")
+        # if(not first_time_change):
+        #     time.sleep(40)
         return modbus_data, device_data

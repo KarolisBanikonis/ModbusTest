@@ -1,5 +1,5 @@
 # Local imports
-from Libraries.SSHMethods import get_df_used_memory, get_device_model, get_cpu_count, get_device_json_ubus_data, ssh_get_uci_hwinfo, get_modem_id, check_if_mobile_interace_is_connected
+from Libraries.SSHMethods import get_df_used_memory, get_device_model, get_cpu_count, get_device_json_ubus_data, ssh_get_uci_hwinfo, get_modem_id
 from Clients.SSHClient import SSHClient
 from Libraries.DataMethods import get_numbers_in_string
 
@@ -27,7 +27,6 @@ class InformationModule:
         self.modbus_write_data = data['ModbusWrite']
         self.mobile_status = ssh_get_uci_hwinfo(self.conn, "mobile", print_mod)
         self.sim = self.modbus_write_data['sim']
-        self.mobile_connection = check_if_mobile_interace_is_connected(self.conn, f"mob1s{self.sim}a1", print_mod)
 
     def get_used_memory(self, print_mod):
         """
