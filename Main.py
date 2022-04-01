@@ -21,7 +21,6 @@ from Libraries.DataMethods import get_current_data_as_string
 from MainModules.Scheduler import Scheduler
 from MainModules.Logger import log_msg
 from MainModules.PrintModule import PrintModule
-from TestedModules.ModuleWrite import ModuleWrite #nutrint paskui
 
 CONFIGURATION_FILE = "config.json"
 REGISTERS_FILE = "registers.json"
