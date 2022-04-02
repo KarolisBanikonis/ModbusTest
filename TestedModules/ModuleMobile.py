@@ -1,6 +1,6 @@
 # Local imports
 from MainModules.Module import Module
-from Libraries.DataMethods import get_first_value_in_parenthesis, replace_modem_id, get_current_data_as_string
+from Libraries.DataMethods import get_first_value_in_parenthesis, replace_pattern, get_current_data_as_string
 from MainModules.Logger import log_msg
 from MainModules.MethodIsNotCallableError import MethodIsNotCallableError
 
@@ -26,11 +26,12 @@ class ModuleMobile(Module):
         """
         Inserts found modem id to data's dictionary procedure parameter.
         """
+        modem_pattern = "your_modem_id"
         for data in self.data['SIM1']:
-            data['procedure'] = replace_modem_id(data['procedure'], self.info.modem_id)
+            data['procedure'] = replace_pattern(data['procedure'], modem_pattern, self.info.modem_id)
         if(self.info.dual_sim_status == 1):
             for data in self.data['SIM2']:
-                data['procedure'] = replace_modem_id(data['procedure'], self.info.modem_id)
+                data['procedure'] = replace_pattern(data['procedure'], modem_pattern, self.info.modem_id)
 
     def read_all_data(self, print_mod, test_count):
         """

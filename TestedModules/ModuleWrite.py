@@ -3,7 +3,7 @@ import time
 
 # Local imports
 from MainModules.Module import Module
-from Libraries.DataMethods import get_current_data_as_string
+from Libraries.DataMethods import get_current_data_as_string, replace_pattern
 from MainModules.Logger import log_msg
 from MainModules.MethodIsNotCallableError import MethodIsNotCallableError
 from Libraries.SSHMethods import get_mobile_apn
@@ -23,14 +23,19 @@ class ModuleWrite(Module):
                 report (ReportModule): module designed to write test results to report file
         """
         super().__init__(data, ssh, modbus, info, report, __class__.__name__)
-        self.data = self.check_what_tests_to_perform(data)
+        self.tests = self.check_what_tests_to_perform(data['Tests'])
+        del self.data['Tests']
         self.sim = self.info.modbus_write_data['sim']
         self.sim_value_valid = self.check_if_sim_is_valid()
+        if(self.sim_value_valid):
+            self.change_data_to_mobile_interface()
         self.specified_apn = self.info.modbus_write_data['apn']
         self.default_apn = self.info.modbus_write_data['default']
         self.converted_specified_apn = self.convert_text_to_apn_command(self.specified_apn)
         self.converted_default_apn = self.convert_text_to_apn_command(self.default_apn)
         self.skip_interfaces = False
+        self.RECONNECT_ATTEMPTS = 7
+        self.SLEEP_TIME = 5
 
     def __get_possible_sim_values(self):
         """
@@ -83,9 +88,28 @@ class ModuleWrite(Module):
         return allowed_tests
 
     def convert_text_to_apn_command(self, text):
+        """
+        Converts text to information which is written with Modbus TCP
+
+            Parameters:
+                text (str): apn in text format
+            Returns:
+                apn_decimal (list): apn in decimal format
+        """
         apn_decimal = convert_text_to_decimal(text)
         apn_decimal.insert(0, self.sim)
         return apn_decimal
+
+    def change_data_to_mobile_interface(self):
+        """
+        Inserts mobile interface to tests and data dictionaries procedure parameter.
+        """
+        interface_pattern = "your_interface_name"
+        interface = f"mob1s{self.sim}a1"
+        for test in self.tests:
+            if('service' in test.keys()):
+                test['service'] = replace_pattern(test['service'], interface_pattern, interface)
+        self.data['Status']['service'] = replace_pattern(self.data['Status']['service'], interface_pattern, interface)
 
     def get_opposite_sim(self):
         """
@@ -115,9 +139,9 @@ class ModuleWrite(Module):
         self.correct_number = test_count[1]
         self.report.open_report()
         memory = test_count[2]
-        for i in range(len(self.data)):
+        for i in range(len(self.tests)):
             date = get_current_data_as_string()
-            param_values = self.data[i]
+            param_values = self.tests[i]
             if((param_values['mobile'] or param_values['dual_sim']) and not self.sim_value_valid):
                 print_mod.warning("Default SIM slot value is invalid!")
                 continue
@@ -154,6 +178,31 @@ class ModuleWrite(Module):
         log_msg(__name__, "info", f"Module - {self.module_name} tests are over!")
         return [self.total_number, self.correct_number, memory]
 
+    def wait_till_reconnect(self, connect_text, print_mod):
+        """
+        Checks if connection is reestablished specified amount of times.
+
+            Parameters:
+                connect_text (str): what message should be displayed while waiting for reconnection
+                print_mod (PrintModule): module designed for printing to terminal
+            Returns:
+                True, if reconnection was established
+                False, otherwise
+        """
+        try_connect_nr = 0
+        while(try_connect_nr < self.RECONNECT_ATTEMPTS):
+            try_connect_nr += 1
+            connected = self.get_device_data(self.data['Status'], print_mod)
+            if(not connected):
+                error_text = f"{connect_text} Reconnecting try nr. {try_connect_nr} out of {self.RECONNECT_ATTEMPTS}!"
+                log_msg(__name__, "info", error_text)
+                print_mod.warning(error_text)
+                time.sleep(self.SLEEP_TIME)
+            else:
+                print_mod.clear_warning()
+                return True
+        return False
+
     def write_modbus_register_204(self, param_values, print_mod, first_time_change):
         """
         Turns on/off mobile interfaces with Modbus TCP and receives converted device data via SSH
@@ -184,11 +233,13 @@ class ModuleWrite(Module):
         if(written):
             modbus_data = f"{write_value}"
             if(not first_time_change):
-                print_mod.warning("Waiting for mobile interface to change status.")
-                time.sleep(15)
-                print_mod.clear_warning()
-            device_data = self.get_device_data(param_values, print_mod)
-            device_data = f"{int(device_data)}"
+                connect_text = "Waiting for mobile interface to change status."
+                reconnected = self.wait_till_reconnect(connect_text, print_mod)
+                if(reconnected):
+                    device_data = f"1"
+            else:
+                device_data = self.get_device_data(param_values, print_mod)
+                device_data = f"{int(device_data)}"
         return modbus_data, device_data
         
     def write_modbus_register_205(self, param_values, print_mod, first_time_change): # Switch sim
@@ -206,18 +257,17 @@ class ModuleWrite(Module):
         modbus_data = self.MODBUS_WRITE_ERROR
         device_data = None
         if(first_time_change):
+            time.sleep(3)
             write_value = self.get_opposite_sim()
         else:
             write_value = self.sim
         written = self.modbus.write_one(print_mod, param_values['address'], write_value)
-        # device_data = f"{self.get_device_data(param_values, print_mod)}"
-        # if(written):
-        modbus_data = f"{write_value}" # check modbus value?
-        device_data = f"{self.get_device_data(param_values, print_mod)}"
-        if(not first_time_change):
-            print_mod.warning("Switching back to default SIM card!")
-            # time.sleep(15)
-            print_mod.clear_warning()
+        if(written):
+            modbus_data = f"{write_value}"
+            if(not first_time_change):
+                connect_text = "Switching back to default SIM card!"
+                self.wait_till_reconnect(connect_text, print_mod)
+            device_data = f"{self.get_device_data(param_values, print_mod)}"
         return modbus_data, device_data
 
     def write_modbus_register_325(self, param_values, print_mod, first_time_change):
@@ -267,12 +317,8 @@ class ModuleWrite(Module):
             apn = self.default_apn
             warning_text = "Configuring mobile connection with default APN!"
         written = self.modbus.write_many(print_mod, param_values['address'], converted_apn)
-        # if(written):
-        modbus_data = apn
-        print_mod.warning(warning_text)
-        # time.sleep(40)
-        print_mod.clear_warning()
-        device_data = get_mobile_apn(self.ssh, print_mod, f"mob1s{self.sim}a1")
-        # if(not first_time_change):
-        #     time.sleep(40)
+        if(written):
+            modbus_data = apn
+            self.wait_till_reconnect(warning_text, print_mod)
+            device_data = get_mobile_apn(self.ssh, print_mod, f"mob1s{self.sim}a1")
         return modbus_data, device_data

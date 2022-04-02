@@ -47,10 +47,9 @@ class JsonFileModule:
         Returns requested data's parameter value.
 
             Parameters:
-
                 key (str): what parameter value is requested
             Returns:
-                data (dict|?): requested part of data
+                data (str): requested part of data
         """
         if(type(data) == dict):
             if(key in data.keys()):

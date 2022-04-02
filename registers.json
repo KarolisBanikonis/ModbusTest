@@ -469,39 +469,51 @@
 			}
 		]
 	},
-	"ModuleWrite":[
+	"ModuleWrite":
+	{
+		"Status":
 		{
-		   "name":"Switch mobile data connection",
-		   "address":204,
-		   "service": "network.interface.mob1s1a1",
-		   "procedure": "status",
-		   "parse": "up",
-		   "mobile": true,
-		   "dual_sim": false
+			"name":"Switch mobile data connection",
+			"address":204,
+			"service": "network.interface.your_interface_name",
+			"procedure": "status",
+			"parse": "up"
 		},
-		{
-		   "name":"Switch SIM card",
-		   "address":205,
-		   "service": "sim",
-		   "procedure": "get",
-		   "parse": "sim",
-		   "mobile": true,
-		   "dual_sim": true
-		},
-		{
-			"name":"Switch PIN4 state",
-			"address":325,
-			"service": "ioman.gpio.dout1",
-		    "procedure": "status",
-		    "parse": "value",
-			"mobile": false,
-			"dual_sim": false
-		},
-		{
-			"name":"Change APN",
-			"address":207,
-			"mobile": true,
-		    "dual_sim": false
-		}
-	 ]
+		"Tests":
+		[
+			{
+				"name":"Switch mobile data connection",
+				"address":204,
+				"service": "network.interface.your_interface_name",
+				"procedure": "status",
+				"parse": "up",
+				"mobile": true,
+				"dual_sim": false
+			},
+			{
+				"name":"Switch SIM card",
+				"address":205,
+				"service": "sim",
+				"procedure": "get",
+				"parse": "sim",
+				"mobile": true,
+				"dual_sim": true
+			},
+			{
+				"name":"Switch PIN4 state",
+				"address":325,
+				"service": "ioman.gpio.dout1",
+				"procedure": "status",
+				"parse": "value",
+				"mobile": false,
+				"dual_sim": false
+			},
+			{
+				"name":"Change APN",
+				"address":207,
+				"mobile": true,
+				"dual_sim": false
+			}
+		]
+	}
 }

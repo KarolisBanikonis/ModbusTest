@@ -60,12 +60,12 @@ class test_DataMethods(unittest.TestCase):
         self.assertEqual(calculated, actual)
 
     @parameterized.expand([
-        ["mobile_info '{\"modem\":\"your_modem_id\"}'", "id1", "mobile_info '{\"modem\":\"id1\"}'"],
-        ["get '{\"period\":\"day\",\"sim\":1,\"modem\":\"your_modem_id\",\"current\":true}'", "modem55", "get '{\"period\":\"day\",\"sim\":1,\"modem\":\"modem55\",\"current\":true}'"],
-        ["command:\"your_modem_id\"", "specified_id", "command:\"specified_id\""]
+        ["mobile_info '{\"modem\":\"your_modem_id\"}'", "your_modem_id", "id1", "mobile_info '{\"modem\":\"id1\"}'"],
+        ["get '{\"period\":\"day\",\"sim\":1,\"modem\":\"your_modem_id\",\"current\":true}'", "your_modem_id", "modem55", "get '{\"period\":\"day\",\"sim\":1,\"modem\":\"modem55\",\"current\":true}'"],
+        ["command:\"your_modem_id\"", "your_modem_id", "specified_id", "command:\"specified_id\""]
     ])
-    def test_replace_modem_id(self, input, id, actual):
-        calculated = test.replace_modem_id(input, id)
+    def test_replace_pattern(self, input, pattern, id, actual):
+        calculated = test.replace_pattern(input, pattern, id)
         self.assertEqual(calculated, actual)
 
     @parameterized.expand([

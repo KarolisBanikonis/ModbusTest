@@ -94,18 +94,18 @@ def get_current_data_as_string(format="%Y-%m-%d-%H:%M:%S"):
     current_date = datetime.now().strftime(format)
     return current_date
 
-def replace_modem_id(input, modem_id):
+def replace_pattern(input, pattern, replace_to):
     """
     Finds and replaces certain pattern with specified modem id.
 
         Parameters:
-            input (str): data which should have modem id replaced
-            modem_id (str): to what modem id it should be changed
+            input (str): data which should have certain pattern replaced
+            pattern (str): pattern that should be replaced
+            replace_to (str): to what data it should be changed
         Returns:
-            (str): data with specified modem id
+            (str): data with replaced information
     """
-    pattern = 'your_modem_id'
-    return re.sub(pattern, modem_id, input)
+    return re.sub(pattern, replace_to, input)
 
 def get_first_value_in_quotes(data):
     """
