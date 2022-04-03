@@ -67,12 +67,30 @@ class Module:
         print_mod.print_at_row(5, f"Testing - {param_values['name']}. Address - {param_values['address']}.")
         print_mod.print_at_row(6, f"Value from Modbus - {modbus_data}. Value from router - {device_data}.")
 
-    def call_data_collect_method(self, method_name, print_mod, modbus_registers_data, param_values):
+    def call_data_collect_method(self, method_name, print_mod, additional_data, param_values):
+        """
+        Call a method to get Modbus TCP and device data.
+
+            Parameters:
+                method_name (str): method's name which should be called
+                print_mod (PrintModule): module designed for printing to terminal
+                additional_data (list|bool): if it is module that reads values from Modbus TCP
+                    then this parameter is list which that holds Modbus server's registers values
+                    if it is module that writes values with Modbus TCP then this parameter
+                    is bool value which indicates is writing performed first time
+                param_values (dict): current register's parameters information
+            Returns:
+                modbus_data (str|int|float|datetime): if it is module that reads values from Modbus TCP, then
+                    it is converted data received via Modbus TCP
+                    if it is module that writes values with Modbus TCP then
+                    it is what data was written with Modbus TCP
+                device_data (str|int|float|datetime): parsed data received via SSH
+        """
         try:
             method = getattr(self, method_name)
             is_callable = callable(method)
             if(is_callable):
-                modbus_data, device_data = method(modbus_registers_data, param_values, print_mod)
+                modbus_data, device_data = method(additional_data, param_values, print_mod)
                 return modbus_data, device_data
             else:
                 raise MethodIsNotCallableError(f"Method '{str(method)}' is not callable!")
@@ -86,13 +104,25 @@ class Module:
             return self.DATA_COLLECT_FAIL, self.DATA_COLLECT_FAIL
 
     def check_and_write_test_results(self, modbus_data, device_data, print_mod, param_values):
+        """
+        Checks if test passed and writes results to terminal and report.
+
+            Parameters:
+                modbus_data (str|int|float|datetime): if it is module that reads values from Modbus TCP, then
+                    it is converted data received via Modbus TCP
+                    if it is module that writes values with Modbus TCP then
+                    it is what data was written with Modbus TCP
+                device_data (str|int|float|datetime): parsed data received via SSH
+                print_mod (PrintModule): module designed for printing to terminal
+                param_values (dict): current register's parameters information
+        """
         results = self.check_if_results_match(modbus_data, device_data)
         self.change_test_count(results[2])
-        past_memory = memory
-        memory = self.info.get_used_memory(print_mod)
+        past_memory = self.memory
+        self.memory = self.info.get_used_memory(print_mod)
         cpu_usage = self.info.get_cpu_usage(print_mod)
-        memory_difference = memory - past_memory
-        total_mem_difference = self.info.mem_used_at_start - memory
+        memory_difference = self.memory - past_memory
+        total_mem_difference = self.info.mem_used_at_start - self.memory
         date = get_current_data_as_string()
         self.report.writer.writerow([date, self.total_number, self.module_name, param_values['name'], param_values['address'],
         results[0], results[1], results[2], self.READ_ACTION, cpu_usage, total_mem_difference, memory_difference])

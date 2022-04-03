@@ -5,11 +5,9 @@ import struct
 
 # Local imports
 from MainModules.Module import Module
-from Libraries.DataMethods import get_current_data_as_string
 from Libraries.ConversionMethods import convert_timestamp_to_date, convert_string_to_date
 from Libraries.SSHMethods import enable_gps_service
 from MainModules.Logger import log_msg
-from MainModules.MethodIsNotCallableError import MethodIsNotCallableError
 
 class ModuleGPS(Module):
 
@@ -25,6 +23,7 @@ class ModuleGPS(Module):
                 report (ReportModule): module designed to write test results to report file
         """
         super().__init__(data, ssh, modbus, info, report, __class__.__name__)
+        self.action = self.READ_ACTION
         enable_gps_service(self.ssh)
 
     def read_all_data(self, print_mod, test_count):
@@ -41,40 +40,18 @@ class ModuleGPS(Module):
         self.total_number = test_count[0]
         self.correct_number = test_count[1]
         self.report.open_report()
-        memory = test_count[2]
+        self.memory = test_count[2]
         for i in range(len(self.data)):
-            date = get_current_data_as_string()
             param_values = self.data[i]
             modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
             method_name = f"get_modbus_and_device_data_type_{param_values['type']}"
-            try:
-                method = getattr(self, method_name)
-                is_callable = callable(method)
-                if(is_callable):
-                    modbus_data, device_data = method(modbus_registers_data, param_values, print_mod)
-                else:
-                    raise MethodIsNotCallableError(f"Method '{str(method)}' is not callable!")
-            except (AttributeError, MethodIsNotCallableError) as err:
-                if(isinstance(err, AttributeError)):
-                    warning_text = f"Such attribute does not exist: {err}"
-                elif(isinstance(err, MethodIsNotCallableError)):
-                    warning_text = err
-                print_mod.warning(warning_text)
-                log_msg(__name__, "warning", warning_text)
+            modbus_data, device_data = self.call_data_collect_method(method_name, print_mod, modbus_registers_data, param_values)
+            if(modbus_data == self.DATA_COLLECT_FAIL):
                 continue
-            results = self.check_if_results_match(modbus_data, device_data)
-            self.change_test_count(results[2])
-            past_memory = memory
-            memory = self.info.get_used_memory(print_mod)
-            cpu_usage = self.info.get_cpu_usage(print_mod)
-            memory_difference = memory - past_memory
-            total_mem_difference = self.info.mem_used_at_start - memory
-            self.report.writer.writerow([date, self.total_number, self.module_name, param_values['name'], param_values['address'],
-            results[0], results[1], results[2], self.READ_ACTION, cpu_usage, total_mem_difference, memory_difference])
-            self.print_test_results(print_mod, param_values, results[0], results[1], cpu_usage, total_mem_difference)
+            self.check_and_write_test_results(modbus_data, device_data, print_mod, param_values)
         self.report.close()
         log_msg(__name__, "info", f"Module - {self.module_name} tests are over!")
-        return [self.total_number, self.correct_number, memory]
+        return [self.total_number, self.correct_number, self.memory]
 
     def get_modbus_and_device_data_type_timestamp(self, modbus_registers_data, param_values, print_mod): #147
         """

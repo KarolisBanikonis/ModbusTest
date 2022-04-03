@@ -1,8 +1,7 @@
 # Local imports
 from MainModules.Module import Module
-from Libraries.DataMethods import remove_char, get_current_data_as_string
+from Libraries.DataMethods import remove_char
 from MainModules.Logger import log_msg
-from MainModules.MethodIsNotCallableError import MethodIsNotCallableError
 
 class ModuleNetwork(Module):
 
@@ -18,6 +17,7 @@ class ModuleNetwork(Module):
                 report (ReportModule): module designed to write test results to report file
         """
         super().__init__(data, ssh, modbus, info, report, __class__.__name__)
+        self.action = self.READ_ACTION
 
     def format_ip(self, numbers):
         """
@@ -76,69 +76,49 @@ class ModuleNetwork(Module):
                 print_mod (PrintModule): module designed for printing to terminal
                 test_count (list): list that saves values of total tests number, correct tests number and last memory usage
             Returns:
-                unnamed (list): list that saves values of total tests number, correct tests number and last memory usage
+                (list): list that saves values of total tests number, correct tests number and last memory usage
         """
         log_msg(__name__, "info", f"Started {self.module_name} testing!")
         self.total_number = test_count[0]
         self.correct_number = test_count[1]
         self.report.open_report()
-        memory = test_count[2]
+        self.memory = test_count[2]
         for i in range(len(self.data)):
-            date = get_current_data_as_string()
             param_values = self.data[i]
+            modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
             # Specific function for every register address
             method_name = f"get_modbus_and_device_data_register_nr_{param_values['address']}"
-            try:
-                method = getattr(self, method_name)
-                is_callable = callable(method)
-                if(is_callable):
-                    modbus_data, device_data = method(param_values, print_mod)
-                else:
-                    raise MethodIsNotCallableError(f"Method '{str(method)}' is not callable!")
-            except (AttributeError, MethodIsNotCallableError) as err:
-                if(isinstance(err, AttributeError)):
-                    warning_text = f"Such attribute does not exist: {err}"
-                elif(isinstance(err, MethodIsNotCallableError)):
-                    warning_text = err
-                print_mod.warning(warning_text)
-                log_msg(__name__, "warning", warning_text)
+            modbus_data, device_data = self.call_data_collect_method(method_name, print_mod, modbus_registers_data, param_values)
+            if(modbus_data == self.DATA_COLLECT_FAIL):
                 continue
-            results = self.check_if_results_match(modbus_data, device_data)
-            self.change_test_count(results[2])
-            past_memory = memory
-            memory = self.info.get_used_memory(print_mod)
-            cpu_usage = self.info.get_cpu_usage(print_mod)
-            memory_difference = memory - past_memory
-            total_mem_difference = self.info.mem_used_at_start - memory
-            self.report.writer.writerow([date, self.total_number, self.module_name, param_values['name'], param_values['address'],
-            results[0], results[1], results[2], self.READ_ACTION, cpu_usage, total_mem_difference, memory_difference])
-            self.print_test_results(print_mod, param_values, results[0], results[1], cpu_usage, total_mem_difference)
+            self.check_and_write_test_results(modbus_data, device_data, print_mod, param_values)
         self.report.close()
         log_msg(__name__, "info", f"Module - {self.module_name} tests are over!")
-        return [self.total_number, self.correct_number, memory]
+        return [self.total_number, self.correct_number, self.memory]
         
-    def get_modbus_and_device_data_register_nr_55(self, param_values, print_mod):
+    def get_modbus_and_device_data_register_nr_55(self, modbus_registers_data, param_values, print_mod):
         """
         Finds converted received data via Modbus TCP and device data when starting register number is 55
 
             Parameters:
+                modbus_registers_data (list): data that holds Modbus server's registers
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
                 modbus_data (str): converted data received via Modbus TCP
                 device_data (str): parsed data received via SSH
         """
-        modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
         modbus_data = self.convert_modbus_to_text(modbus_registers_data)
         device_data_with_colon = self.get_device_data(param_values, print_mod)# returns lower case
         device_data = remove_char(device_data_with_colon, ':')
         return modbus_data, device_data
 
-    def get_modbus_and_device_data_register_nr_139(self, param_values, print_mod):
+    def get_modbus_and_device_data_register_nr_139(self, modbus_registers_data, param_values, print_mod):
         """
         Finds converted received data via Modbus TCP and device data when starting register number is 139
 
             Parameters:
+                modbus_registers_data (list): data that holds Modbus server's registers
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
@@ -148,10 +128,9 @@ class ModuleNetwork(Module):
         interfaces = self.get_device_data(param_values, print_mod)
         device_data = self.add_interfaces_ip_to_list(interfaces)
         if(device_data is not None):
-            if(len(device_data) <= 2): #loopback and lan?
+            if(len(device_data) <= 2): #loopback and lan
                 modbus_data = None
                 device_data = None
-            else:
-                modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
-                modbus_data = self.convert_modbus_to_ip(modbus_registers_data)
+        if(modbus_registers_data is not None):
+            modbus_data = self.convert_modbus_to_ip(modbus_registers_data)
         return modbus_data, device_data
