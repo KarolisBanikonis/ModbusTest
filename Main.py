@@ -32,7 +32,8 @@ def main():
     ssh_client = SSHClient(conf.get_main_settings(), print_mod)
     if(ssh_client.setup_error is not None):
         quit()
-    info = InformationModule(ssh_client, registers.get_param(registers.data, 'InformationModule'), print_mod)
+    info = InformationModule(ssh_client,
+    registers.get_param(registers.data, 'InformationModule'), print_mod, conf.get_param(conf.data, 'ModbusWrite'))
     report = ReportModule(info)
     modbus = Modbus(conf.get_main_settings(), print_mod)
     if(modbus.setup_error is not None):

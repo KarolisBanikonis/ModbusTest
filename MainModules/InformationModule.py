@@ -5,7 +5,7 @@ from Libraries.DataMethods import get_numbers_in_string
 
 class InformationModule:
 
-    def __init__(self, conn : SSHClient, data, print_mod):
+    def __init__(self, conn : SSHClient, data, print_mod, modbus_write_conf):
         """
         Initializes InformationModule object.
 
@@ -13,6 +13,7 @@ class InformationModule:
                 conn (SSHClient): module required to make connection to server
                 data (dict): data read from JSON format parameters file
                 print_mod (PrintModule): module designed for printing to terminal
+                modbus_write_conf (dict): configuration information for writing with Modbus TCP
         """
         self.data = data
         self.conn = conn
@@ -24,7 +25,7 @@ class InformationModule:
         self.dual_sim_status = ssh_get_uci_hwinfo(self.conn, "dual_sim", print_mod)
         self.modem_id = get_modem_id(self.conn, data['ModemId'], print_mod)
         #Required for ModuleWrite
-        self.modbus_write_data = data['ModbusWrite']
+        self.modbus_write_data = modbus_write_conf
         self.mobile_status = ssh_get_uci_hwinfo(self.conn, "mobile", print_mod)
         self.sim = self.modbus_write_data['sim']
 

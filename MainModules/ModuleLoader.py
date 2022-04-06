@@ -32,7 +32,7 @@ class ModuleLoader:
                 print_mod (PrintModule): module designed for printing to terminal
         """
         for module_info in self.modules_info:
-            if(module_info['name'] == "ModuleSystem"):
+            if(module_info['name'] == "ModuleSystem" or module_info['name'] == "ModuleWrite"):
                 module_enabled = 1
             else:
                 module_enabled = ssh_get_uci_hwinfo(self.conn, module_info['hw_info'], self.print_mod)

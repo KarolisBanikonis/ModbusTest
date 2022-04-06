@@ -7,25 +7,10 @@
         "PASSWORD": "Admin123",
         "RECONNECT_ATTEMPTS": 7,
         "TIMEOUT": 2,
-        "MODULES" : [
+        "MODULES" : 
+        [
             {
-                "name": "ModuleSystem"
-            },
-            {
-                "name": "ModuleNetwork",
-                "hw_info": "ethernet"
-            },
-            {
-                "name": "ModuleMobile",
-                "hw_info": "mobile"
-            },
-            {
-                "name": "ModuleGPS",
-                "hw_info": "gps"
-            },
-            {
-                "name": "ModuleWrite",
-                "hw_info": "gps"
+                "name": "ModuleWrite"
             }
         ]
     },
@@ -45,5 +30,11 @@
         "PASSWORD": "belekas111",
         "RECEIVER": "labas0113@gmail",
         "INTERVAL_HOURS": 15
+    },
+    "ModbusWrite":
+    {
+        "sim":1,
+        "apn":"wap",
+        "default":"bangapro"
     }
 }

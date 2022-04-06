@@ -14,17 +14,13 @@
 			"procedure":"info",
 			"parse":"memory"
 		},
-		"ModemId":{
+		"ModemId":
+		{
 			"service": "vuci.network.mobile",
 			"procedure": "get_all_modems",
 			"parse1": "modems",
 			"parse2": "id"
-	   },
-	   "ModbusWrite":{
-		   	"sim":1,
-			"apn":"wap",
-			"default":"bangapro"
-		}
+	    }
 	},
 	"ModuleSystem":[
 	   {

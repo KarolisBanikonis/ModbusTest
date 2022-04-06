@@ -211,7 +211,7 @@ class ModuleWrite(Module):
         if(written):
             modbus_data = f"{write_value}"
             if(not first_time_change):
-                connect_text = "Waiting for mobile interface to change status."
+                connect_text = "Waiting for mobile interface to reconnect."
                 reconnected = self.wait_till_reconnect(connect_text, print_mod)
                 if(reconnected):
                     device_data = f"1"
@@ -235,7 +235,6 @@ class ModuleWrite(Module):
         modbus_data = self.MODBUS_WRITE_ERROR
         device_data = None
         if(first_time_change):
-            time.sleep(3)
             write_value = self.get_opposite_sim()
         else:
             write_value = self.sim
@@ -284,6 +283,7 @@ class ModuleWrite(Module):
                 modbus_data (str): what data was written with Modbus TCP
                 device_data (str): parsed data received via SSH
         """
+        # Auto APN must be disabled on mobile interface!
         modbus_data = self.MODBUS_WRITE_ERROR
         device_data = None
         if(first_time_change):
@@ -297,6 +297,8 @@ class ModuleWrite(Module):
         written = self.modbus.write_many(print_mod, param_values['address'], converted_apn)
         if(written):
             modbus_data = apn
-            self.wait_till_reconnect(warning_text, print_mod)
+            # Wait for mobile connection before ending write tests
+            if(not first_time_change):
+                self.wait_till_reconnect(warning_text, print_mod)
             device_data = get_mobile_apn(self.ssh, print_mod, f"mob1s{self.sim}a1")
         return modbus_data, device_data
