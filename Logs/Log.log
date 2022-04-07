@@ -1,27 +1,10 @@
-2022-04-06 11:44:33,841 - Libraries.FileMethods - INFO - File at - config.json successfully found.
-2022-04-06 11:44:33,841 - Libraries.FileMethods - INFO - File at - registers.json successfully found.
-2022-04-06 11:44:34,001 - Clients.SSHClient - INFO - SSH setup is successful!
-2022-04-06 11:44:34,143 - Clients.Modbus - INFO - Modbus setup is successful!
-2022-04-06 11:44:34,149 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleWrite was loaded!
-2022-04-06 11:44:34,149 - TestedModules.ModuleWrite - INFO - Allowed write tests count: 4.
-2022-04-06 11:44:34,149 - TestedModules.ModuleWrite - INFO - Specified default sim slot is valid!
-2022-04-06 11:44:34,149 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleWrite.ModuleWrite'> was initialized!
-2022-04-06 11:44:34,158 - TestedModules.ModuleWrite - INFO - Started ModuleWrite testing!
-2022-04-06 11:44:34,973 - TestedModules.ModuleWrite - INFO - Waiting for mobile interface to reconnect. Reconnecting try nr. 1 out of 7!
-2022-04-06 11:44:40,001 - TestedModules.ModuleWrite - INFO - Waiting for mobile interface to reconnect. Reconnecting try nr. 2 out of 7!
-2022-04-06 11:44:46,944 - TestedModules.ModuleWrite - INFO - Switching back to default SIM card! Reconnecting try nr. 1 out of 7!
-2022-04-06 11:44:51,975 - TestedModules.ModuleWrite - INFO - Switching back to default SIM card! Reconnecting try nr. 2 out of 7!
-2022-04-06 11:44:58,817 - TestedModules.ModuleWrite - INFO - Configuring mobile connection with default APN! Reconnecting try nr. 1 out of 7!
-2022-04-06 11:45:03,845 - TestedModules.ModuleWrite - INFO - Configuring mobile connection with default APN! Reconnecting try nr. 2 out of 7!
-2022-04-06 11:45:08,873 - TestedModules.ModuleWrite - INFO - Configuring mobile connection with default APN! Reconnecting try nr. 3 out of 7!
-2022-04-06 11:45:14,010 - TestedModules.ModuleWrite - INFO - Module - ModuleWrite tests are over!
-2022-04-06 11:45:16,020 - TestedModules.ModuleWrite - INFO - Started ModuleWrite testing!
-2022-04-06 11:45:16,875 - TestedModules.ModuleWrite - INFO - Waiting for mobile interface to reconnect. Reconnecting try nr. 1 out of 7!
-2022-04-06 11:45:21,911 - TestedModules.ModuleWrite - INFO - Waiting for mobile interface to reconnect. Reconnecting try nr. 2 out of 7!
-2022-04-06 11:45:28,774 - TestedModules.ModuleWrite - INFO - Switching back to default SIM card! Reconnecting try nr. 1 out of 7!
-2022-04-06 11:45:33,809 - TestedModules.ModuleWrite - INFO - Switching back to default SIM card! Reconnecting try nr. 2 out of 7!
-2022-04-06 11:45:38,832 - TestedModules.ModuleWrite - INFO - Switching back to default SIM card! Reconnecting try nr. 3 out of 7!
-2022-04-06 11:45:45,584 - TestedModules.ModuleWrite - INFO - Configuring mobile connection with default APN! Reconnecting try nr. 1 out of 7!
-2022-04-06 11:45:50,613 - TestedModules.ModuleWrite - INFO - Configuring mobile connection with default APN! Reconnecting try nr. 2 out of 7!
-2022-04-06 11:45:54,578 - __main__ - CRITICAL - User stopped tests with KeyboardInterrupt.
-2022-04-06 11:45:54,578 - __main__ - CRITICAL - Program is terminated!
+2022-04-07 12:37:47,118 - Libraries.FileMethods - INFO - File at - config.json successfully found.
+2022-04-07 12:37:47,120 - Libraries.FileMethods - INFO - File at - registers.json successfully found.
+2022-04-07 12:37:47,121 - Libraries.FileMethods - INFO - File at - TestedModules/ModuleSystem.py successfully found.
+2022-04-07 12:37:47,136 - Libraries.FileMethods - INFO - File at - config.json successfully found.
+2022-04-07 12:37:47,136 - Libraries.FileMethods - INFO - File at - registers.json successfully found.
+2022-04-07 12:37:49,150 - Clients.SSHClient - CRITICAL - SSH connection failed, check host value: timed out
+2022-04-07 12:37:49,150 - Clients.Modbus - INFO - Modbus setup is successful!
+2022-04-07 12:37:49,243 - Libraries.FileMethods - INFO - File at - config.json successfully found.
+2022-04-07 12:37:49,243 - Libraries.FileMethods - INFO - File at - registers.json successfully found.
+2022-04-07 12:37:51,253 - Clients.SSHClient - CRITICAL - SSH connection failed, check host value: timed out

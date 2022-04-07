@@ -10,6 +10,21 @@
         "MODULES" : 
         [
             {
+                "name": "ModuleSystem"
+            },
+            {
+                "name": "ModuleNetwork",
+                "hw_info": "ethernet"
+            },
+            {
+                "name": "ModuleMobile",
+                "hw_info": "mobile"
+            },
+            {
+                "name": "ModuleGPS",
+                "hw_info": "gps"
+            },
+            {
                 "name": "ModuleWrite"
             }
         ]

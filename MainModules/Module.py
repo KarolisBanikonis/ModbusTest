@@ -192,7 +192,7 @@ class Module:
         result = int(binary_number, 2)
         return result
 
-    def __format_string_for_checking(self, data):
+    def format_string_for_checking(self, data):
         """
         Formats the string data for test result checking
 
@@ -206,15 +206,16 @@ class Module:
         data = re.sub(pattern, '', data)
         return data
 
-    def __check_if_list_pass(self, modbus_data, device_data):
+    def check_if_list_pass(self, modbus_data, device_data):
         """
-        Checks if test is successful when received data's type is string
+        Checks if test is successful when device_data's type is list
 
             Parameters:
                 modbus_data (str): converted data received via Modbus TCP
                 device_data (list): parsed data received via SSH
             Returns:
                 result (str): result of test
+                device_data (str|list): returns str if result passes, otherwise it may return list
         """
         result = self.RESULT_FAILED
         for data in device_data:
@@ -224,7 +225,7 @@ class Module:
                 break
         return result, device_data
 
-    def __check_if_strings_pass(self, modbus_data, device_data):
+    def check_if_strings_pass(self, modbus_data, device_data):
         """
         Checks if test is successful when received data's type is string
 
@@ -239,9 +240,9 @@ class Module:
         else:
             return self.RESULT_FAILED
 
-    def __check_if_ints_pass(self, modbus_data, device_data):
+    def check_if_ints_pass(self, modbus_data, device_data):
         """
-        Checks if test is successful when received data's type is integer or float
+        Checks if test is successful when received data's type is integer
 
             Parameters:
                 modbus_data (int): converted data received via Modbus TCP
@@ -259,9 +260,9 @@ class Module:
         else:
             return self.RESULT_PASSED
 
-    def __check_if_floats_pass(self, modbus_data, device_data):
+    def check_if_floats_pass(self, modbus_data, device_data):
         """
-        Checks if test is successful when received data's type is integer or float
+        Checks if test is successful when received data's type is float
 
             Parameters:
                 modbus_data (int|float): converted data received via Modbus TCP
@@ -275,9 +276,9 @@ class Module:
         else:
             return self.RESULT_PASSED
 
-    def __check_if_datetime_pass(self, data1, data2):
+    def check_if_datetime_pass(self, data1, data2):
         """
-        Checks if test is successful when received data's type is date
+        Checks if test is successful when received data's type is datetime
 
             Parameters:
                 modbus_data (datetime): converted data received via Modbus TCP
@@ -302,9 +303,9 @@ class Module:
             Returns:
                 (list): list that saves values of modbus_data, device_data and test result
         """
-        modbus_data = self.__format_string_for_checking(modbus_data)
-        device_data = self.__format_string_for_checking(device_data)
-        is_data_equal = self.__check_if_strings_pass(modbus_data, device_data)
+        modbus_data = self.format_string_for_checking(modbus_data)
+        device_data = self.format_string_for_checking(device_data)
+        is_data_equal = self.check_if_strings_pass(modbus_data, device_data)
         return [modbus_data, device_data, is_data_equal]
 
     @dispatch(str, list)
@@ -318,7 +319,7 @@ class Module:
             Returns:
                 (list): list that saves values of modbus_data, device_data and test result
         """
-        is_data_equal, device_data = self.__check_if_list_pass(modbus_data, device_data)
+        is_data_equal, device_data = self.check_if_list_pass(modbus_data, device_data)
         return [modbus_data, device_data, is_data_equal]
 
     @dispatch(int, int)
@@ -332,7 +333,7 @@ class Module:
             Returns:
                 (list): list that saves values of modbus_data, device_data and test result
         """
-        is_data_equal = self.__check_if_ints_pass(modbus_data, device_data)
+        is_data_equal = self.check_if_ints_pass(modbus_data, device_data)
         return [modbus_data, device_data, is_data_equal]
 
     @dispatch((int, float), (float, float))
@@ -346,7 +347,7 @@ class Module:
             Returns:
                 (list): list that saves values of modbus_data, device_data and test result
         """
-        is_data_equal = self.__check_if_floats_pass(modbus_data, device_data)
+        is_data_equal = self.check_if_floats_pass(modbus_data, device_data)
         return [modbus_data, device_data, is_data_equal]
 
     @dispatch(int, str)
@@ -361,7 +362,7 @@ class Module:
                 (list): list that saves values of modbus_data, device_data and test result
         """
         device_data = int(device_data)
-        is_data_equal = self.__check_if_ints_pass(modbus_data, device_data)
+        is_data_equal = self.check_if_ints_pass(modbus_data, device_data)
         return [modbus_data, device_data, is_data_equal]
 
     @dispatch(datetime, datetime)
@@ -375,7 +376,7 @@ class Module:
             Returns:
                 (list): list that saves values of modbus_data, device_data and test result
         """
-        is_data_equal = self.__check_if_datetime_pass(modbus_data, device_data)
+        is_data_equal = self.check_if_datetime_pass(modbus_data, device_data)
         return [modbus_data, device_data, is_data_equal]
 
     @dispatch(object, object)
@@ -413,7 +414,7 @@ class Module:
         if(is_data_equal == self.RESULT_PASSED):
             self.correct_number += 1
 
-    def __check_if_value_exists(self, data, key):
+    def check_if_value_exists(self, data, key):
         """
         Check if specified key exists 
 
@@ -440,11 +441,11 @@ class Module:
                 device_data (int|str|float): parsed data received via SSH
         """
         json_data = get_device_json_ubus_data(self.ssh, param_values, print_mod)
-        if(self.__check_if_value_exists(param_values, 'parse')):
+        if(self.check_if_value_exists(param_values, 'parse')):
             device_data = json_data[param_values['parse']]
-        elif(self.__check_if_value_exists(param_values, 'index')):
+        elif(self.check_if_value_exists(param_values, 'index')):
             device_data = json_data[param_values['parse1']][0][param_values['parse2']]
-        elif(not self.__check_if_value_exists(param_values, 'parse')):
+        elif(not self.check_if_value_exists(param_values, 'parse')):
             device_data = json_data[param_values['parse1']][param_values['parse2']]
         else:
             device_data = None

@@ -17,16 +17,18 @@ class InformationModule:
         """
         self.data = data
         self.conn = conn
-        self.tmp_used_memory = get_df_used_memory(self.conn, "/tmp", print_mod)
-        self.router_model = get_device_model(self.conn, self.data['Model'], print_mod)
-        self.cpu_count = get_cpu_count(self.conn, print_mod)
-        self.mem_used_at_start = self.get_used_memory(print_mod)
-        #Required for ModuleMobile
-        self.dual_sim_status = ssh_get_uci_hwinfo(self.conn, "dual_sim", print_mod)
-        self.modem_id = get_modem_id(self.conn, data['ModemId'], print_mod)
-        #Required for ModuleWrite
+        self.router_model = ""
+        if(self.conn.setup_error is None):
+            self.tmp_used_memory = get_df_used_memory(self.conn, "/tmp", print_mod)
+            self.router_model = get_device_model(self.conn, self.data['Model'], print_mod)
+            self.cpu_count = get_cpu_count(self.conn, print_mod)
+            self.mem_used_at_start = self.get_used_memory(print_mod)
+            #Required for ModuleMobile
+            self.dual_sim_status = ssh_get_uci_hwinfo(self.conn, "dual_sim", print_mod)
+            self.modem_id = get_modem_id(self.conn, data['ModemId'], print_mod)
+            #Required for ModuleWrite
+            self.mobile_status = ssh_get_uci_hwinfo(self.conn, "mobile", print_mod)
         self.modbus_write_data = modbus_write_conf
-        self.mobile_status = ssh_get_uci_hwinfo(self.conn, "mobile", print_mod)
         self.sim = self.modbus_write_data['sim']
 
     def get_used_memory(self, print_mod):
