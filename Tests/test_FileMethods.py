@@ -33,6 +33,7 @@ class test_FileMethods(unittest.TestCase):
     def test_open_existing_file(self, path_to_file):
         file = test.open_file(path_to_file, "r")
         self.assertIsNotNone(file)
+        file.close()
 
     @parameterized.expand([
         ["notexisting.json"],

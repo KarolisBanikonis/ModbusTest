@@ -30,7 +30,7 @@ class ModuleNetwork(Module):
         """
         ip = ""
         for i in range(len(numbers)):
-            ip += numbers[i]
+            ip += str(numbers[i])
             if(i != 3):
                 ip += "."
         return ip
@@ -47,8 +47,8 @@ class ModuleNetwork(Module):
         numbers = []
         for i in range(len(modbus_registers_data)):
             temp = format(modbus_registers_data[i], '016b')
-            numbers.append(str(self.binary_to_decimal(temp[0:8])))
-            numbers.append(str(self.binary_to_decimal(temp[8:16])))
+            numbers.append(self.binary_to_decimal(temp[0:8]))
+            numbers.append(self.binary_to_decimal(temp[8:16]))
         ip = self.format_ip(numbers)
         return ip
 

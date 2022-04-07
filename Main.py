@@ -38,7 +38,7 @@ def main():
     modbus = Modbus(conf.get_main_settings(), print_mod)
     if(modbus.setup_error is not None):
         close_all_instances([ssh_client])
-    module_loader = ModuleLoader(conf, ssh_client, print_mod)
+    module_loader = ModuleLoader(conf.get_data('MODULES'), ssh_client, print_mod)
     module_instances = module_loader.init_modules(registers.data, modbus, info, report)
     test_count = [0, 0, info.mem_used_at_start] # test_number, correct_number, used_ram
     if(conf.get_param(conf.get_ftp_settings(), 'FTP_USE')):

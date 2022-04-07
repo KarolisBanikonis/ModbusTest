@@ -79,6 +79,3 @@ class test_SSHMethods(unittest.TestCase):
         calculated = test.get_df_used_memory(self.ssh_client, mount_loc, self.print_mod)
         self.assertIsInstance(calculated, int)
         self.assertGreaterEqual(calculated, 0)
-
-if __name__ == '__main__':
-    unittest.main()

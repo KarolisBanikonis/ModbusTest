@@ -125,7 +125,7 @@ class Module:
         total_mem_difference = self.info.mem_used_at_start - self.memory
         date = get_current_data_as_string()
         self.report.writer.writerow([date, self.total_number, self.module_name, param_values['name'], param_values['address'],
-        results[0], results[1], results[2], self.READ_ACTION, cpu_usage, total_mem_difference, memory_difference])
+        results[0], results[1], results[2], self.action, cpu_usage, total_mem_difference, memory_difference])
         self.print_test_results(print_mod, param_values, results[0], results[1], cpu_usage, total_mem_difference)
 
     def convert_modbus_to_int_1(self, modbus_data):
@@ -421,13 +421,15 @@ class Module:
             Parameters:
                 key (str): what parameter value is requested
             Returns:
-                True, if exists
-                False, if it is not
+                True, if it exists
+                False, if it does not exist
         """
         if(type(data) == dict):
             if(key in data.keys()):
                 return True
             else:
+                return False
+        else:
                 return False
 
     def get_device_data(self, param_values, print_mod):

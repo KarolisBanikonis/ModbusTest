@@ -9,28 +9,23 @@ class ModuleLoader:
 
     MODULES_DIRECTORY = "TestedModules."
 
-    def __init__(self, conf_module, conn : SSHClient, print_mod):
+    def __init__(self, conf, conn : SSHClient, print_mod):
         """
         Initializes ModuleLoader object.
 
             Parameters:
-                conf_module (ConfigurationModule): module that holds configuration information
+                conf (dict): dictionary that holds configuration information
                 conn (SSHClient): module required to make connection to server
                 print_mod (PrintModule): module designed for printing to terminal
         """
         self.conn = conn
         self.print_mod = print_mod
-        self.modules_info = conf_module.get_data('MODULES')
+        self.modules_info = conf
         self.modules_to_load = []
         self.check_hw_info()
         
     def check_hw_info(self):
-        """
-        Finds which tested modules should be loaded by checking which device's subsystems are enabled.
-
-            Parameters:
-                print_mod (PrintModule): module designed for printing to terminal
-        """
+        """Finds which tested modules should be loaded by checking which device's subsystems are enabled."""
         for module_info in self.modules_info:
             if(module_info['name'] == "ModuleSystem" or module_info['name'] == "ModuleWrite"):
                 module_enabled = 1
@@ -53,7 +48,7 @@ class ModuleLoader:
         """
         tested_modules = []
         for module_name in self.modules_to_load:
-            module = self.__load_module(module_name)
+            module = self.load_module(module_name)
             if(module != None):
                 try:
                     class_ = getattr(module, module_name)
@@ -66,7 +61,7 @@ class ModuleLoader:
                     log_msg(__name__, "warning", warning_text)
         return tested_modules
 
-    def __load_module(self, module_name):
+    def load_module(self, module_name):
         """
         Tries to load specified module.
 

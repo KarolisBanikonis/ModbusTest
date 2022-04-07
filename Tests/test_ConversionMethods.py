@@ -41,6 +41,3 @@ class test_ConversionMethods(unittest.TestCase):
     def test_convert_text_to_decimal(self, input, actual):
         calculated = test.convert_text_to_decimal(input)
         self.assertEqual(calculated, actual)
-
-if __name__ == '__main__':
-    unittest.main()

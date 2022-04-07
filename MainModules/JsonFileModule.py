@@ -7,14 +7,15 @@ from MainModules.Logger import log_msg
 
 class JsonFileModule:
 
-    def __init__(self, path_to_file):
+    def __init__(self, path_to_file, print_mod):
         """
         Initializes JsonFileModule object.
 
             Parameters:
                 path_to_file (str): path of file that should be read
+                print_mod (PrintModule): module designed for printing to terminal
         """
-        self.read_json_file(path_to_file)
+        self.data = self.read_json_file(path_to_file, print_mod)
 
     def read_json_file(self, path_to_file, print_mod):
         """
@@ -40,7 +41,7 @@ class JsonFileModule:
             except json.JSONDecodeError as err:
                 log_msg(__name__, "critical", err)
                 print_mod.error(err, "RED")
-                quit()
+                quit()        
 
     def get_param(self, data, key):
         """

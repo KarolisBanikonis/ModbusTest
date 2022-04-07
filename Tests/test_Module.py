@@ -235,3 +235,22 @@ class test_Module(unittest.TestCase):
     def test_check_if_results_match_unknown_types(self, data1, data2):
         with self.assertRaises(TypeError):
             self.module.check_if_results_match(data1, data2)
+
+    @parameterized.expand([
+        ["Passed", 1, 1],
+        ["Failed", 1, 2],
+        ["Passed", 2, 3]
+    ])
+    def test_change_test_count(self, is_data_equal, actual_correct, actual_total):
+        self.module.change_test_count(is_data_equal)
+        self.assertEqual(self.module.correct_number, actual_correct)
+        self.assertEqual(self.module.total_number, actual_total)
+
+    @parameterized.expand([
+        [{"parse":"system"}, "parse", True],
+        [{"parse":"system"}, "name", False],
+        [{"name":"System uptime", "address":1}, "address", True]
+    ])
+    def test_check_if_value_exists_in_dic(self, dictionary, key, actual):
+        calculated = self.module.check_if_value_exists(dictionary, key)
+        self.assertEqual(calculated, actual)

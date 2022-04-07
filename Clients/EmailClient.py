@@ -13,7 +13,7 @@ class EmailClient:
         Initializes EmailClient object. Set settings required for sending emails.
 
             Parameters:
-                conf (ConfigurationModule): module that holds configuration information
+                conf (dict): dictionary that holds configuration information for sending emails
         """
         self.allowed = True
         self.port = 465

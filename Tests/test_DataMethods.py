@@ -80,6 +80,3 @@ class test_DataMethods(unittest.TestCase):
     def test_get_current_date_in_string(self):
         calculated = test.get_current_data_as_string()
         self.assertIs(str, type(calculated))
-    
-if __name__ == '__main__':
-    unittest.main()
