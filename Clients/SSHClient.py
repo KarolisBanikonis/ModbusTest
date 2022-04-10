@@ -48,7 +48,7 @@ class SSHClient:
             elif(isinstance(err, paramiko.ssh_exception.NoValidConnectionsError)):
                 error_text = f"Not valid SSH connection: {err}"
             else: #OSError
-                error_text = f"SSH connection failed, check host value: {err}"
+                error_text = f"SSH connection failed, check 'SERVER_HOST' value and if cable is connected: {err}."
             print_mod.error(error_text)
             log_msg(__name__, "critical", error_text)
             return error_text

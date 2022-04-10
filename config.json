@@ -6,28 +6,7 @@
         "USERNAME": "root",
         "PASSWORD": "Admin123",
         "RECONNECT_ATTEMPTS": 7,
-        "TIMEOUT": 2,
-        "MODULES" : 
-        [
-            {
-                "name": "ModuleSystem"
-            },
-            {
-                "name": "ModuleNetwork",
-                "hw_info": "ethernet"
-            },
-            {
-                "name": "ModuleMobile",
-                "hw_info": "mobile"
-            },
-            {
-                "name": "ModuleGPS",
-                "hw_info": "gps"
-            },
-            {
-                "name": "ModuleWrite"
-            }
-        ]
+        "TIMEOUT": 2
     },
     "FTP":
     {
@@ -42,14 +21,14 @@
     {
         "SMTP": "smtp.gmail.com",
         "USER": "labas0113@gmail.com",
-        "PASSWORD": "belekas111",
-        "RECEIVER": "labas0113@gmail",
-        "INTERVAL_HOURS": 15
+        "PASSWORD": "belekas1111",
+        "RECEIVER": "labas0113@gmail.com",
+        "INTERVAL_HOURS": 1
     },
     "ModbusWrite":
     {
-        "sim":1,
-        "apn":"wap",
-        "default":"bangapro"
+        "SIM": 1,
+        "CHANGE_APN": "wap",
+        "DEFAULT_APN": "bangapro"
     }
 }

@@ -29,7 +29,7 @@ class InformationModule:
             #Required for ModuleWrite
             self.mobile_status = ssh_get_uci_hwinfo(self.conn, "mobile", print_mod)
         self.modbus_write_data = modbus_write_conf
-        self.sim = self.modbus_write_data['sim']
+        self.sim = self.modbus_write_data['SIM']
 
     def get_used_memory(self, print_mod):
         """

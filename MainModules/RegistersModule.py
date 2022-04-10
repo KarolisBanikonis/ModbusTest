@@ -1,7 +1,4 @@
-
-
 from MainModules.JsonFileModule import JsonFileModule
-
 
 class RegistersModule(JsonFileModule):
 
@@ -14,3 +11,14 @@ class RegistersModule(JsonFileModule):
                 print_mod (PrintModule): module designed for printing to terminal
         """
         super().__init__(path_to_file, print_mod)
+
+    def get_modules_data(self):
+        """
+        Gets list of modules that should be loaded.
+
+            Returns:
+                modules_data (list): list of modules that should be loaded
+        """
+        information_module_data = self.get_param(self.data, 'InformationModule')
+        modules_data = self.get_param(information_module_data, 'ModulesToLoad')
+        return modules_data

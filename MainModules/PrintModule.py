@@ -3,7 +3,6 @@ import traceback
 from reprint import output
 from colorama import Fore, Style
 
-
 class PrintModule:
 
     def __init__(self):

@@ -45,9 +45,9 @@ class EmailClient:
                 log_msg(__name__, "info", "Email was sent!")
             except (smtplib.SMTPAuthenticationError, socket.gaierror) as err:
                 if(isinstance(err, smtplib.SMTPAuthenticationError)):
-                    error_text = f"Email sending failed, check login credentials : {err}"
+                    warning_text = f"Email sending failed, check login credentials: {err}"
                 elif(isinstance(err, socket.gaierror)):
-                    error_text = f"Email sending failed, check SMTP value : {err}"
-                log_msg(__name__, "error", error_text)
-                print_mod.warning(error_text)
+                    warning_text = f"Email sending failed, check 'SMTP' value: {err}"
+                log_msg(__name__, "error", warning_text)
+                print_mod.warning(warning_text)
                 self.allowed = False

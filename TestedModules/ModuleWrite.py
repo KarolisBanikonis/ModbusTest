@@ -25,12 +25,12 @@ class ModuleWrite(Module):
         self.action = self.WRITE_ACTION
         self.tests = self.check_what_tests_to_perform(data['Tests'])
         del self.data['Tests']
-        self.sim = self.info.modbus_write_data['sim']
+        self.sim = self.info.modbus_write_data['SIM']
         self.sim_value_valid = self.check_if_sim_is_valid()
         if(self.sim_value_valid):
             self.change_data_to_mobile_interface()
-        self.specified_apn = self.info.modbus_write_data['apn']
-        self.default_apn = self.info.modbus_write_data['default']
+        self.specified_apn = self.info.modbus_write_data['CHANGE_APN']
+        self.default_apn = self.info.modbus_write_data['DEFAULT_APN']
         self.converted_specified_apn = self.convert_text_to_apn_command(self.specified_apn)
         self.converted_default_apn = self.convert_text_to_apn_command(self.default_apn)
         self.skip_interfaces = False
@@ -62,9 +62,9 @@ class ModuleWrite(Module):
         possible_sim_values = self.__get_possible_sim_values()
         for value in possible_sim_values:
             if(self.sim == value):
-                log_msg(__name__, "info", f"Specified default sim slot is valid!")
+                log_msg(__name__, "info", "Specified default sim slot is valid!")
                 return True
-        log_msg(__name__, "error", f"Specified default sim slot is invalid!")
+        log_msg(__name__, "error", "Specified default sim slot is invalid!")
         return False
 
     def check_what_tests_to_perform(self, list_of_tests):
@@ -214,7 +214,7 @@ class ModuleWrite(Module):
                 connect_text = "Waiting for mobile interface to reconnect."
                 reconnected = self.wait_till_reconnect(connect_text, print_mod)
                 if(reconnected):
-                    device_data = f"1"
+                    device_data = "1"
             else:
                 device_data = self.get_device_data(param_values, print_mod)
                 device_data = f"{int(device_data)}"

@@ -5,34 +5,35 @@ import importlib
 from Libraries.SSHMethods import ssh_get_uci_hwinfo
 from Clients.SSHClient import SSHClient
 from MainModules.Logger import log_msg
+
 class ModuleLoader:
 
     MODULES_DIRECTORY = "TestedModules."
 
-    def __init__(self, conf, conn : SSHClient, print_mod):
+    def __init__(self, modules_data, conn : SSHClient, print_mod):
         """
         Initializes ModuleLoader object.
 
             Parameters:
-                conf (dict): dictionary that holds configuration information
+                modules_data (list): list of modules that should be loaded
                 conn (SSHClient): module required to make connection to server
                 print_mod (PrintModule): module designed for printing to terminal
         """
         self.conn = conn
         self.print_mod = print_mod
-        self.modules_info = conf
+        self.modules_data = modules_data
         self.modules_to_load = []
         self.check_hw_info()
         
     def check_hw_info(self):
         """Finds which tested modules should be loaded by checking which device's subsystems are enabled."""
-        for module_info in self.modules_info:
-            if(module_info['name'] == "ModuleSystem" or module_info['name'] == "ModuleWrite"):
+        for module in self.modules_data:
+            if(module['name'] == "ModuleSystem" or module['name'] == "ModuleWrite"):
                 module_enabled = 1
             else:
-                module_enabled = ssh_get_uci_hwinfo(self.conn, module_info['hw_info'], self.print_mod)
+                module_enabled = ssh_get_uci_hwinfo(self.conn, module['hw_info'], self.print_mod)
             if(module_enabled == 1):
-                self.modules_to_load.append(module_info['name'])
+                self.modules_to_load.append(module['name'])
         
     def init_modules(self, data, modbus, info, report):
         """

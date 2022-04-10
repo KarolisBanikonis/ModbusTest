@@ -37,15 +37,19 @@ class Modbus:
         """
         self.client.host(self.host)
         error_text = ""
-        if(type(self.port) != int):
-            error_text = "Modbus port must be integer value!"
-        elif(self.port < 1 or self.port > 65535):
+        if(self.port < 1 or self.port > 65535):
             error_text = "Modbus port value must be between 1 and 65535!"
+        self.client.port(self.port)
+        if not self.client.is_open():
+            self.client.open()
+            if(not self.client.is_open()):
+                error_text = "Modbus can not establish connection!"
+            else:
+                self.client.close()
         if(error_text != ""):
             print_mod.error(error_text)
             log_msg(__name__, "critical", error_text)
             return error_text
-        self.client.port(self.port)
         log_msg(__name__, "info", "Modbus setup is successful!")
         return None
 

@@ -37,11 +37,11 @@ class FTPClient:
         except (socket.gaierror, ConnectionRefusedError, ftplib.error_perm) as err:
             error_text = ""
             if(isinstance(err, socket.gaierror)):
-                error_text = f"FTP failed to connect, check host value: {err}"
+                error_text = f"FTP failed to connect, check 'FTP_HOST' value: {err}"
             elif(isinstance(err, ConnectionRefusedError)):
-                error_text = f"FTP failed to connect, check port value: {err}"
+                error_text = f"FTP failed to connect, check if FTP server is enabled: {err}"
             else:
-                error_text = f"FTP failed to login: {err}"
+                error_text = f"FTP failed to login, check login credentials: {err}"
             self.allowed = False
             log_msg(__name__, "error", error_text)
             print_mod.warning(error_text)
