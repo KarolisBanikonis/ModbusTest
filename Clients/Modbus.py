@@ -42,11 +42,11 @@ class Modbus:
         self.client.port(self.port)
         if not self.client.is_open():
             self.client.open()
-            if(not self.client.is_open()):
+            if not self.client.is_open():
                 error_text = "Modbus can not establish connection!"
             else:
                 self.client.close()
-        if(error_text != ""):
+        if error_text != "":
             print_mod.error(error_text)
             log_msg(__name__, "critical", error_text)
             return error_text
@@ -72,7 +72,7 @@ class Modbus:
             time.sleep(0.3)
             if not self.client.open():
                 try_connect_nr = 0
-                while(try_connect_nr < self.connect_attempts):
+                while try_connect_nr < self.connect_attempts:
                     try_connect_nr += 1
                     error_text = f"Reconnecting Modbus attempt nr. {try_connect_nr} out of {self.connect_attempts}!"
                     log_msg(__name__, "critical", error_text)
@@ -138,3 +138,4 @@ class Modbus:
             written = self.client.write_single_register(address, value)
         self.client.close()
         return written
+        

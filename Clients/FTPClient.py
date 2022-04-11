@@ -27,7 +27,7 @@ class FTPClient:
     def connect(self, print_mod):
         """
         Try to connect and log in to the FTP server.
-        
+
             Parameters:
                 print_mod (PrintModule): module designed for printing to terminal
         """
@@ -36,9 +36,9 @@ class FTPClient:
             self.ftp.login(self.username, self.password)
         except (socket.gaierror, ConnectionRefusedError, ftplib.error_perm) as err:
             error_text = ""
-            if(isinstance(err, socket.gaierror)):
+            if isinstance(err, socket.gaierror):
                 error_text = f"FTP failed to connect, check 'FTP_HOST' value: {err}"
-            elif(isinstance(err, ConnectionRefusedError)):
+            elif isinstance(err, ConnectionRefusedError):
                 error_text = f"FTP failed to connect, check if FTP server is enabled: {err}"
             else:
                 error_text = f"FTP failed to login, check login credentials: {err}"
@@ -57,11 +57,11 @@ class FTPClient:
             Parameters:
                 print_mod (PrintModule): module designed for printing to terminal
         """
-        if(self.allowed):
+        if self.allowed:
             self.connect(print_mod)
-        if(self.allowed):
+        if self.allowed:
             report = self.report_module.open_report_for_ftp(print_mod)
-            if(report is not None):
+            if report is not None:
                 command = f'STOR {self.report_module.report_file}'
                 self.ftp.storbinary(command, report)
                 log_msg(__name__, "info", "Report was uploaded with FTP successfully.")

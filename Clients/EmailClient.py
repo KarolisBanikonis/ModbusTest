@@ -1,5 +1,6 @@
 # Standard library imports
-import smtplib, ssl
+import smtplib
+import ssl
 import socket
 
 # Local imports
@@ -31,7 +32,7 @@ class EmailClient:
             Parameters:
                 print_mod (PrintModule): module stores information which needs to be send in email
         """
-        if(self.allowed):
+        if self.allowed:
             text = self.message
             for i in range(4):
                 colourless_text = remove_colour_tags(f"{print_mod.print_list[i]}\n")
@@ -44,10 +45,11 @@ class EmailClient:
                     server.sendmail(self.username, self.receiver, text)
                 log_msg(__name__, "info", "Email was sent!")
             except (smtplib.SMTPAuthenticationError, socket.gaierror) as err:
-                if(isinstance(err, smtplib.SMTPAuthenticationError)):
+                if isinstance(err, smtplib.SMTPAuthenticationError):
                     warning_text = f"Email sending failed, check login credentials: {err}"
-                elif(isinstance(err, socket.gaierror)):
+                elif isinstance(err, socket.gaierror):
                     warning_text = f"Email sending failed, check 'SMTP' value: {err}"
                 log_msg(__name__, "error", warning_text)
                 print_mod.warning(warning_text)
                 self.allowed = False
+                

@@ -33,24 +33,32 @@ def convert_string_to_bytes(string_data):
         Parameters:
             string_data (str): information unit's in string format
         Returns:
-            bytes (int): data in string format converted to bytes
+            size_in_bytes (int): data in string format converted to bytes
     """
     size_types = ["B", "K", "M", "G"]
     size = ""
-    type = ""
+    size_type = ""
     for symbol in string_data:
         if(symbol.isdigit() or symbol == "."):
             size += symbol
         else:
-            type += symbol
+            size_type += symbol
     i = 0
     for i in range(len(size_types)):
-        if(type == size_types[i]):
+        if size_type == size_types[i]:
             break
-    bytes = int(float(size) * math.pow(1024, i))
-    return bytes
+    size_in_bytes = int(float(size) * math.pow(1024, i))
+    return size_in_bytes
 
 def convert_text_to_decimal(text):
+    """
+    Converts text to a list of numbers, using ASCII table
+
+        Parameters:
+            text (str): input text that should be converted
+        Returns:
+            decimal_list (list): converted list containing numerical representation of characters
+    """
     decimal_list = []
     for symbol in text:
         decimal_list.append(ord(symbol))

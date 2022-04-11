@@ -41,11 +41,12 @@ class SSHClient:
             self.ssh.connect(self.host, username=self.username, password=self.password, timeout=self.timeout)
             log_msg(__name__, "info", "SSH setup is successful!")
             return None
-        except (paramiko.AuthenticationException, paramiko.ssh_exception.NoValidConnectionsError, OSError) as err:
+        except (paramiko.AuthenticationException,
+        paramiko.ssh_exception.NoValidConnectionsError, OSError) as err:
             error_text = ""
-            if(isinstance(err, paramiko.AuthenticationException)):
+            if isinstance(err, paramiko.AuthenticationException):
                 error_text = "SSH Authentication failed, check your credentials!"
-            elif(isinstance(err, paramiko.ssh_exception.NoValidConnectionsError)):
+            elif isinstance(err, paramiko.ssh_exception.NoValidConnectionsError):
                 error_text = f"Not valid SSH connection: {err}"
             else: #OSError
                 error_text = f"SSH connection failed, check 'SERVER_HOST' value and if cable is connected: {err}."
@@ -66,17 +67,17 @@ class SSHClient:
                 print_mod (PrintModule): module designed for printing to terminal
         """
         state = self.ssh.get_transport().is_active()
-        if(state):
+        if state:
             return
         else:
             try_connect_nr = 0
-            while(try_connect_nr < self.connect_attempts):
+            while try_connect_nr < self.connect_attempts:
                 try_connect_nr += 1
                 error_text = f"Reconnecting SSH attempt nr. {try_connect_nr} out of {self.connect_attempts}!"
                 log_msg(__name__, "critical", error_text)
                 print_mod.warning(error_text)
                 connected = self.ssh_connect()
-                if(connected):
+                if connected:
                     print_mod.clear_warning()
                     return
             raise ConnectionFailedError("Connection failed - SSH.")
@@ -103,7 +104,7 @@ class SSHClient:
             self.try_ssh_connect(print_mod)
             _stdin, _stdout,_stderr = self.ssh.exec_command(command)
             output = _stdout.read().decode()
-            if(output == None or output == ""):
+            if(output is None or output == ""):
                 output = self.ssh_issue_command(command, print_mod)
         except (ConnectionResetError, EOFError):
             output = self.ssh_issue_command(command, print_mod)
