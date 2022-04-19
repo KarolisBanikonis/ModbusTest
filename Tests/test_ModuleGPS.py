@@ -7,11 +7,11 @@ from parameterized import parameterized
 # Local imports
 from MainModules.PrintModule import PrintModule
 from MainModules.ConfigurationModule import ConfigurationModule
-from Clients.SSHClient import SSHClient
 from MainModules.RegistersModule import RegistersModule
-from Clients.Modbus import Modbus
 from MainModules.InformationModule import InformationModule
 from MainModules.ReportModule import ReportModule
+from Clients.SSHClient import SSHClient
+from Clients.Modbus import Modbus
 from TestedModules.ModuleGPS import ModuleGPS
 
 class test_Module(unittest.TestCase):

@@ -6,7 +6,7 @@ from pyModbusTCP.client import ModbusClient
 
 # Local imports
 from MainModules.ConnectionFailedError import ConnectionFailedError
-from MainModules.Logger import log_msg
+from Libraries.Logger import log_msg
 
 class Modbus:
 

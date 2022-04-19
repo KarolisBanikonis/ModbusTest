@@ -1,7 +1,7 @@
 # Local imports
 from MainModules.Module import Module
 from Libraries.DataMethods import remove_char
-from MainModules.Logger import log_msg
+from Libraries.Logger import log_msg
 
 class ModuleNetwork(Module):
 
@@ -21,7 +21,7 @@ class ModuleNetwork(Module):
 
     def format_ip(self, numbers):
         """
-        Formats number list to IP address 
+        Formats number list to IP address
 
             Parameters:
                 numbers (list): list of numbers
@@ -34,7 +34,7 @@ class ModuleNetwork(Module):
             if(i != 3):
                 ip += "."
         return ip
-    
+
     def convert_modbus_to_ip(self, modbus_registers_data):
         """
         Converts via Modbus TCP received registers values to IP address
@@ -74,9 +74,11 @@ class ModuleNetwork(Module):
 
             Parameters:
                 print_mod (PrintModule): module designed for printing to terminal
-                test_count (list): list that saves values of total tests number, correct tests number and last memory usage
+                test_count (list): list that saves values of total tests number,
+                    correct tests number and last memory usage
             Returns:
-                (list): list that saves values of total tests number, correct tests number and last memory usage
+                (list): list that saves values of total tests number,
+                    correct tests number and last memory usage
         """
         log_msg(__name__, "info", f"Started {self.module_name} testing!")
         self.total_number = test_count[0]
@@ -88,17 +90,19 @@ class ModuleNetwork(Module):
             modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
             # Specific function for every register address
             method_name = f"get_modbus_and_device_data_register_nr_{param_values['address']}"
-            modbus_data, device_data = self.call_data_collect_method(method_name, print_mod, modbus_registers_data, param_values)
+            modbus_data, device_data = self.call_data_collect_method(method_name, print_mod,
+                modbus_registers_data, param_values)
             if(modbus_data == self.DATA_COLLECT_FAIL):
                 continue
             self.check_and_write_test_results(modbus_data, device_data, print_mod, param_values)
         self.report.close()
         log_msg(__name__, "info", f"Module - {self.module_name} tests are over!")
         return [self.total_number, self.correct_number, self.memory]
-        
+
     def get_modbus_and_device_data_register_nr_55(self, modbus_registers_data, param_values, print_mod):
         """
-        Finds converted received data via Modbus TCP and device data when starting register number is 55
+        Finds converted received data via Modbus TCP and device data
+            when starting register number is 55
 
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers
@@ -115,7 +119,8 @@ class ModuleNetwork(Module):
 
     def get_modbus_and_device_data_register_nr_139(self, modbus_registers_data, param_values, print_mod):
         """
-        Finds converted received data via Modbus TCP and device data when starting register number is 139
+        Finds converted received data via Modbus TCP and device data
+            when starting register number is 139
 
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers

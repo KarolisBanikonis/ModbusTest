@@ -4,7 +4,7 @@ import csv
 # Local imports
 from Libraries.DataMethods import get_current_date_as_string
 from Libraries.FileMethods import open_file, check_file_exists
-from MainModules.Logger import log_msg
+from Libraries.Logger import log_msg
 
 class ReportModule:
 
@@ -17,6 +17,8 @@ class ReportModule:
             Parameters:
                 info (InformationModule): module that holds router model information
         """
+        self.report = None
+        self.writer = None
         self.router_model = info.router_model
         self.report_file_name = f"{self.generate_file_name()}.csv"
         self.report_file_path = f"{self.REPORTS_DIRECTORY}{self.report_file_name}"

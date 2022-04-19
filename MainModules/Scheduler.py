@@ -17,30 +17,32 @@ class Scheduler:
         self.ftp = ftp
         self.email = email
         self.scheduler = BackgroundScheduler()
-    
+
     def start(self):
         """
         Start scheduling jobs.
         """
         self.scheduler.start()
 
-    def send_email_periodically(self, output_list):
+    def send_email_periodically(self, print_mod):
         """
         Add job to send emails periodically.
 
             Parameters:
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
-            and also it is information that is sent in an email
+                print_mod (PrintModule): module designed for printing to terminal
+            and also it contains information that is sent in an email
         """
         if(self.email.allowed):
-            self.scheduler.add_job(self.email.send_email, 'interval', seconds=self.email.interval, args=output_list)
+            self.scheduler.add_job(self.email.send_email, 'interval',
+                hours=self.email.interval, args=print_mod)
 
-    def store_ftp_periodically(self, output_list):
+    def store_ftp_periodically(self, print_mod):
         """
         Add job to upload report to FTP server periodically.
 
             Parameters:
-                output_list (reprint.reprint.output.SignalList): list required for printing to terminal
+                print_mod (PrintModule): module designed for printing to terminal
         """
         if(self.ftp.allowed and platform == "linux"):
-            self.scheduler.add_job(self.ftp.store_report, 'interval', seconds=self.ftp.interval, args=output_list)
+            self.scheduler.add_job(self.ftp.store_report, 'interval',
+                minutes=self.ftp.interval, args=print_mod)

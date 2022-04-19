@@ -5,7 +5,7 @@ import paramiko
 
 # Local imports
 from MainModules.ConnectionFailedError import ConnectionFailedError
-from MainModules.Logger import log_msg
+from Libraries.Logger import log_msg
 
 class SSHClient:
 
@@ -39,14 +39,16 @@ class SSHClient:
         """
         error_text = None
         try:
-            self.ssh.connect(self.host, username=self.username, password=self.password, timeout=self.timeout)
+            self.ssh.connect(self.host, username=self.username, password=self.password,
+                timeout=self.timeout)
             log_msg(__name__, "info", "SSH setup is successful!")
             return error_text
         except (paramiko.AuthenticationException, OSError) as err:
             if isinstance(err, paramiko.AuthenticationException):
                 error_text = "SSH Authentication failed, check your credentials!"
             else:
-                error_text = f"SSH connection failed, check 'SERVER_HOST' value and if cable is connected: {err}."
+                error_text = ("SSH connection failed, check 'SERVER_HOST'" +
+                    f"value and if cable is connected: {err}.")
             print_mod.error(error_text)
             log_msg(__name__, "critical", error_text)
             return error_text
@@ -72,7 +74,8 @@ class SSHClient:
             try_connect_nr = 0
             while try_connect_nr < self.connect_attempts:
                 try_connect_nr += 1
-                error_text = f"Reconnecting SSH attempt nr. {try_connect_nr} out of {self.connect_attempts}!"
+                error_text = (f"Reconnecting SSH attempt nr. {try_connect_nr}" +
+                    f" out of {self.connect_attempts}!")
                 log_msg(__name__, "critical", error_text)
                 print_mod.warning(error_text)
                 connected = self.ssh_connect()
@@ -84,7 +87,8 @@ class SSHClient:
     def ssh_connect(self):
         """Try to establish connection via SSH with server once."""
         try:
-            self.ssh.connect(self.host, username=self.username, password=self.password, timeout=self.timeout)
+            self.ssh.connect(self.host, username=self.username,
+                password=self.password, timeout=self.timeout)
             return True
         except OSError:
             return False
@@ -97,7 +101,7 @@ class SSHClient:
                 command (str): command that should be executed on SSH server
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
-                output (str): what output command produces 
+                output (str): what output command produces
         """
         try:
             self.try_ssh_connect(print_mod)

@@ -3,7 +3,7 @@ import ftplib
 import socket
 
 # Local imports
-from MainModules.Logger import log_msg
+from Libraries.Logger import log_msg
 
 class FTPClient:
 
@@ -12,7 +12,7 @@ class FTPClient:
         Initializes FTPClient object. Set settings required for storing files with FTP.
 
             Parameters:
-                conf (dict): dictionary that holds configuration information for storing files with FTP
+                conf (dict): dictionary that holds configuration information
                 report (ReportModule): module designed to write test results to report file
         """
         self.allowed = conf['FTP_USE']

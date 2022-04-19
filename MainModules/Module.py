@@ -9,7 +9,7 @@ from multipledispatch import dispatch
 # Local imports
 from Libraries.DataMethods import remove_char, get_current_date_as_string
 from Libraries.SSHMethods import get_device_json_ubus_data
-from MainModules.Logger import log_msg
+from Libraries.Logger import log_msg
 from MainModules.MethodIsNotCallableError import MethodIsNotCallableError
 
 class Module:

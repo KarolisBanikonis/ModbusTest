@@ -4,7 +4,7 @@ import ssl
 
 # Local imports
 from Libraries.DataMethods import remove_colour_tags, remove_char
-from MainModules.Logger import log_msg
+from Libraries.Logger import log_msg
 
 class EmailClient:
 

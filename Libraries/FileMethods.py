@@ -2,7 +2,7 @@
 import os.path
 
 # Local imports
-from MainModules.Logger import log_msg
+from Libraries.Logger import log_msg
 
 def check_file_exists(path_to_file):
     """

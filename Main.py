@@ -8,6 +8,7 @@ import time
 # Local imports
 from Libraries.FileMethods import close_all_instances
 from Libraries.DataMethods import get_current_date_as_string
+from Libraries.Logger import log_msg
 from MainModules.ConnectionFailedError import ConnectionFailedError
 from MainModules.ModuleLoader import ModuleLoader
 from MainModules.ConfigurationModule import ConfigurationModule
@@ -15,7 +16,6 @@ from MainModules.InformationModule import InformationModule
 from MainModules.RegistersModule import RegistersModule
 from MainModules.ReportModule import ReportModule
 from MainModules.Scheduler import Scheduler
-from MainModules.Logger import log_msg
 from MainModules.PrintModule import PrintModule
 from Clients.SSHClient import SSHClient
 from Clients.Modbus import Modbus
@@ -46,7 +46,7 @@ def main():
         ftp_client = FTPClient(conf.get_ftp_settings(), report)
     email = EmailClient(conf.get_email_settings())
     scheduler = Scheduler(ftp_client, email)
-    # scheduler.send_email_periodically([print_mod])
+    scheduler.send_email_periodically([print_mod])
     scheduler.store_ftp_periodically([print_mod])
     scheduler.start()
     current_date = get_current_date_as_string('%Y-%m-%d-%H-%M')

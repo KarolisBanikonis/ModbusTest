@@ -1,10 +1,10 @@
 # Standard library imports
 import importlib
- 
+
 # Local imports
 from Libraries.SSHMethods import ssh_get_uci_hwinfo
+from Libraries.Logger import log_msg
 from Clients.SSHClient import SSHClient
-from MainModules.Logger import log_msg
 
 class ModuleLoader:
 
@@ -24,9 +24,9 @@ class ModuleLoader:
         self.modules_data = modules_data
         self.modules_to_load = []
         self.check_hw_info()
-        
+
     def check_hw_info(self):
-        """Finds which tested modules should be loaded by checking which device's subsystems are enabled."""
+        """Finds which tested modules should be loaded."""
         for module in self.modules_data:
             if(module['name'] == "ModuleSystem" or module['name'] == "ModuleWrite"):
                 module_enabled = 1
@@ -34,7 +34,7 @@ class ModuleLoader:
                 module_enabled = ssh_get_uci_hwinfo(self.conn, module['hw_info'], self.print_mod)
             if(module_enabled == 1):
                 self.modules_to_load.append(module['name'])
-        
+
     def init_modules(self, data, modbus, info, report):
         """
         Tries to initialize tested modules objects.
@@ -69,7 +69,8 @@ class ModuleLoader:
             Parameters:
                 module_name (str): module's that should be loaded name
             Returns:
-                module (ModuleSystem|ModuleNetwork|ModuleMobile|ModuleGPS|ModuleWrite): loaded module, if load was successful
+                module (ModuleSystem|ModuleNetwork|ModuleMobile|ModuleGPS|ModuleWrite):
+                    loaded module, if load was successful
                 None, if load was not successful
 
         """

@@ -4,7 +4,7 @@ import time
 # Local imports
 from MainModules.Module import Module
 from Libraries.DataMethods import replace_pattern
-from MainModules.Logger import log_msg
+from Libraries.Logger import log_msg
 from Libraries.SSHMethods import get_mobile_apn
 from Libraries.ConversionMethods import convert_text_to_decimal
 
@@ -109,7 +109,8 @@ class ModuleWrite(Module):
         for test in self.tests:
             if('service' in test.keys()):
                 test['service'] = replace_pattern(test['service'], interface_pattern, interface)
-        self.data['Status']['service'] = replace_pattern(self.data['Status']['service'], interface_pattern, interface)
+        self.data['Status']['service'] = replace_pattern(self.data['Status']['service'],
+            interface_pattern, interface)
 
     def get_opposite_sim(self):
         """
@@ -130,9 +131,11 @@ class ModuleWrite(Module):
 
             Parameters:
                 print_mod (PrintModule): module designed for printing to terminal
-                test_count (list): list that saves values of total tests number, correct tests number and last memory usage
+                test_count (list): list that saves values of total tests number,
+                    correct tests number and last memory usage
             Returns:
-                (list): list that saves values of total tests number, correct tests number and last memory usage
+                (list): list that saves values of total tests number,
+                    correct tests number and last memory usage
         """
         log_msg(__name__, "info", f"Started {self.module_name} testing!")
         self.total_number = test_count[0]
@@ -148,7 +151,8 @@ class ModuleWrite(Module):
             first_time_changing_values = [True, False]
             self.skip_interfaces = False
             for first_time_change in first_time_changing_values:
-                modbus_data, device_data = self.call_data_collect_method(method_name, print_mod, first_time_change, param_values)
+                modbus_data, device_data = self.call_data_collect_method(method_name,
+                    print_mod, first_time_change, param_values)
                 if(modbus_data == self.DATA_COLLECT_FAIL):
                     continue
                 self.check_and_write_test_results(modbus_data, device_data, print_mod, param_values)
@@ -172,7 +176,8 @@ class ModuleWrite(Module):
             try_connect_nr += 1
             connected = self.get_device_data(self.data['Status'], print_mod)
             if(not connected):
-                error_text = f"{connect_text} Reconnecting try nr. {try_connect_nr} out of {self.RECONNECT_ATTEMPTS}!"
+                error_text = (f"{connect_text} Reconnecting try nr." +
+                    f" {try_connect_nr} out of {self.RECONNECT_ATTEMPTS}!")
                 log_msg(__name__, "info", error_text)
                 print_mod.warning(error_text)
                 time.sleep(self.SLEEP_TIME)
@@ -193,8 +198,9 @@ class ModuleWrite(Module):
                 modbus_data (str): what data was written with Modbus TCP
                 device_data (str): parsed data received via SSH
         """
-        # Test will fail if atleast one mobile interface is disabled
-        # To perform test both mobile interfaces must be enabled and default one have established connection
+        # To perform test:
+        #   1. Both mobile interfaces must be enabled (if device has two)
+        #   2. Default interface must have established connection
         modbus_data = self.MODBUS_WRITE_ERROR
         device_data = None
         if(first_time_change):
@@ -219,7 +225,7 @@ class ModuleWrite(Module):
                 device_data = self.get_device_data(param_values, print_mod)
                 device_data = f"{int(device_data)}"
         return modbus_data, device_data
-        
+
     def write_modbus_register_205(self, first_time_change, param_values, print_mod): # Switch sim
         """
         Switches default sim slot with Modbus TCP and receives converted device data via SSH

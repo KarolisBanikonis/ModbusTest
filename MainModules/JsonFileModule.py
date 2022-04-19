@@ -3,7 +3,7 @@ import json
 
 # Local imports
 from Libraries.FileMethods import check_file_exists
-from MainModules.Logger import log_msg
+from Libraries.Logger import log_msg
 
 class JsonFileModule:
 
@@ -41,7 +41,7 @@ class JsonFileModule:
             except json.JSONDecodeError as err:
                 log_msg(__name__, "critical", err)
                 print_mod.error(err, "RED")
-                quit()        
+                quit()
 
     def get_param(self, data, key):
         """

@@ -7,11 +7,11 @@ from parameterized import parameterized
 # Local imports
 from MainModules.PrintModule import PrintModule
 from MainModules.ConfigurationModule import ConfigurationModule
-from Clients.SSHClient import SSHClient
 from MainModules.RegistersModule import RegistersModule
-from Clients.Modbus import Modbus
 from MainModules.InformationModule import InformationModule
 from MainModules.ReportModule import ReportModule
+from Clients.SSHClient import SSHClient
+from Clients.Modbus import Modbus
 from TestedModules.ModuleNetwork import ModuleNetwork
 
 class test_Module(unittest.TestCase):
@@ -68,8 +68,10 @@ class test_Module(unittest.TestCase):
         self.assertEqual(calculated, actual)
 
     @parameterized.expand([
-        [[{'interface': 'lan', 'up': True, 'ipv4-address':[{'address': '192.168.1.1', 'mask': 24}]}], ["192.168.1.1"]],
-        [[{'interface': 'mob1s1a1_4', 'up': True, 'ipv4-address':[{'address': '84.15.161.183', 'mask': 32}]}], ["84.15.161.183"]],
+        [[{'interface': 'lan', 'up': True, 'ipv4-address':[{'address': '192.168.1.1',
+            'mask': 24}]}], ["192.168.1.1"]],
+        [[{'interface': 'mob1s1a1_4', 'up': True, 'ipv4-address':[{'address': '84.15.161.183',
+            'mask': 32}]}], ["84.15.161.183"]],
         [[{'interface': 'mob1s1a1', 'up': True, 'ipv4-address':[]}], []]
     ])
     def test_add_interfaces_ip_to_list(self, interfaces_data, actual):

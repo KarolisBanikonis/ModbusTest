@@ -1,7 +1,7 @@
 # Local imports
 from MainModules.Module import Module
 from Libraries.DataMethods import get_first_value_in_parenthesis, replace_pattern
-from MainModules.Logger import log_msg
+from Libraries.Logger import log_msg
 
 class ModuleMobile(Module):
 
@@ -26,10 +26,12 @@ class ModuleMobile(Module):
         """
         modem_pattern = "your_modem_id"
         for data in self.data['SIM1']:
-            data['procedure'] = replace_pattern(data['procedure'], modem_pattern, self.info.modem_id)
+            data['procedure'] = replace_pattern(data['procedure'],
+                modem_pattern, self.info.modem_id)
         if(self.info.dual_sim_status == 1):
             for data in self.data['SIM2']:
-                data['procedure'] = replace_pattern(data['procedure'], modem_pattern, self.info.modem_id)
+                data['procedure'] = replace_pattern(data['procedure'],
+                    modem_pattern, self.info.modem_id)
 
     def read_all_data(self, print_mod, test_count):
         """
@@ -37,9 +39,11 @@ class ModuleMobile(Module):
 
             Parameters:
                 print_mod (PrintModule): module designed for printing to terminal
-                test_count (list): list that saves values of total tests number, correct tests number and last memory usage
+                test_count (list): list that saves values of total tests number,
+                    correct tests number and last memory usage
             Returns:
-                (list): list that saves values of total tests number, correct tests number and last memory usage
+                (list): list that saves values of total tests number,
+                    correct tests number and last memory usage
         """
         log_msg(__name__, "info", f"Started {self.module_name} testing!")
         self.report.open_report()
@@ -65,14 +69,16 @@ class ModuleMobile(Module):
             param_values = data_area[i]
             modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
             method_name = f"get_modbus_and_device_data_register_count_{param_values['number']}"
-            modbus_data, device_data = self.call_data_collect_method(method_name, print_mod, modbus_registers_data, param_values)
+            modbus_data, device_data = self.call_data_collect_method(method_name, print_mod,
+                modbus_registers_data, param_values)
             if(modbus_data == self.DATA_COLLECT_FAIL):
                 continue
             self.check_and_write_test_results(modbus_data, device_data, print_mod, param_values)
 
     def get_modbus_and_device_data_register_count_16(self, modbus_registers_data, param_values, print_mod):
         """
-        Finds converted received data via Modbus TCP and device data when read register count is 16
+        Finds converted received data via Modbus TCP and device data
+            when read register count is 16
 
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers

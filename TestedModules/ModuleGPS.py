@@ -7,7 +7,7 @@ import struct
 from MainModules.Module import Module
 from Libraries.ConversionMethods import convert_timestamp_to_date, convert_string_to_date
 from Libraries.SSHMethods import enable_gps_service
-from MainModules.Logger import log_msg
+from Libraries.Logger import log_msg
 
 class ModuleGPS(Module):
 
@@ -35,9 +35,11 @@ class ModuleGPS(Module):
 
             Parameters:
                 print_mod (PrintModule): module designed for printing to terminal
-                test_count (list): list that saves values of total tests number, correct tests number and last memory usage
+                test_count (list): list that saves values of total tests number,
+                    correct tests number and last memory usage
             Returns:
-                (list): list that saves values of total tests number, correct tests number and last memory usage
+                (list): list that saves values of total tests number,
+                    correct tests number and last memory usage
         """
         log_msg(__name__, "info", f"Started {self.module_name} testing!")
         self.total_number = test_count[0]
@@ -48,7 +50,8 @@ class ModuleGPS(Module):
             param_values = self.data[i]
             modbus_registers_data = self.modbus.read_registers(param_values, print_mod)
             method_name = f"get_modbus_and_device_data_type_{param_values['type']}"
-            modbus_data, device_data = self.call_data_collect_method(method_name, print_mod, modbus_registers_data, param_values)
+            modbus_data, device_data = self.call_data_collect_method(method_name, print_mod,
+                modbus_registers_data, param_values)
             if(modbus_data == self.DATA_COLLECT_FAIL):
                 continue
             self.check_and_write_test_results(modbus_data, device_data, print_mod, param_values)
@@ -58,7 +61,8 @@ class ModuleGPS(Module):
 
     def get_modbus_and_device_data_type_timestamp(self, modbus_registers_data, param_values, print_mod): #147
         """
-        Finds converted received data via Modbus TCP and device data when register holds timestamp type information
+        Finds converted received data via Modbus TCP and device data
+            when register holds timestamp type information
 
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers
@@ -78,7 +82,8 @@ class ModuleGPS(Module):
 
     def get_modbus_and_device_data_type_date(self, modbus_registers_data, param_values, print_mod): #163
         """
-        Finds converted received data via Modbus TCP and device data when register holds date type information
+        Finds converted received data via Modbus TCP and device data
+            when register holds date type information
 
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers
@@ -96,7 +101,8 @@ class ModuleGPS(Module):
 
     def get_modbus_and_device_data_type_int(self, modbus_registers_data, param_values, print_mod):
         """
-        Finds converted received data via Modbus TCP and device data when register holds integer type information
+        Finds converted received data via Modbus TCP and device data
+            when register holds integer type information
 
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers
@@ -112,7 +118,8 @@ class ModuleGPS(Module):
 
     def get_modbus_and_device_data_type_float(self, modbus_registers_data, param_values, print_mod):
         """
-        Finds converted received data via Modbus TCP and device data when register holds float type information
+        Finds converted received data via Modbus TCP and device data
+            when register holds float type information
 
             Parameters:
                 modbus_registers_data (list): data that holds Modbus server's registers
@@ -169,12 +176,3 @@ class ModuleGPS(Module):
             add = '0' * add_count
             hex_data = hex_data[:2] + add + hex_data[2:]
             return hex_data
-            
-    # def convert_modbus_to_float(self, modbus_registers_data):
-    #     if(modbus_registers_data is None):
-    #         return modbus_registers_data
-    #     # [1, 2, 3, 4] bytes
-    #     decoder = BinaryPayloadDecoder.fromRegisters(modbus_registers_data, byteorder=Endian.Little, wordorder=Endian.Little,)
-    #     decoded_value = decoder.decode_32bit_float()
-    #     decoded_value = round(decoded_value, 6)
-    #     return decoded_value
