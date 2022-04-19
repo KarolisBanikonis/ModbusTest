@@ -1,10 +1,14 @@
+# Standard library imports
 import unittest
+
+# Third party imports
 from parameterized import parameterized
 
+# Local imports
 from MainModules.PrintModule import PrintModule
 from MainModules.ConfigurationModule import ConfigurationModule
-from Clients.SSHClient import SSHClient
 from MainModules.RegistersModule import RegistersModule
+from Clients.SSHClient import SSHClient
 import Libraries.SSHMethods as test
 
 class test_SSHMethods(unittest.TestCase):

@@ -1,7 +1,6 @@
 # Standard library imports
 import smtplib
 import ssl
-import socket
 
 # Local imports
 from Libraries.DataMethods import remove_colour_tags, remove_char
@@ -18,7 +17,7 @@ class EmailClient:
         """
         self.allowed = True
         self.port = 465
-        self.smtp = conf['SMTP']
+        self.smtp = "smtp.gmail.com"
         self.username = conf['USER']
         self.password = conf['PASSWORD']
         self.receiver = conf['RECEIVER']
@@ -44,11 +43,8 @@ class EmailClient:
                     server.login(self.username, self.password)
                     server.sendmail(self.username, self.receiver, text)
                 log_msg(__name__, "info", "Email was sent!")
-            except (smtplib.SMTPAuthenticationError, socket.gaierror) as err:
-                if isinstance(err, smtplib.SMTPAuthenticationError):
-                    warning_text = f"Email sending failed, check login credentials: {err}"
-                elif isinstance(err, socket.gaierror):
-                    warning_text = f"Email sending failed, check 'SMTP' value: {err}"
+            except smtplib.SMTPAuthenticationError as err:
+                warning_text = f"Email sending failed, check login credentials: {err}"
                 log_msg(__name__, "error", warning_text)
                 print_mod.warning(warning_text)
                 self.allowed = False

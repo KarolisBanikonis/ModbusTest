@@ -1,7 +1,8 @@
 # Local imports
-from Libraries.SSHMethods import get_df_used_memory, get_device_model, get_cpu_count, get_device_json_ubus_data, ssh_get_uci_hwinfo, get_modem_id
-from Clients.SSHClient import SSHClient
+from Libraries.SSHMethods import get_df_used_memory, get_device_model
+from Libraries.SSHMethods import get_device_json_ubus_data, ssh_get_uci_hwinfo, get_modem_id
 from Libraries.DataMethods import get_numbers_in_string
+from Clients.SSHClient import SSHClient
 
 class InformationModule:
 
@@ -21,7 +22,6 @@ class InformationModule:
         if(self.conn.setup_error is None):
             self.tmp_used_memory = get_df_used_memory(self.conn, "/tmp", print_mod)
             self.router_model = get_device_model(self.conn, self.data['Model'], print_mod)
-            self.cpu_count = get_cpu_count(self.conn, print_mod)
             self.mem_used_at_start = self.get_used_memory(print_mod)
             #Required for ModuleMobile
             self.dual_sim_status = ssh_get_uci_hwinfo(self.conn, "dual_sim", print_mod)
@@ -58,13 +58,8 @@ class InformationModule:
         """
         output = self.conn.ssh_issue_command("cat /proc/stat | grep 'cpu '", print_mod)
         all_state_times = get_numbers_in_string(output)
-        idle_time = all_state_times[3] # CIA NULUZTA
+        idle_time = all_state_times[3]
         total_time = sum(all_state_times)
         cpu_usage = 100.0 * (1.0 - idle_time / total_time)
         cpu_usage = round(cpu_usage, 3)
         return f"{cpu_usage}%"
-
-    # def get_cpu_usage(self):
-    #     cpu_idle = self.conn.ssh_issue_command("top n1 | grep idle | cut -c 33-35")
-    #     cpu_usage = 100 - int(cpu_idle)
-    #     return f"{cpu_usage}%"

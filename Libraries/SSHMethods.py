@@ -2,7 +2,8 @@
 import json
 
 # Local imports
-from Libraries.DataMethods import get_first_digit, get_used_memory_from_string, get_first_value_in_quotes
+from Libraries.DataMethods import get_first_digit, get_used_memory_from_string
+from Libraries.DataMethods import get_first_value_in_quotes
 from Libraries.ConversionMethods import convert_string_to_bytes
 
 def ssh_get_uci_hwinfo(ssh, subsystem, print_mod):
@@ -61,8 +62,8 @@ def get_device_json_ubus_data(ssh, register_params, print_mod):
         Returns:
             output (dict): information about device
     """
-    actual_data = ubus_call(ssh, register_params['service'], register_params['procedure'], print_mod)
-    parsed_data = json.loads(actual_data) # CIA NULUZTA
+    real_data = ubus_call(ssh, register_params['service'], register_params['procedure'], print_mod)
+    parsed_data = json.loads(real_data)
     return parsed_data
 
 def gsmctl_call(ssh, flag, print_mod):
@@ -102,7 +103,8 @@ def get_mobile_apn(ssh, print_mod, interface):
         Returns:
             output (str): specified mobile interface's APN
     """
-    output = ssh.ssh_issue_command(f"cat /etc/config/network | grep -A 10 {interface} | grep 'option apn'", print_mod)
+    command = f"cat /etc/config/network | grep -A 10 {interface} | grep 'option apn'"
+    output = ssh.ssh_issue_command(command, print_mod)
     if(output is not None):
         output = get_first_value_in_quotes(output)
     return output
@@ -138,7 +140,3 @@ def get_df_used_memory(ssh, mounted_on, print_mod):
     string_data = get_used_memory_from_string(data)
     bytes = convert_string_to_bytes(string_data)
     return bytes
-
-def get_cpu_count(ssh, print_mod): #unused
-    output = ssh.ssh_issue_command("grep 'model name' /proc/cpuinfo | wc -l", print_mod)
-    return get_first_digit(output)

@@ -2,7 +2,7 @@
 import csv
 
 # Local imports
-from Libraries.DataMethods import get_current_data_as_string
+from Libraries.DataMethods import get_current_date_as_string
 from Libraries.FileMethods import open_file, check_file_exists
 from MainModules.Logger import log_msg
 
@@ -18,8 +18,8 @@ class ReportModule:
                 info (InformationModule): module that holds router model information
         """
         self.router_model = info.router_model
-        self.report_file = f"{self.generate_file_name()}.csv"
-        self.report_file_path = f"{self.REPORTS_DIRECTORY}{self.report_file}"
+        self.report_file_name = f"{self.generate_file_name()}.csv"
+        self.report_file_path = f"{self.REPORTS_DIRECTORY}{self.report_file_name}"
         self.write_router_name_and_header()
 
     def generate_file_name(self):
@@ -29,7 +29,7 @@ class ReportModule:
             Returns:
                 file_name (str): generated report's file name
         """
-        self.start_date = get_current_data_as_string("%Y-%m-%d-%H-%M-%S")
+        self.start_date = get_current_date_as_string("%Y-%m-%d-%H-%M-%S")
         file_name = f"{self.router_model}-{self.start_date}"
         return file_name
 
@@ -61,7 +61,6 @@ class ReportModule:
             print_mod.warning(error_text)
             return None
 
-
     def close(self):
         """Closes report's file."""
         self.report.close()
@@ -69,11 +68,13 @@ class ReportModule:
     def write_router_name_and_header(self):
         """Writes initial information to report's file."""
         self.open_report()
-        self.writer.writerow(["Model", self.router_model, '', "Start time", self.start_date]) #, '', '', '', '', '', ''
+        self.writer.writerow(["Model", self.router_model, '', "Start time", self.start_date])
         self.writer.writerow([])
         self.write_header()
         self.close()
 
     def write_header(self):
         """Writes the column names of tests results to report's file."""
-        self.writer.writerow(['Test date','Iteration nr.', 'Module name','Register name', 'Register number', 'Modbus value', 'Router value', 'Result','Action','CPU usage','Total Used RAM','Used RAM difference'])
+        self.writer.writerow(['Test date','Iteration nr.', 'Module name','Register name',
+        'Register number', 'Modbus value', 'Router value', 'Result','Action',
+        'CPU usage','Total Used RAM','Used RAM difference'])

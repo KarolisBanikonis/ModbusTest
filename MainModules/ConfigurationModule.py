@@ -23,8 +23,8 @@ class ConfigurationModule(JsonFileModule):
                 print_mod (PrintModule): module designed for printing to terminal
         """
         config_file_data_types = [[str, int, str, str, int, int],
-        [bool, str, int, str, str, int],
-        [str, str, str, str, int],
+        [bool, str, str, str, int],
+        [str, str, str, int],
         [int, str, str]]
         i = 0
         for v in self.data.values():

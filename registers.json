@@ -17,9 +17,6 @@
             {
                 "name": "ModuleGPS",
                 "hw_info": "gps"
-            },
-            {
-                "name": "ModuleWrite"
             }
         ],
 		"Model":

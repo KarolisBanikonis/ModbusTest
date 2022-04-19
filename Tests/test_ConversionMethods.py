@@ -1,7 +1,11 @@
+# Standard library imports
 import unittest
-from parameterized import parameterized
 from datetime import datetime
 
+# Third party imports
+from parameterized import parameterized
+
+# Local imports
 import Libraries.ConversionMethods as test
 
 class test_ConversionMethods(unittest.TestCase):

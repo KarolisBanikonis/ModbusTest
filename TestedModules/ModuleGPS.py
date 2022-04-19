@@ -25,6 +25,9 @@ class ModuleGPS(Module):
         super().__init__(data, ssh, modbus, info, report, __class__.__name__)
         self.action = self.READ_ACTION
         enable_gps_service(self.ssh)
+        a = self.convert_modbus_to_float([7915, 23611])
+        b = self.convert_modbus_to_float([350, 48958])
+        c = 10
 
     def read_all_data(self, print_mod, test_count):
         """
@@ -138,7 +141,7 @@ class ModuleGPS(Module):
         hex_bytes = []
         for register_data in modbus_registers_data:
             hex_data = hex(register_data)
-            hex_data = self.__format_hex_data(hex_data)
+            hex_data = self.format_hex_data(hex_data)
             hex_bytes.append(hex_data[2:4])
             hex_bytes.append(hex_data[4:6])
         hex_bytes.reverse()
@@ -149,7 +152,7 @@ class ModuleGPS(Module):
         result = round(result, 6)
         return result
 
-    def __format_hex_data(self, hex_data):
+    def format_hex_data(self, hex_data):
         """
         Formats hexcadecimal data to 4 byte length
 

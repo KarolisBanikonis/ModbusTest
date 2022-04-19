@@ -7,11 +7,10 @@ import re
 from multipledispatch import dispatch
 
 # Local imports
-from Libraries.DataMethods import remove_char
+from Libraries.DataMethods import remove_char, get_current_date_as_string
 from Libraries.SSHMethods import get_device_json_ubus_data
 from MainModules.Logger import log_msg
 from MainModules.MethodIsNotCallableError import MethodIsNotCallableError
-from Libraries.DataMethods import get_current_data_as_string
 
 class Module:
 
@@ -47,6 +46,8 @@ class Module:
         self.report = report
         self.total_number = 0
         self.correct_number = 0
+        self.action = "Not defined"
+        self.memory = 0
 
     def print_test_results(self, print_mod, param_values, modbus_data, device_data, cpu, ram):
         """
@@ -61,11 +62,17 @@ class Module:
                 ram (str): current RAM usage
         """
         print_mod.print_at_row(1, f"Tests were done - {self.total_number}.")
-        print_mod.print_at_row(2, f"{print_mod.colour_text(f'Tests passed - {self.correct_number}.', 'GREEN')}{print_mod.colour_text(f' Tests failed - {self.total_number - self.correct_number}.', 'RED')}")
+        passed = f"Tests passed - {self.correct_number}. "
+        failed = f"Tests failed - {self.total_number - self.correct_number}."
+        print_mod.print_at_row(2,
+            (f"{print_mod.colour_text(passed, 'GREEN')}" +
+            f"{print_mod.colour_text(failed, 'RED')}"))
         print_mod.print_at_row(3, f"CPU usage - {cpu}. RAM usage: {ram}.")
         print_mod.print_at_row(4, f"Module being tested - {self.module_name}.")
-        print_mod.print_at_row(5, f"Testing - {param_values['name']}. Address - {param_values['address']}.")
-        print_mod.print_at_row(6, f"Value from Modbus - {modbus_data}. Value from router - {device_data}.")
+        print_mod.print_at_row(5, (f"Testing - {param_values['name']}. " +
+            f"Address - {param_values['address']}."))
+        print_mod.print_at_row(6, (f"Value from Modbus - {modbus_data}." +
+            f"Value from router - {device_data}."))
 
     def call_data_collect_method(self, method_name, print_mod, additional_data, param_values):
         """
@@ -80,7 +87,8 @@ class Module:
                     is bool value which indicates is writing performed first time
                 param_values (dict): current register's parameters information
             Returns:
-                modbus_data (str|int|float|datetime): if it is module that reads values from Modbus TCP, then
+                modbus_data (str|int|float|datetime): if it is module that reads
+                    values from Modbus TCP, then
                     it is converted data received via Modbus TCP
                     if it is module that writes values with Modbus TCP then
                     it is what data was written with Modbus TCP
@@ -108,7 +116,8 @@ class Module:
         Checks if test passed and writes results to terminal and report.
 
             Parameters:
-                modbus_data (str|int|float|datetime): if it is module that reads values from Modbus TCP, then
+                modbus_data (str|int|float|datetime): if it is module that reads
+                    values from Modbus TCP, then
                     it is converted data received via Modbus TCP
                     if it is module that writes values with Modbus TCP then
                     it is what data was written with Modbus TCP
@@ -123,12 +132,14 @@ class Module:
         cpu_usage = self.info.get_cpu_usage(print_mod)
         memory_difference = self.memory - past_memory
         total_mem_difference = self.info.mem_used_at_start - self.memory
-        date = get_current_data_as_string()
-        self.report.writer.writerow([date, self.total_number, self.module_name, param_values['name'], param_values['address'],
-        results[0], results[1], results[2], self.action, cpu_usage, total_mem_difference, memory_difference])
-        self.print_test_results(print_mod, param_values, results[0], results[1], cpu_usage, total_mem_difference)
+        date = get_current_date_as_string()
+        self.report.writer.writerow([date, self.total_number, self.module_name,
+            param_values['name'], param_values['address'], results[0], results[1], results[2],
+            self.action, cpu_usage, total_mem_difference, memory_difference])
+        self.print_test_results(print_mod, param_values, results[0], results[1],
+            cpu_usage, total_mem_difference)
 
-    def convert_modbus_to_int_1(self, modbus_data):
+    def convert_modbus_to_int_1(self, modbus_registers_data):
         """
         Performs default data conversions when 1 register was read
 
@@ -137,10 +148,10 @@ class Module:
             Returns:
                 modbus_data (int): converted data received via Modbus TCP
         """
-        if(modbus_data is None):
-            return modbus_data
-        modbus_data = modbus_data[0]
-        return modbus_data
+        if(modbus_registers_data is None):
+            return modbus_registers_data
+        modbus_registers_data = modbus_registers_data[0]
+        return modbus_registers_data
 
     def convert_modbus_to_int_2(self, modbus_registers_data):
         """
@@ -173,11 +184,13 @@ class Module:
         text = ""
         for i in range(len(modbus_registers_data)):
             if(modbus_registers_data[i] != 0):
-                two_symbols = modbus_registers_data[i].to_bytes((modbus_registers_data[i].bit_length() + 7) // 8, 'big').decode()
-                text += two_symbols 
+                bits = modbus_registers_data[i].bit_length() + 7
+                two_symbols = modbus_registers_data[i].to_bytes(bits // 8, 'big').decode()
+                text += two_symbols
             else:
                 break
-        modbus_data = remove_char(text, "\x00") # this step needed for 348, 103, 119(mobile), also gps
+        # This step is needed for 348, 103, 119(mobile) registers, also gps
+        modbus_data = remove_char(text, "\x00")
         return modbus_data
 
     def binary_to_decimal(self, binary_number):
@@ -276,7 +289,7 @@ class Module:
         else:
             return self.RESULT_PASSED
 
-    def check_if_datetime_pass(self, data1, data2):
+    def check_if_datetime_pass(self, modbus_data, device_data):
         """
         Checks if test is successful when received data's type is datetime
 
@@ -286,7 +299,7 @@ class Module:
             Returns:
                 (str): result of test
         """
-        difference = math.fabs((data1-data2).total_seconds())
+        difference = math.fabs((modbus_data-device_data).total_seconds())
         if(difference > self.DATATIME_ERROR):
             return self.RESULT_FAILED
         else:
@@ -416,7 +429,7 @@ class Module:
 
     def check_if_value_exists(self, data, key):
         """
-        Check if specified key exists 
+        Check if specified key exists
 
             Parameters:
                 key (str): what parameter value is requested
@@ -440,7 +453,7 @@ class Module:
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
-                device_data (int|str|float): parsed data received via SSH
+                device_data (int|str|float|None): parsed data received via SSH
         """
         json_data = get_device_json_ubus_data(self.ssh, param_values, print_mod)
         if(self.check_if_value_exists(param_values, 'parse')):

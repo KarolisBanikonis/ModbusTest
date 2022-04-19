@@ -12,12 +12,12 @@ class FTPClient:
         Initializes FTPClient object. Set settings required for storing files with FTP.
 
             Parameters:
-                conf (ConfigurationModule): module that holds configuration information
+                conf (dict): dictionary that holds configuration information for storing files with FTP
                 report (ReportModule): module designed to write test results to report file
         """
         self.allowed = conf['FTP_USE']
         self.host = conf['FTP_HOST']
-        self.port = conf['FTP_PORT']
+        self.port = 21
         self.username = conf['FTP_USER']
         self.password = conf['FTP_PASSWORD']
         self.interval = conf['INTERVAL_MINUTES']

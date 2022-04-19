@@ -14,7 +14,7 @@ class SSHClient:
         Initializes SSHClient object. Set settings required for establishing SSH connection.
 
             Parameters:
-                conf (ConfigurationModule): module that holds configuration information
+                conf (dict): dictionary that holds configuration information
                 print_mod (PrintModule): module designed for printing to terminal
         """
         self.ssh = paramiko.client.SSHClient()
@@ -34,21 +34,18 @@ class SSHClient:
             Parameters:
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
-                None, if setup was successful
-                error_text (str): occurred error's text, if setup was not successful
+                error_text (str|None): occurred error's text, if setup was not successful,
+                    None, if setup was successful
         """
+        error_text = None
         try:
             self.ssh.connect(self.host, username=self.username, password=self.password, timeout=self.timeout)
             log_msg(__name__, "info", "SSH setup is successful!")
-            return None
-        except (paramiko.AuthenticationException,
-        paramiko.ssh_exception.NoValidConnectionsError, OSError) as err:
-            error_text = ""
+            return error_text
+        except (paramiko.AuthenticationException, OSError) as err:
             if isinstance(err, paramiko.AuthenticationException):
                 error_text = "SSH Authentication failed, check your credentials!"
-            elif isinstance(err, paramiko.ssh_exception.NoValidConnectionsError):
-                error_text = f"Not valid SSH connection: {err}"
-            else: #OSError
+            else:
                 error_text = f"SSH connection failed, check 'SERVER_HOST' value and if cable is connected: {err}."
             print_mod.error(error_text)
             log_msg(__name__, "critical", error_text)
@@ -65,6 +62,8 @@ class SSHClient:
 
             Parameters:
                 print_mod (PrintModule): module designed for printing to terminal
+            Returns:
+                Raises ConnectionFailedError exception, if connection was not established
         """
         state = self.ssh.get_transport().is_active()
         if state:

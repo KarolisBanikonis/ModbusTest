@@ -44,7 +44,7 @@ def remove_char(input, characters):
     data = input.translate(remove_table)
     return data
 
-def get_first_value_in_parenthesis(data):
+def get_first_value_in_parenthesis(input):
     """
     Finds first value between parenthesis in string input.
 
@@ -54,7 +54,7 @@ def get_first_value_in_parenthesis(data):
             result (str): value found between parenthesis in input
     """
     pattern = '\((.*?)\)'
-    result = re.search(pattern, data).group(1)
+    result = re.search(pattern, input).group(1)
     return result
 
 def get_used_memory_from_string(input):
@@ -82,14 +82,14 @@ def remove_colour_tags(input):
     pattern = '\[.*?m'
     return re.sub(pattern, '', input)
 
-def get_current_data_as_string(format="%Y-%m-%d-%H:%M:%S"):
+def get_current_date_as_string(format="%Y-%m-%d-%H:%M:%S"):
     """
-    Gets current data in string with specified format.
+    Gets current date in string with specified format.
 
         Parameters:
             format (str): format in which date should be displayed
         Returns:
-            current_data (str): formatted date
+            current_date (str): formatted date
     """
     current_date = datetime.now().strftime(format)
     return current_date
@@ -107,7 +107,7 @@ def replace_pattern(input, pattern, replace_to):
     """
     return re.sub(pattern, replace_to, input)
 
-def get_first_value_in_quotes(data):
+def get_first_value_in_quotes(input):
     """
     Finds first value between single quotes in string input.
 
@@ -117,5 +117,5 @@ def get_first_value_in_quotes(data):
             result (str): valus found between quotes in input
     """
     pattern = '\'(.*?)\''
-    result = re.search(pattern, data).group(1)
+    result = re.search(pattern, input).group(1)
     return result

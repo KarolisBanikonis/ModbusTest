@@ -50,7 +50,8 @@ class JsonFileModule:
             Parameters:
                 key (str): what parameter value is requested
             Returns:
-                data (str): requested part of data
+                data (str): requested part of data, if it exists
+                None, if it does not exist
         """
         if(type(data) == dict):
             if(key in data.keys()):

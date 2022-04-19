@@ -1,6 +1,10 @@
+# Standard library imports
 import unittest
+
+# Third party imports
 from parameterized import parameterized
 
+# Local imports
 import Libraries.FileMethods as test
 
 class test_FileMethods(unittest.TestCase):

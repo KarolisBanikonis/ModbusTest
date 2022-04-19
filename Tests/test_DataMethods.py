@@ -1,6 +1,10 @@
+# Standard library imports
 import unittest
+
+# Third party imports
 from parameterized import parameterized
 
+# Local imports
 import Libraries.DataMethods as test
 
 class test_DataMethods(unittest.TestCase):
@@ -78,5 +82,5 @@ class test_DataMethods(unittest.TestCase):
         self.assertEqual(calculated, actual)
 
     def test_get_current_date_in_string(self):
-        calculated = test.get_current_data_as_string()
+        calculated = test.get_current_date_as_string()
         self.assertIs(str, type(calculated))

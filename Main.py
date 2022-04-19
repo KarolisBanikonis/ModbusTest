@@ -7,7 +7,7 @@ import time
 
 # Local imports
 from Libraries.FileMethods import close_all_instances
-from Libraries.DataMethods import get_current_data_as_string
+from Libraries.DataMethods import get_current_date_as_string
 from MainModules.ConnectionFailedError import ConnectionFailedError
 from MainModules.ModuleLoader import ModuleLoader
 from MainModules.ConfigurationModule import ConfigurationModule
@@ -33,7 +33,8 @@ def main():
     if(ssh_client.setup_error is not None):
         quit()
     info = InformationModule(ssh_client,
-    registers.get_param(registers.data, 'InformationModule'), print_mod, conf.get_param(conf.data, 'ModbusWrite'))
+    registers.get_param(registers.data, 'InformationModule'),
+        print_mod, conf.get_param(conf.data, 'ModbusWrite'))
     report = ReportModule(info)
     modbus = Modbus(conf.get_main_settings(), print_mod)
     if(modbus.setup_error is not None):
@@ -48,7 +49,8 @@ def main():
     # scheduler.send_email_periodically([print_mod])
     scheduler.store_ftp_periodically([print_mod])
     scheduler.start()
-    terminal_header = f"Model - {info.router_model}. Start time: {get_current_data_as_string('%Y-%m-%d-%H-%M')}."
+    current_date = get_current_date_as_string('%Y-%m-%d-%H-%M')
+    terminal_header = f"Model - {info.router_model}. Start time: {current_date}."
     print_mod.print_at_row(0, terminal_header)
     try:
         while True:

@@ -1,13 +1,11 @@
 # Standard library imports
 import logging
 
-# Local imports
-
-REPORTS_DIRECTORY = "Logs/"
+LOGS_DIRECTORY = "Logs/"
 FILE_NAME = "Log.log"
 
 def get_log_file_path():
-    path_to_file = f"{REPORTS_DIRECTORY}{FILE_NAME}"
+    path_to_file = f"{LOGS_DIRECTORY}{FILE_NAME}"
     return path_to_file
 
 def prepare_file(path_to_file):
@@ -24,7 +22,7 @@ def prepare_file(path_to_file):
         open(path_to_file, 'w').close()
         return True
     except FileNotFoundError:
-        print(f"Directory '{REPORTS_DIRECTORY}' does not exist.")
+        print(f"Directory '{LOGS_DIRECTORY}' does not exist.")
         return False
 
 def init_logger(name):
@@ -52,7 +50,7 @@ def init_logger(name):
     else:
         return None
 
-Logger = init_logger(__name__)
+LOGGER = init_logger(__name__)
 
 def log_msg(name, severity, msg):
     """
@@ -63,10 +61,10 @@ def log_msg(name, severity, msg):
             severity (str): level of importance
             msg (str): message to be logged
     """
-    if(Logger is not None):
+    if(LOGGER is not None):
         try:
-            Logger.name = name
-            function = getattr(Logger, severity)
+            LOGGER.name = name
+            function = getattr(LOGGER, severity)
             is_function_callable = callable(function)
             if(is_function_callable):
                 function(msg)

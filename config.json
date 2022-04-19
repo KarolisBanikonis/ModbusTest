@@ -2,7 +2,7 @@
     "Settings":
     {
         "SERVER_HOST": "192.168.1.1",
-        "MODBUS_PORT": 518,
+        "MODBUS_PORT": 502,
         "USERNAME": "root",
         "PASSWORD": "Admin123",
         "RECONNECT_ATTEMPTS": 7,
@@ -12,16 +12,14 @@
     {
         "FTP_USE": true,
         "FTP_HOST": "127.0.0.1",
-        "FTP_PORT": 21,
         "FTP_USER": "ftpuser",
         "FTP_PASSWORD": "Admin123",
         "INTERVAL_MINUTES": 10
     },
     "Email":
     {
-        "SMTP": "smtp.gmail.com",
         "USER": "labas0113@gmail.com",
-        "PASSWORD": "belekas1111",
+        "PASSWORD": "belekas111",
         "RECEIVER": "labas0113@gmail.com",
         "INTERVAL_HOURS": 1
     },

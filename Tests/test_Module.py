@@ -2,18 +2,18 @@
 from datetime import datetime
 import unittest
 
+# Third party imports
+from parameterized import parameterized
+
 # Local imports
 from MainModules.PrintModule import PrintModule
 from MainModules.ConfigurationModule import ConfigurationModule
-from Clients.SSHClient import SSHClient
 from MainModules.RegistersModule import RegistersModule
 from MainModules.Module import Module
-from Clients.Modbus import Modbus
 from MainModules.InformationModule import InformationModule
 from MainModules.ReportModule import ReportModule
-
-# Third party imports
-from parameterized import parameterized
+from Clients.SSHClient import SSHClient
+from Clients.Modbus import Modbus
 
 class test_Module(unittest.TestCase):
 
@@ -27,9 +27,10 @@ class test_Module(unittest.TestCase):
         cls.ssh_client = SSHClient(cls.conf.get_main_settings(), cls.print_mod)
         cls.modbus = Modbus(cls.conf.get_main_settings(), cls.print_mod)
         cls.info = InformationModule(cls.ssh_client, cls.registers.get_param(cls.registers.data,
-        'InformationModule'), cls.print_mod, cls.conf.get_param(cls.conf.data, 'ModbusWrite'))
+            'InformationModule'), cls.print_mod, cls.conf.get_param(cls.conf.data, 'ModbusWrite'))
         cls.report = ReportModule(cls.info)
-        cls.module = Module(cls.registers, cls.ssh_client, cls.modbus, cls.info, cls.report, "Module")
+        cls.module = Module(cls.registers, cls.ssh_client, cls.modbus,
+            cls.info, cls.report, "Module")
 
     @classmethod
     def tearDownClass(cls):
@@ -96,9 +97,10 @@ class test_Module(unittest.TestCase):
         self.assertEqual(calculated, actual)
 
     @parameterized.expand([
-        ["84.15.161.183", ["192.168.1.1", "127.0.0.1", "84.15.161.183"], ("Passed", "84.15.161.183")],
+        ["84.15.161.183", ["192.168.1.1", "127.0.0.1", "84.15.161.183"],
+            ("Passed", "84.15.161.183")],
         ["10.0.1.54", ["192.168.1.1", "127.0.0.1", "84.15.161.183"],
-        ("Failed", ["192.168.1.1", "127.0.0.1", "84.15.161.183"])],
+            ("Failed", ["192.168.1.1", "127.0.0.1", "84.15.161.183"])],
         ["10.1.1.30", ["10.1.1.30"], ("Passed", "10.1.1.30")]
     ])
     def test_check_if_list_pass(self, str_data, list_data, actual):
@@ -207,11 +209,11 @@ class test_Module(unittest.TestCase):
 
     # Default error value is 60 seconds
     @parameterized.expand([
-        [datetime(2001,10,5,13,20,1), datetime(2001,10,5,13,21,2), 
+        [datetime(2001,10,5,13,20,1), datetime(2001,10,5,13,21,2),
         [datetime(2001,10,5,13,20,1), datetime(2001,10,5,13,21,2), "Failed"]],
-        [datetime(2001,10,5,13,20,1), datetime(2001,10,5,13,21,1), 
+        [datetime(2001,10,5,13,20,1), datetime(2001,10,5,13,21,1),
         [datetime(2001,10,5,13,20,1), datetime(2001,10,5,13,21,1), "Passed"]],
-        [datetime(2022,6,1,18,4,19), datetime(2022,6,1,18,56,19), 
+        [datetime(2022,6,1,18,4,19), datetime(2022,6,1,18,56,19),
         [datetime(2022,6,1,18,4,19), datetime(2022,6,1,18,56,19), "Failed"]]
     ])
     def test_check_if_results_match_datetime(self, data1: datetime, data2: datetime, actual):

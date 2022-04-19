@@ -10,8 +10,10 @@ def check_file_exists(path_to_file):
 
         Parameters:
             path_to_file (str): at what path file should be checked
+        Returns:
+            Raises FileNotFoundError exception, if specified file does not exist
     """
-    if(os.path.exists(path_to_file) == False or os.path.isfile(path_to_file) == False):
+    if(os.path.exists(path_to_file) is False or os.path.isfile(path_to_file) is False):
         raise FileNotFoundError()
     else:
         log_msg(__name__, "info", f"File at - {path_to_file} successfully found.")
