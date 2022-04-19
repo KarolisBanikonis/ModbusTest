@@ -1,15 +1,4 @@
-2022-04-19 16:02:28,615 - Libraries.FileMethods - INFO - File at - config.json successfully found.
-2022-04-19 16:02:28,615 - Libraries.FileMethods - INFO - File at - registers.json successfully found.
-2022-04-19 16:02:28,787 - Clients.SSHClient - INFO - SSH setup is successful!
-2022-04-19 16:02:28,913 - Clients.Modbus - INFO - Modbus setup is successful!
-2022-04-19 16:02:29,027 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleSystem was loaded!
-2022-04-19 16:02:29,027 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleSystem.ModuleSystem'> was initialized!
-2022-04-19 16:02:29,028 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleNetwork was loaded!
-2022-04-19 16:02:29,028 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleNetwork.ModuleNetwork'> was initialized!
-2022-04-19 16:02:29,028 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleMobile was loaded!
-2022-04-19 16:02:29,028 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleMobile.ModuleMobile'> was initialized!
-2022-04-19 16:02:29,029 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleGPS was loaded!
-2022-04-19 16:02:29,123 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleGPS.ModuleGPS'> was initialized!
-2022-04-19 16:02:29,188 - TestedModules.ModuleSystem - INFO - Started ModuleSystem testing!
-2022-04-19 16:02:32,838 - __main__ - CRITICAL - User stopped tests with KeyboardInterrupt.
-2022-04-19 16:02:32,838 - __main__ - CRITICAL - Program is terminated!
+2022-04-19 16:34:51,150 - Libraries.FileMethods - INFO - File at - config.json successfully found.
+2022-04-19 16:34:51,656 - Clients.Modbus - CRITICAL - Modbus can not establish connection!
+2022-04-19 16:34:52,682 - Clients.Modbus - CRITICAL - Modbus can not establish connection!
+2022-04-19 16:34:52,696 - Clients.Modbus - CRITICAL - Modbus port value must be between 1 and 65535!

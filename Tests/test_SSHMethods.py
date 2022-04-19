@@ -12,7 +12,7 @@ from Clients.SSHClient import SSHClient
 import Libraries.SSHMethods as test
 
 class test_SSHMethods(unittest.TestCase):
-    # Tests checked with RUTX09 and RUT955 devices, results may differ with other devices.
+
     @classmethod
     def setUpClass(cls):
         CONFIGURATION_FILE = "config.json"
