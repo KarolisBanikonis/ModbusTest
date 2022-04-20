@@ -1,4 +1,0 @@
-2022-04-19 16:34:51,150 - Libraries.FileMethods - INFO - File at - config.json successfully found.
-2022-04-19 16:34:51,656 - Clients.Modbus - CRITICAL - Modbus can not establish connection!
-2022-04-19 16:34:52,682 - Clients.Modbus - CRITICAL - Modbus can not establish connection!
-2022-04-19 16:34:52,696 - Clients.Modbus - CRITICAL - Modbus port value must be between 1 and 65535!

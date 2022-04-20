@@ -4,19 +4,31 @@ from sys import platform
 # Third party imports
 from apscheduler.schedulers.background import BackgroundScheduler
 
+# Local imports
+from Clients.EmailClient import EmailClient
+from Clients.FTPClient import FTPClient
+
 class Scheduler:
 
-    def __init__(self, ftp, email):
+    def __init__(self, email_settings, ftp_settings, report, print_mod):
         """
         Initializes Scheduler object.
 
             Parameters:
-                ftp (FTPClient): module designed to upload report to FTP server
-                email (EmailClient): module designed to send emails
+                email_settings (dict): configuration infromation for
+                    sending emails
+                ftp_settings (dict): configuration information for 
+                    uploading report to FTP server
+                report (ReportModule): module designed to write test results to report file
+                print_mod (PrintModule): module designed for printing to terminal
         """
-        self.ftp = ftp
-        self.email = email
         self.scheduler = BackgroundScheduler()
+        self.email = EmailClient(email_settings)
+        self.send_email_periodically([print_mod])
+        if(ftp_settings['FTP_USE']):
+            self.ftp = FTPClient(ftp_settings, report)
+            self.store_ftp_periodically([print_mod])
+        self.start()
 
     def start(self):
         """
@@ -32,9 +44,8 @@ class Scheduler:
                 print_mod (PrintModule): module designed for printing to terminal
             and also it contains information that is sent in an email
         """
-        if(self.email.allowed):
-            self.scheduler.add_job(self.email.send_email, 'interval',
-                hours=self.email.interval, args=print_mod)
+        self.scheduler.add_job(self.email.send_email, 'interval',
+            hours=self.email.interval, args=print_mod)
 
     def store_ftp_periodically(self, print_mod):
         """
@@ -43,6 +54,6 @@ class Scheduler:
             Parameters:
                 print_mod (PrintModule): module designed for printing to terminal
         """
-        if(self.ftp.allowed and platform == "linux"):
+        if(platform == "linux"):
             self.scheduler.add_job(self.ftp.store_report, 'interval',
                 minutes=self.ftp.interval, args=print_mod)

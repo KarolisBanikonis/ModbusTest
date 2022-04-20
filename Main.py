@@ -19,8 +19,6 @@ from MainModules.Scheduler import Scheduler
 from MainModules.PrintModule import PrintModule
 from Clients.SSHClient import SSHClient
 from Clients.Modbus import Modbus
-from Clients.FTPClient import FTPClient
-from Clients.EmailClient import EmailClient
 
 CONFIGURATION_FILE = "config.json"
 REGISTERS_FILE = "registers.json"
@@ -32,26 +30,21 @@ def main():
     ssh_client = SSHClient(conf.get_main_settings(), print_mod)
     if(ssh_client.setup_error is not None):
         quit()
-    info = InformationModule(ssh_client,
-    registers.get_param(registers.data, 'InformationModule'),
-        print_mod, conf.get_param(conf.data, 'ModbusWrite'))
-    report = ReportModule(info)
     modbus = Modbus(conf.get_main_settings(), print_mod)
     if(modbus.setup_error is not None):
         close_all_instances([ssh_client])
+    info = InformationModule(ssh_client,
+        registers.get_param(registers.data, 'InformationModule'),
+        print_mod, conf.get_param(conf.data, 'ModbusWrite'))
+    report = ReportModule(info)
     module_loader = ModuleLoader(registers.get_modules_data(), ssh_client, print_mod)
     module_instances = module_loader.init_modules(registers.data, modbus, info, report)
-    test_count = [0, 0, info.mem_used_at_start] # test_number, correct_number, used_ram
-    if(conf.get_param(conf.get_ftp_settings(), 'FTP_USE')):
-        ftp_client = FTPClient(conf.get_ftp_settings(), report)
-    email = EmailClient(conf.get_email_settings())
-    scheduler = Scheduler(ftp_client, email)
-    scheduler.send_email_periodically([print_mod])
-    scheduler.store_ftp_periodically([print_mod])
-    scheduler.start()
+    scheduler = Scheduler(conf.get_email_settings(), conf.get_ftp_settings(),
+        report, print_mod)
     current_date = get_current_date_as_string('%Y-%m-%d-%H-%M')
     terminal_header = f"Model - {info.router_model}. Start time: {current_date}."
     print_mod.print_at_row(0, terminal_header)
+    test_count = [0, 0, info.mem_used_at_start] # test_number, correct_number, used_ram
     try:
         while True:
             # 0 - System, 1 - Network, 2 - Mobile, 3 - GPS, 4 - Write

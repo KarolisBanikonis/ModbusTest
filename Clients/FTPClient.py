@@ -62,7 +62,7 @@ class FTPClient:
         if self.allowed:
             report = self.report_module.open_report_for_ftp(print_mod)
             if report is not None:
-                command = f'STOR {self.report_module.report_file}'
+                command = f'STOR {self.report_module.report_file_name}'
                 self.ftp.storbinary(command, report)
                 log_msg(__name__, "info", "Report was uploaded with FTP successfully.")
                 report.close()
