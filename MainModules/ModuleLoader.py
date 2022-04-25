@@ -23,7 +23,6 @@ class ModuleLoader:
         self.print_mod = print_mod
         self.modules_data = modules_data
         self.modules_to_load = []
-        self.check_hw_info()
 
     def check_hw_info(self):
         """Finds which tested modules should be loaded."""
@@ -48,6 +47,7 @@ class ModuleLoader:
                 tested_modules (list): list of initialized tested modules
         """
         tested_modules = []
+        self.check_hw_info()
         for module_name in self.modules_to_load:
             module = self.load_module(module_name)
             if(module != None):

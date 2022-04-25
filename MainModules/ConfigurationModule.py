@@ -14,7 +14,7 @@ class ConfigurationModule(JsonFileModule):
         """
         super().__init__(path_to_file, print_mod)
         validation_error = self.validate_data()
-        self.check_if_validation_error_exists(print_mod, validation_error)
+        self.check_if_error_exists(print_mod, validation_error)
 
     def validate_data(self):
         """
@@ -25,15 +25,15 @@ class ConfigurationModule(JsonFileModule):
                     None, if there is no error
         """
         first_level_key_count = 4
-        second_level_key_count = [6, 5, 4, 3]
+        second_level_key_count = [5, 5, 4, 3]
         config_file_first_level_keys = ["Settings", "FTP",
             "Email", "ModbusWrite"]
         config_file_second_level_keys = [["SERVER_HOST",
-            "MODBUS_PORT", "USERNAME", "PASSWORD", "RECONNECT_ATTEMPTS", "TIMEOUT"],
+            "USERNAME", "PASSWORD", "RECONNECT_ATTEMPTS", "TIMEOUT"],
             ["FTP_USE", "FTP_HOST", "FTP_USER", "FTP_PASSWORD", "INTERVAL_MINUTES"],
             ["USER", "PASSWORD", "RECEIVER", "INTERVAL_HOURS"],
             ["SIM", "CHANGE_APN", "DEFAULT_APN"]]
-        config_file_data_types = [[str, int, str, str, int, int],
+        config_file_data_types = [[str, str, str, int, int],
             [bool, str, str, str, int],
             [str, str, str, int],
             [int, str, str]]
@@ -71,7 +71,7 @@ class ConfigurationModule(JsonFileModule):
             i += 1
         return error_text
 
-    def check_if_validation_error_exists(self, print_mod, validation_error):
+    def check_if_error_exists(self, print_mod, validation_error):
         """
         Check if program should be stopped,
         because of wrong data in configuration file.

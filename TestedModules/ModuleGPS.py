@@ -25,9 +25,6 @@ class ModuleGPS(Module):
         super().__init__(data, ssh, modbus, info, report, __class__.__name__)
         self.action = self.READ_ACTION
         enable_gps_service(self.ssh)
-        a = self.convert_modbus_to_float([7915, 23611])
-        b = self.convert_modbus_to_float([350, 48958])
-        c = 10
 
     def read_all_data(self, print_mod, test_count):
         """
@@ -65,7 +62,7 @@ class ModuleGPS(Module):
             when register holds timestamp type information
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list): list that holds Modbus server's registers values
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
@@ -86,7 +83,7 @@ class ModuleGPS(Module):
             when register holds date type information
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list): list that holds Modbus server's registers values
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
@@ -105,7 +102,7 @@ class ModuleGPS(Module):
             when register holds integer type information
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list): list that holds Modbus server's registers values
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
@@ -122,7 +119,7 @@ class ModuleGPS(Module):
             when register holds float type information
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list): list that holds Modbus server's registers values
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
@@ -138,10 +135,11 @@ class ModuleGPS(Module):
         Converts received data via Modbus TCP to float type data
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list|None): list that holds Modbus server's registers values
+                    or None if read was not successful
             Returns:
-                result (float): converted data to float value
-                None, if modbus_registers_data is None
+                result (float): converted data to float value, if list was passed
+                None, if None was passed
         """
         if(modbus_registers_data is None):
             return None

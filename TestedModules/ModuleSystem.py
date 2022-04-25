@@ -19,18 +19,20 @@ class ModuleSystem(Module):
         super().__init__(data, ssh, modbus, info, report, __class__.__name__)
         self.action = self.READ_ACTION
 
-    def convert_modbus_to_signal(self, read_data):
+    def convert_modbus_to_signal(self, modbus_registers_data):
         """
         Converts via Modbus TCP received registers values to mobile signal strength
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list|None): list that holds Modbus server's registers values
+                    or None if read was not successful
             Returns:
-                signal_strength (int): mobile signal strength
+                signal_strength (int): mobile signal strength, if list was passed
+                None, if None was passed
         """
-        if(read_data is None):
-            return read_data
-        signal_strength = read_data[1] - 65536
+        if(modbus_registers_data is None):
+            return None
+        signal_strength = modbus_registers_data[1] - 65536
         return signal_strength
 
     def read_all_data(self, print_mod, test_count):
@@ -69,7 +71,7 @@ class ModuleSystem(Module):
             when read register count is 1 and ubus is used to get device data
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list): list that holds Modbus server's registers values
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
@@ -86,7 +88,7 @@ class ModuleSystem(Module):
             when read register count is 2 and ubus is used to get device data
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list): list that holds Modbus server's registers values
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
@@ -106,7 +108,7 @@ class ModuleSystem(Module):
             when read register count is 2 and gsmctl is used to get device data
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list): list that holds Modbus server's registers values
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
@@ -123,7 +125,7 @@ class ModuleSystem(Module):
             when read register count is 16 and ubus is used to get device data
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list): list that holds Modbus server's registers values
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:

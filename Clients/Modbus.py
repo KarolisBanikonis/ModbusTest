@@ -19,7 +19,7 @@ class Modbus:
                 print_mod (PrintModule): module designed for printing to terminal
         """
         self.host = conf['SERVER_HOST']
-        self.port = conf['MODBUS_PORT']
+        self.port = 502
         self.connect_attempts = conf['RECONNECT_ATTEMPTS']
         self.timeout = conf['TIMEOUT']
         self.client = ModbusClient(timeout=0.5)
@@ -76,7 +76,7 @@ class Modbus:
                     try_connect_nr += 1
                     error_text = (f"Reconnecting Modbus attempt nr. {try_connect_nr} " +
                     f"out of {self.connect_attempts}!")
-                    log_msg(__name__, "critical", error_text)
+                    log_msg(__name__, "error", error_text)
                     print_mod.warning(error_text)
                     time.sleep(self.timeout)
                     if not self.client.is_open():
@@ -87,6 +87,8 @@ class Modbus:
                 raise ConnectionFailedError("Connection failed - Modbus.")
             else:
                 return True
+        else:
+                return True
 
     def read_registers(self, params, print_mod):
         """
@@ -96,7 +98,7 @@ class Modbus:
                 params (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
-                register_data (list): data that holds Modbus server's registers
+                register_data (list): list that holds Modbus server's registers values
         """
         is_connected = self.try_to_reconnect(print_mod)
         if is_connected:

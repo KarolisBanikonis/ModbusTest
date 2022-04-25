@@ -40,7 +40,7 @@ class ModuleNetwork(Module):
         Converts via Modbus TCP received registers values to IP address
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list): list that holds Modbus server's registers values
             Returns:
                 ip (str): formatted IP address
         """
@@ -105,7 +105,7 @@ class ModuleNetwork(Module):
             when starting register number is 55
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list): list that holds Modbus server's registers values
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
@@ -113,7 +113,7 @@ class ModuleNetwork(Module):
                 device_data (str): parsed data received via SSH
         """
         modbus_data = self.convert_modbus_to_text(modbus_registers_data)
-        device_data_with_colon = self.get_device_data(param_values, print_mod)# returns lower case
+        device_data_with_colon = self.get_device_data(param_values, print_mod)# Returns lower case
         device_data = remove_char(device_data_with_colon, ':')
         return modbus_data, device_data
 
@@ -123,7 +123,7 @@ class ModuleNetwork(Module):
             when starting register number is 139
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list): list that holds Modbus server's registers values
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:

@@ -1,0 +1,27 @@
+2022-04-24 16:42:33,469 - Libraries.FileMethods - INFO - File at - config.json successfully found.
+2022-04-24 16:42:33,470 - Libraries.FileMethods - INFO - File at - registers.json successfully found.
+2022-04-24 16:42:33,645 - Clients.SSHClient - INFO - SSH setup is successful!
+2022-04-24 16:42:33,658 - Clients.Modbus - INFO - Modbus setup is successful!
+2022-04-24 16:42:34,094 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleSystem was loaded!
+2022-04-24 16:42:34,094 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleSystem.ModuleSystem'> was initialized!
+2022-04-24 16:42:34,095 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleNetwork was loaded!
+2022-04-24 16:42:34,095 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleNetwork.ModuleNetwork'> was initialized!
+2022-04-24 16:42:34,096 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleMobile was loaded!
+2022-04-24 16:42:34,096 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleMobile.ModuleMobile'> was initialized!
+2022-04-24 16:42:34,097 - MainModules.ModuleLoader - INFO - Module TestedModules.ModuleGPS was loaded!
+2022-04-24 16:42:34,219 - MainModules.ModuleLoader - INFO - Class object <class 'TestedModules.ModuleGPS.ModuleGPS'> was initialized!
+2022-04-24 16:42:34,222 - TestedModules.ModuleSystem - INFO - Started ModuleSystem testing!
+2022-04-24 16:42:38,184 - TestedModules.ModuleSystem - INFO - Module - ModuleSystem tests are over!
+2022-04-24 16:42:38,185 - TestedModules.ModuleNetwork - INFO - Started ModuleNetwork testing!
+2022-04-24 16:42:39,270 - TestedModules.ModuleNetwork - INFO - Module - ModuleNetwork tests are over!
+2022-04-24 16:42:39,270 - TestedModules.ModuleMobile - INFO - Started ModuleMobile testing!
+2022-04-24 16:42:54,789 - TestedModules.ModuleMobile - INFO - Module - ModuleMobile tests are over!
+2022-04-24 16:42:54,789 - TestedModules.ModuleGPS - INFO - Started ModuleGPS testing!
+2022-04-24 16:42:57,736 - TestedModules.ModuleGPS - INFO - Module - ModuleGPS tests are over!
+2022-04-24 16:42:59,738 - TestedModules.ModuleSystem - INFO - Started ModuleSystem testing!
+2022-04-24 16:43:03,913 - TestedModules.ModuleSystem - INFO - Module - ModuleSystem tests are over!
+2022-04-24 16:43:03,913 - TestedModules.ModuleNetwork - INFO - Started ModuleNetwork testing!
+2022-04-24 16:43:04,948 - TestedModules.ModuleNetwork - INFO - Module - ModuleNetwork tests are over!
+2022-04-24 16:43:04,948 - TestedModules.ModuleMobile - INFO - Started ModuleMobile testing!
+2022-04-24 16:43:08,804 - __main__ - CRITICAL - User stopped tests with KeyboardInterrupt.
+2022-04-24 16:43:08,804 - __main__ - CRITICAL - Program is terminated!

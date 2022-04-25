@@ -144,26 +144,30 @@ class Module:
         Performs default data conversions when 1 register was read
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list|None): list that holds Modbus server's registers values
+                    or None if read was not successful
             Returns:
-                modbus_data (int): converted data received via Modbus TCP
+                result (int): converted data to int value, if list was passed
+                None, if None was passed
         """
         if(modbus_registers_data is None):
-            return modbus_registers_data
-        modbus_registers_data = modbus_registers_data[0]
-        return modbus_registers_data
+            return None
+        result = modbus_registers_data[0]
+        return result
 
     def convert_modbus_to_int_2(self, modbus_registers_data):
         """
         Converts via Modbus TCP received registers values to integer number
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list|None): list that holds Modbus server's registers values
+                    or None if read was not successful
             Returns:
-                result (int): converted data to integer value
+                result (int): converted data to int value, if list was passed
+                None, if None was passed
         """
         if(modbus_registers_data is None):
-            return modbus_registers_data
+            return None
         bin_temp1 = format(modbus_registers_data[0], '016b') #08b buvo
         bin_temp2 = format(modbus_registers_data[1], '016b') #08b buvo
         bin_str = (f"{bin_temp1}{bin_temp2}")
@@ -175,12 +179,14 @@ class Module:
         Converts via Modbus TCP received registers values to string format value
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list|None): list that holds Modbus server's registers values
+                    or None if read was not successful
             Returns:
-                modbus_data (str): converted data to string value
+                result (str): converted data to string value, if list was passed
+                None, if None was passed
         """
         if(modbus_registers_data is None):
-            return modbus_registers_data
+            return None
         text = ""
         for i in range(len(modbus_registers_data)):
             if(modbus_registers_data[i] != 0):
@@ -190,8 +196,8 @@ class Module:
             else:
                 break
         # This step is needed for 348, 103, 119(mobile) registers, also gps
-        modbus_data = remove_char(text, "\x00")
-        return modbus_data
+        result = remove_char(text, "\x00")
+        return result
 
     def binary_to_decimal(self, binary_number):
         """

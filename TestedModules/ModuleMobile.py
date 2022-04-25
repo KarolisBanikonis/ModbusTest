@@ -81,7 +81,7 @@ class ModuleMobile(Module):
             when read register count is 16
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list): list that holds Modbus server's registers values
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
@@ -99,7 +99,7 @@ class ModuleMobile(Module):
         Finds converted received data via Modbus TCP and device data when read register count is 1
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list): list that holds Modbus server's registers values
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:
@@ -115,7 +115,7 @@ class ModuleMobile(Module):
         Finds converted received data via Modbus TCP and device data when read register count is 2
 
             Parameters:
-                modbus_registers_data (list): data that holds Modbus server's registers
+                modbus_registers_data (list): list that holds Modbus server's registers values
                 param_values (dict): current register's parameters information
                 print_mod (PrintModule): module designed for printing to terminal
             Returns:

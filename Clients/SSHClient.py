@@ -48,7 +48,7 @@ class SSHClient:
                 error_text = "SSH Authentication failed, check your credentials!"
             else:
                 error_text = ("SSH connection failed, check 'SERVER_HOST'" +
-                    f"value and if cable is connected: {err}.")
+                    f" value and if cable is connected: {err}.")
             print_mod.error(error_text)
             log_msg(__name__, "critical", error_text)
             return error_text
@@ -76,7 +76,7 @@ class SSHClient:
                 try_connect_nr += 1
                 error_text = (f"Reconnecting SSH attempt nr. {try_connect_nr}" +
                     f" out of {self.connect_attempts}!")
-                log_msg(__name__, "critical", error_text)
+                log_msg(__name__, "error", error_text)
                 print_mod.warning(error_text)
                 connected = self.ssh_connect()
                 if connected:

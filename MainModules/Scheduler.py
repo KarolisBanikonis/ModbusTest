@@ -25,8 +25,9 @@ class Scheduler:
         self.scheduler = BackgroundScheduler()
         self.email = EmailClient(email_settings)
         self.send_email_periodically([print_mod])
-        if(ftp_settings['FTP_USE']):
+        if(ftp_settings['FTP_USE'] and platform == "linux"):
             self.ftp = FTPClient(ftp_settings, report)
+            self.ftp.store_report(print_mod)
             self.store_ftp_periodically([print_mod])
         self.start()
 
@@ -54,6 +55,5 @@ class Scheduler:
             Parameters:
                 print_mod (PrintModule): module designed for printing to terminal
         """
-        if(platform == "linux"):
-            self.scheduler.add_job(self.ftp.store_report, 'interval',
-                minutes=self.ftp.interval, args=print_mod)
+        self.scheduler.add_job(self.ftp.store_report, 'interval',
+            minutes=self.ftp.interval, args=print_mod)
