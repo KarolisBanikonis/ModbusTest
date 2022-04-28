@@ -5,7 +5,7 @@ import time
 from MainModules.Module import Module
 from Libraries.DataMethods import replace_pattern
 from Libraries.Logger import log_msg
-from Libraries.SSHMethods import get_mobile_apn
+from Libraries.SSHMethods import get_mobile_apn, check_mobile_interface_service_status
 from Libraries.ConversionMethods import convert_text_to_decimal
 
 class ModuleWrite(Module):
@@ -23,10 +23,12 @@ class ModuleWrite(Module):
         """
         super().__init__(data, ssh, modbus, info, report, __class__.__name__)
         self.action = self.WRITE_ACTION
+        self.sim = self.info.modbus_write_data['SIM']
+        self.mobile_interface = ""
+        self.sim_value_valid = self.check_if_sim_is_valid()
+        self.mobile_connection = self.check_if_mobile_connection_exists()
         self.tests = self.check_what_tests_to_perform(data['Tests'])
         del self.data['Tests']
-        self.sim = self.info.modbus_write_data['SIM']
-        self.sim_value_valid = self.check_if_sim_is_valid()
         if(self.sim_value_valid):
             self.change_data_to_mobile_interface()
         self.specified_apn = self.info.modbus_write_data['CHANGE_APN']
@@ -62,9 +64,27 @@ class ModuleWrite(Module):
         possible_sim_values = self.__get_possible_sim_values()
         for value in possible_sim_values:
             if(self.sim == value):
+                self.mobile_interface = f"mob1s{self.sim}a1"
                 log_msg(__name__, "info", "Specified default sim slot is valid!")
                 return True
         log_msg(__name__, "error", "Specified default sim slot is invalid!")
+        return False
+
+    def check_if_mobile_connection_exists(self):
+        """
+        Checks if mobile interface has connection established.
+
+            Returns:
+                True, if mobile interface has connection established and sim slot is valid
+                False, if mobile interface has not connection established
+        """
+        status = check_mobile_interface_service_status(self.ssh, self.mobile_interface)
+        if(not status):
+            log_msg(__name__, "error", f"Mobile interface '{self.mobile_interface}'" +
+                " does not have internet connection!")
+            return False
+        if(self.sim_value_valid):
+            return True
         return False
 
     def check_what_tests_to_perform(self, list_of_tests):
@@ -78,9 +98,9 @@ class ModuleWrite(Module):
         """
         allowed_tests = []
         for test in list_of_tests:
-            if(bool(self.info.dual_sim_status) and test['dual_sim']):
+            if(bool(self.info.dual_sim_status) and test['dual_sim'] and self.mobile_connection):
                 allowed_tests.append(test)
-            elif(bool(self.info.mobile_status) and test['mobile']):
+            elif(bool(self.info.mobile_status) and test['mobile'] and self.mobile_connection):
                 allowed_tests.append(test)
             elif(not test['dual_sim'] and not test['mobile']):
                 allowed_tests.append(test)
@@ -105,12 +125,11 @@ class ModuleWrite(Module):
         Inserts mobile interface to tests and data dictionaries procedure parameter.
         """
         interface_pattern = "your_interface_name"
-        interface = f"mob1s{self.sim}a1"
         for test in self.tests:
             if('service' in test.keys()):
-                test['service'] = replace_pattern(test['service'], interface_pattern, interface)
+                test['service'] = replace_pattern(test['service'], interface_pattern, self.mobile_interface)
         self.data['Status']['service'] = replace_pattern(self.data['Status']['service'],
-            interface_pattern, interface)
+            interface_pattern, self.mobile_interface)
 
     def get_opposite_sim(self):
         """
@@ -144,9 +163,12 @@ class ModuleWrite(Module):
         self.memory = test_count[2]
         for i in range(len(self.tests)):
             param_values = self.tests[i]
-            if((param_values['mobile'] or param_values['dual_sim']) and not self.sim_value_valid):
-                print_mod.warning("Default SIM slot value is invalid!")
-                continue
+            # if(param_values['mobile']):
+            #     status = get_mobile_interface_status(self.ssh, self.data['Status'])
+            #     if(status is None):
+            #         print_mod.warning(f"Mobile interface '{self.mobile_interface}'" +
+            #             " does not have internet connection!")
+            #         continue
             method_name = f"write_modbus_register_{param_values['address']}"
             first_time_changing_values = [True, False]
             self.skip_interfaces = False

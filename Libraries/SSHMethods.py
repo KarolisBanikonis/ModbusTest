@@ -140,3 +140,19 @@ def get_df_used_memory(ssh, mounted_on, print_mod):
     string_data = get_used_memory_from_string(data)
     bytes = convert_string_to_bytes(string_data)
     return bytes
+
+def check_mobile_interface_service_status(ssh, mobile_interface):
+    """
+    Check if mobile interface's service exists.
+
+        Parameters:
+            mobile_interface (str): name of checked mobile interface
+        Returns:
+            True, if mobile interface's service exists
+            False, if mobile interface's service does not exist
+    """
+    _stdin, _stdout,_stderr = ssh.ssh.exec_command(f"ubus call network.interface.{mobile_interface} status")
+    output = _stdout.read().decode()
+    if(output == ""):
+        return False
+    return True
