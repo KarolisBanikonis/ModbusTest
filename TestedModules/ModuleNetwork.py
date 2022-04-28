@@ -40,10 +40,14 @@ class ModuleNetwork(Module):
         Converts via Modbus TCP received registers values to IP address
 
             Parameters:
-                modbus_registers_data (list): list that holds Modbus server's registers values
+                modbus_registers_data (list|None): list that holds Modbus server's registers values
+                    or None if read was not successful
             Returns:
-                ip (str): formatted IP address
+                ip (str): formatted IP address, if list was passed
+                None, if None was passed
         """
+        if(modbus_registers_data is None):
+            return None
         numbers = []
         for i in range(len(modbus_registers_data)):
             temp = format(modbus_registers_data[i], '016b')
@@ -136,6 +140,5 @@ class ModuleNetwork(Module):
             if(len(device_data) <= 2): #loopback and lan
                 modbus_data = None
                 device_data = None
-        if(modbus_registers_data is not None):
-            modbus_data = self.convert_modbus_to_ip(modbus_registers_data)
+        modbus_data = self.convert_modbus_to_ip(modbus_registers_data)
         return modbus_data, device_data

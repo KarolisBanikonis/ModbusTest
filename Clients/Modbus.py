@@ -103,7 +103,7 @@ class Modbus:
         is_connected = self.try_to_reconnect(print_mod)
         if is_connected:
             registers_data = self.client.read_holding_registers(params['address'], params['number'])
-        self.client.close()
+        self.close()
         return registers_data
 
     def write_many(self, print_mod, address, value):
@@ -121,7 +121,7 @@ class Modbus:
         is_connected = self.try_to_reconnect(print_mod)
         if is_connected:
             written = self.client.write_multiple_registers(address, value)
-        self.client.close()
+        self.close()
         return written
 
     def write_one(self, print_mod, address, value):
@@ -139,6 +139,6 @@ class Modbus:
         is_connected = self.try_to_reconnect(print_mod)
         if is_connected:
             written = self.client.write_single_register(address, value)
-        self.client.close()
+        self.close()
         return written
         

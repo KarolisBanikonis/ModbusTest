@@ -69,10 +69,10 @@ class Module:
             f"{print_mod.colour_text(failed, 'RED')}"))
         print_mod.print_at_row(3, f"CPU usage - {cpu}. RAM usage: {ram}.")
         print_mod.print_at_row(4, f"Module being tested - {self.module_name}.")
-        print_mod.print_at_row(5, (f"Testing - {param_values['name']}. " +
-            f"Address - {param_values['address']}."))
+        print_mod.print_at_row(5, (f"Testing - {param_values['name']}." +
+            f" Address - {param_values['address']}."))
         print_mod.print_at_row(6, (f"Value from Modbus - {modbus_data}." +
-            f"Value from router - {device_data}."))
+            f" Value from router - {device_data}."))
 
     def call_data_collect_method(self, method_name, print_mod, additional_data, param_values):
         """

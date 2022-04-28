@@ -3,7 +3,7 @@ import smtplib
 import ssl
 
 # Local imports
-from Libraries.DataMethods import remove_colour_tags, remove_char
+from Libraries.DataMethods import remove_colour_tags, remove_char, get_current_date_as_string
 from Libraries.Logger import log_msg
 
 class EmailClient:
@@ -22,7 +22,7 @@ class EmailClient:
         self.password = conf['PASSWORD']
         self.receiver = conf['RECEIVER']
         self.interval = conf['INTERVAL_HOURS']
-        self.message = "Subject: Tests summary\n\nTests summary:\n\n"
+        self.message = "Subject: Tests summary " + get_current_date_as_string("%Y-%m-%d-%H:%M") + "\n\n"
 
     def send_email(self, print_mod):
         """

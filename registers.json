@@ -17,7 +17,10 @@
             {
                 "name": "ModuleGPS",
                 "hw_info": "gps"
-            }
+            },
+			{
+				"name": "ModuleWrite"
+			}
         ],
 		"Model":
 		{
@@ -62,7 +65,7 @@
 		  "index": true
 	   },
 	   {
-		  "name":"System temperature (in 0.1 °C)",
+		  "name":"System temperature (in 0.1°C)",
 		  "address":5,
 		  "number":2,
 		  "source":"gsmctl",
