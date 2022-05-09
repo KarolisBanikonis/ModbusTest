@@ -17,9 +17,9 @@
     },
     "Email":
     {
-        "USER": "labas0113@gmail.com",
-        "PASSWORD": "belekas111",
-        "RECEIVER": "labas0113@gmail.com",
+        "USER": "sender@gmail.com",
+        "PASSWORD": "password",
+        "RECEIVER": "receiver@gmail.com",
         "INTERVAL_HOURS": 1
     },
     "ModbusWrite":

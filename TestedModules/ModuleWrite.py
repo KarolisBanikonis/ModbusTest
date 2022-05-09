@@ -163,12 +163,6 @@ class ModuleWrite(Module):
         self.memory = test_count[2]
         for i in range(len(self.tests)):
             param_values = self.tests[i]
-            # if(param_values['mobile']):
-            #     status = get_mobile_interface_status(self.ssh, self.data['Status'])
-            #     if(status is None):
-            #         print_mod.warning(f"Mobile interface '{self.mobile_interface}'" +
-            #             " does not have internet connection!")
-            #         continue
             method_name = f"write_modbus_register_{param_values['address']}"
             first_time_changing_values = [True, False]
             self.skip_interfaces = False
